@@ -1,0 +1,126 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import type { Identity } from "@/types";
+
+/**
+ * Données & logique du Module 5 — Journal.
+ *
+ *  - charge les entrées existantes (plus récentes d'abord)
+ *  - écoute les nouvelles en temps réel (postgres_changes INSERT)
+ *  - `addText`  : poste un message texte
+ *  - `addMedia` : upload une photo/voix dans le Storage puis crée l'entrée
+ */
+
+export type EntryKind = "text" | "photo" | "voice";
+
+export interface JournalEntry {
+  id: string;
+  author: Identity;
+  kind: EntryKind;
+  body: string | null;
+  media_path: string | null;
+  created_at: string;
+}
+
+const BUCKET = "journal";
+const TABLE = "journal_entries";
+
+/** URL publique d'un média stocké (photo/voix), ou null. */
+export function mediaUrl(path: string | null): string | null {
+  if (!path) return null;
+  return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+}
+
+export function useJournal(identity: Identity | null) {
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+
+  // Chargement initial
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from(TABLE)
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      if (!cancelled) {
+        setEntries((data as JournalEntry[]) ?? []);
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  // Temps réel : nouvelles entrées ajoutées en tête (avec dédoublonnage)
+  useEffect(() => {
+    const channel = supabase
+      .channel("journal-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: TABLE },
+        (payload) => {
+          const entry = payload.new as JournalEntry;
+          setEntries((prev) =>
+            prev.some((e) => e.id === entry.id) ? prev : [entry, ...prev]
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, []);
+
+  // Poste un message texte
+  const addText = useCallback(
+    async (body: string) => {
+      if (!identity || !body.trim()) return;
+      setSending(true);
+      try {
+        await supabase
+          .from(TABLE)
+          .insert({ author: identity, kind: "text", body: body.trim() });
+      } finally {
+        setSending(false);
+      }
+    },
+    [identity]
+  );
+
+  // Upload d'un média (photo ou voix) puis création de l'entrée
+  const addMedia = useCallback(
+    async (file: Blob, kind: "photo" | "voice", body?: string) => {
+      if (!identity) return;
+      setSending(true);
+      try {
+        // Extension déduite du type MIME (jpg / png / webm...)
+        const ext = file.type.split("/")[1]?.split(";")[0] || "bin";
+        const path = `${identity}/${crypto.randomUUID()}.${ext}`;
+
+        const { error: upErr } = await supabase.storage
+          .from(BUCKET)
+          .upload(path, file, { contentType: file.type });
+        if (upErr) throw upErr;
+
+        await supabase.from(TABLE).insert({
+          author: identity,
+          kind,
+          body: body?.trim() || null,
+          media_path: path,
+        });
+      } finally {
+        setSending(false);
+      }
+    },
+    [identity]
+  );
+
+  return { entries, loading, sending, addText, addMedia };
+}

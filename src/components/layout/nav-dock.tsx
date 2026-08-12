@@ -1,0 +1,93 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+/**
+ * Dock de navigation flottant (bas d'écran).
+ *  - défilement doux vers chaque section au clic
+ *  - "scroll-spy" : la section visible est mise en avant (IntersectionObserver)
+ *  - l'indicateur actif GLISSE d'une icône à l'autre (layoutId Framer Motion)
+ *
+ * Les `id` doivent correspondre aux <section id="..."> de la page.
+ */
+
+const ITEMS = [
+  { id: "time", label: "Heure", Icon: Clock },
+  { id: "globe", label: "Globe", Icon: Globe2 },
+  { id: "signal", label: "Signal", Icon: Radio },
+  { id: "letters", label: "Lettres", Icon: Mail },
+  { id: "pet", label: "Bestiole", Icon: Egg },
+  { id: "journal", label: "Journal", Icon: BookHeart },
+  { id: "music", label: "Musique", Icon: Music2 },
+] as const;
+
+export function NavDock() {
+  const [active, setActive] = useState<string>(ITEMS[0].id);
+
+  useEffect(() => {
+    // Une section est "active" quand elle occupe la bande centrale de l'écran
+    const observer = new IntersectionObserver(
+      (obsEntries) => {
+        obsEntries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+
+    ITEMS.forEach(({ id }) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+    return () => observer.disconnect();
+  }, []);
+
+  const goTo = (id: string) =>
+    document.getElementById(id)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+
+  return (
+    // Wrapper = positionnement/centrage. Le conteneur est visible d'emblée
+    // (pas d'animation d'entrée sur la visibilité) ; l'effet fluide vit dans
+    // la pastille active qui glisse (layoutId) ci-dessous.
+    <div className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 duration-500 animate-in fade-in slide-in-from-bottom-4">
+      <nav className="glass-floating flex items-center gap-1 rounded-full px-2 py-2">
+        {ITEMS.map(({ id, label, Icon }) => {
+        const isActive = active === id;
+        return (
+          <button
+            key={id}
+            type="button"
+            onClick={() => goTo(id)}
+            aria-label={label}
+            aria-current={isActive}
+            className={cn(
+              "focus-ring relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors sm:px-4",
+              isActive
+                ? "text-white"
+                : "text-foreground/50 hover:text-foreground/80"
+            )}
+          >
+            {/* Pastille active qui glisse d'un item à l'autre */}
+            {isActive && (
+              <motion.span
+                layoutId="nav-active-pill"
+                className="absolute inset-0 rounded-full bg-gradient-to-r from-neon-violet/30 to-neon-cyan/25 ring-1 ring-white/15"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
+              <Icon className="relative h-4 w-4" />
+              {/* Libellé masqué sur mobile pour rester compact */}
+              <span className="relative hidden sm:inline">{label}</span>
+            </button>
+          );
+        })}
+      </nav>
+    </div>
+  );
+}

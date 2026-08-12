@@ -1,0 +1,303 @@
+/* Directives Tailwind v3 (ordre imposé) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * ────────────────────────────────────────────────────────────────
+ * DESIGN SYSTEM — "Us, across the ocean"
+ * Source de vérité des TOKENS. Toute valeur visuelle réutilisée
+ * (couleur, rayon, traque, surface, ombre) vit ici — jamais en dur
+ * dans un composant.
+ *
+ * Couleurs en HSL SANS wrapper hsl() : convention shadcn (le hsl()
+ * est appliqué dans tailwind.config.ts).
+ * Dark mode forcé → :root porte directement le thème sombre.
+ * ────────────────────────────────────────────────────────────────
+ */
+@layer base {
+  :root {
+    /* ── Couleurs de base ─────────────────────────────────────── */
+    /* Fond bleu nuit très sombre (proche de #09090b) */
+    --background: 240 10% 3.9%;
+    --foreground: 210 20% 96%;
+
+    --card: 240 10% 5.5%;
+    --card-foreground: 210 20% 96%;
+
+    --popover: 240 10% 5%;
+    --popover-foreground: 210 20% 96%;
+
+    /* Primary = violet néon */
+    --primary: 265 90% 65%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary = surface sombre discrète */
+    --secondary: 240 6% 12%;
+    --secondary-foreground: 210 20% 96%;
+
+    --muted: 240 5% 14%;
+    --muted-foreground: 240 5% 60%;
+
+    /* Accent = cyan néon */
+    --accent: 190 95% 60%;
+    --accent-foreground: 240 10% 4%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 240 15% 20%;
+    --input: 240 10% 18%;
+    --ring: 265 90% 65%;
+
+    /* ── Néons de la DA ───────────────────────────────────────── */
+    --neon-violet: 265 90% 65%;
+    --neon-cyan: 190 95% 60%;
+    --neon-rose: 330 90% 68%;
+    /* Vert "présence live" — était en dur (emerald-400) dans le code */
+    --neon-mint: 152 76% 60%;
+
+    /* ── Surfaces en verre (3 niveaux d'élévation) ─────────────── */
+    /* 1 = incrustation dans une carte · 2 = carte · 3 = flottant/modale */
+    --surface-1: 0 0% 100% / 0.05;
+    --surface-2: 240 20% 12% / 0.45;
+    --surface-3: 240 20% 10% / 0.65;
+
+    /* Filets lumineux (bordures 1px) */
+    --hairline: 0 0% 100% / 0.1;
+    --hairline-strong: 0 0% 100% / 0.16;
+
+    /* ── Rayons (échelle à 3 crans, plus de rounded-* au hasard) ─ */
+    --radius: 1rem; /* contrôles : boutons, pastilles */
+    --radius-card: 1.5rem; /* cartes et panneaux */
+    --radius-inner: 0.75rem; /* éléments imbriqués : champs, vignettes */
+
+    /* ── Traque typographique (2 rôles canoniques) ────────────── */
+    --tracking-eyebrow: 0.3em; /* surtitre de section */
+    --tracking-micro: 0.18em; /* légende/HUD sous un chiffre */
+
+    /* ── Flou du verre ────────────────────────────────────────── */
+    --glass-blur: 16px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    /* Défilement fluide pour les ancres/sections */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    min-height: 100dvh;
+    /* Halos néon fixes = l'ambiance de fond (ne scrolle pas) */
+    background-image:
+      radial-gradient(55% 45% at 12% -5%, hsl(var(--neon-violet) / 0.18), transparent),
+      radial-gradient(45% 45% at 92% 15%, hsl(var(--neon-cyan) / 0.12), transparent),
+      radial-gradient(65% 55% at 50% 115%, hsl(var(--neon-rose) / 0.12), transparent);
+    background-attachment: fixed;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  /*
+   * Accessibilité : un seul interrupteur global pour les animations.
+   * Avant, seuls CursorGlow et IntroLoader respectaient la préférence
+   * (via useReducedMotion) ; toutes les animations CSS l'ignoraient.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/*
+ * ────────────────────────────────────────────────────────────────
+ * COUCHE COMPOSANTS
+ * Chaque classe = un rôle du design system. Un composant React ne
+ * doit plus redéclarer border/bg/rayon/traque : il compose ces classes.
+ * ────────────────────────────────────────────────────────────────
+ */
+@layer components {
+  /* ── SURFACES ──────────────────────────────────────────────── */
+
+  /* Carte "verre dépoli" — la brique visuelle centrale (élévation 2) */
+  .glass {
+    background-color: hsl(var(--surface-2));
+    backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+    border: 1px solid hsl(var(--hairline));
+    box-shadow:
+      0 8px 40px -12px hsl(var(--neon-violet) / 0.25),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.05);
+  }
+
+  /* Verre flottant (dock, modale) : plus opaque, ombre plus profonde */
+  .glass-floating {
+    background-color: hsl(var(--surface-3));
+    backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(140%);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 8px)) saturate(140%);
+    border: 1px solid hsl(var(--hairline-strong));
+    box-shadow:
+      0 18px 60px -16px hsl(240 30% 2% / 0.8),
+      0 0 40px -14px hsl(var(--neon-violet) / 0.35),
+      inset 0 1px 0 0 hsl(0 0% 100% / 0.07);
+  }
+
+  /* Panneau = carte de verre au rayon et à la respiration canoniques */
+  .panel {
+    @apply glass rounded-card p-6;
+  }
+  .panel-tight {
+    @apply glass rounded-card p-4;
+  }
+  .panel-roomy {
+    @apply glass rounded-card p-8;
+  }
+
+  /* Filet : la surface "incrustée" (remplace border-white/10 + bg-white/5) */
+  .hairline {
+    border: 1px solid hsl(var(--hairline));
+    background-color: hsl(var(--surface-1));
+  }
+
+  /* ── TYPOGRAPHIE ───────────────────────────────────────────── */
+
+  /* Surtitre de section (la couleur néon reste au choix de l'appelant) */
+  .eyebrow {
+    @apply flex items-center justify-center gap-2 font-mono text-[11px] font-medium uppercase;
+    letter-spacing: var(--tracking-eyebrow);
+  }
+
+  /* Légende/HUD : la SEULE opacité autorisée pour ce rôle */
+  .label-micro {
+    @apply font-mono text-[10px] uppercase text-foreground/40;
+    letter-spacing: var(--tracking-micro);
+  }
+
+  /* Titre de section */
+  .heading-section {
+    @apply font-display text-3xl font-bold tracking-tight sm:text-4xl;
+  }
+
+  /* Chiffre de HUD : mono + tabular-nums (pas de tremblement) */
+  .numeral {
+    @apply font-mono font-bold tabular-nums tracking-tight;
+  }
+
+  /* Halo lumineux sur du texte (titres/HUD) */
+  .text-glow {
+    text-shadow: 0 0 24px hsl(var(--neon-cyan) / 0.45);
+  }
+
+  /* Dégradé néon appliqué à du texte (mot mis en avant dans un titre) */
+  .text-gradient-violet {
+    @apply bg-gradient-to-r from-neon-violet to-neon-cyan bg-clip-text text-transparent;
+  }
+  .text-gradient-rose {
+    @apply bg-gradient-to-r from-neon-rose to-neon-violet bg-clip-text text-transparent;
+  }
+  .text-gradient-cyan {
+    @apply bg-gradient-to-r from-neon-cyan to-neon-violet bg-clip-text text-transparent;
+  }
+
+  /* ── CONTRÔLES ─────────────────────────────────────────────── */
+
+  /*
+   * Anneau de focus clavier. Aucun bouton du site n'en avait :
+   * la navigation au clavier était invisible.
+   */
+  .focus-ring {
+    @apply outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Action principale : dégradé néon */
+  .btn-neon {
+    @apply focus-ring inline-flex shrink-0 items-center justify-center gap-2 rounded-lg
+      bg-gradient-to-r from-neon-violet to-neon-cyan font-semibold text-white
+      transition-transform duration-200 hover:scale-105 active:scale-95
+      disabled:pointer-events-none disabled:opacity-40 disabled:hover:scale-100;
+  }
+
+  /* Action secondaire : surface incrustée */
+  .btn-ghost {
+    @apply focus-ring hairline inline-flex shrink-0 items-center justify-center gap-2
+      rounded-lg text-foreground/70 transition-colors
+      hover:border-white/20 hover:text-foreground
+      disabled:pointer-events-none disabled:opacity-40;
+  }
+
+  /* Tailles (s'appliquent sur .btn-neon comme sur .btn-ghost) */
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .btn-md {
+    @apply px-4 py-2.5 text-sm;
+  }
+  /* Bouton carré à icône seule */
+  .btn-icon {
+    @apply p-3;
+  }
+  .btn-icon-sm {
+    @apply p-2.5;
+  }
+  /* Variante pilule (dock, chips cliquables) */
+  .btn-pill {
+    @apply rounded-full;
+  }
+
+  /* Champ de saisie (input / textarea) */
+  .field {
+    @apply hairline w-full rounded-inner px-4 py-3 text-sm outline-none
+      transition-colors placeholder:text-foreground/30
+      focus:border-neon-violet/60 focus:ring-1 focus:ring-neon-violet/25;
+  }
+  .field-invalid {
+    @apply border-destructive/60 focus:border-destructive focus:ring-destructive/25;
+  }
+
+  /* ── INDICATEURS ───────────────────────────────────────────── */
+
+  /* Pastille d'état (statut de verrou, phase du jour, connexion…) */
+  .chip {
+    @apply hairline inline-flex items-center gap-1.5 whitespace-nowrap
+      rounded-full px-2.5 py-1 font-mono text-[10px] uppercase;
+    letter-spacing: var(--tracking-micro);
+  }
+  /* Chip un cran plus lisible (texte courant, pas du HUD) */
+  .chip-text {
+    @apply hairline inline-flex items-center gap-1.5 whitespace-nowrap
+      rounded-full px-3 py-1.5 text-[11px] font-medium text-foreground/70;
+  }
+
+  /* Point lumineux (marqueur de ville, auteur d'une entrée) */
+  .dot-glow {
+    @apply h-1.5 w-1.5 shrink-0 rounded-full;
+    box-shadow: 0 0 8px currentColor;
+  }
+
+  /* Piste + remplissage d'une barre de progression */
+  .track {
+    @apply h-2 overflow-hidden rounded-full;
+    background-color: hsl(var(--surface-1));
+  }
+  .track-fill {
+    @apply h-full rounded-full bg-gradient-to-r from-neon-violet via-neon-cyan to-neon-rose;
+  }
+
+  /* Squelette de chargement (même verre, même rayon que le contenu final) */
+  .skeleton {
+    @apply glass animate-pulse rounded-card;
+  }
+}
