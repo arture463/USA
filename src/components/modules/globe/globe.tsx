@@ -8,18 +8,9 @@ import { DISTANCE_KM } from "@/lib/constants";
 import { DURATION, EASE_OUT_EXPO } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { ModuleErrorBoundary } from "@/components/ui/error-boundary";
 import type { CityKey } from "./globe-scene";
 
-/**
- * MODULE 2 — Globe 3D
- * Wrapper client : charge la scène Three.js UNIQUEMENT côté navigateur
- * (ssr: false — WebGL n'existe pas sur le serveur) avec un placeholder
- * pendant le téléchargement du chunk 3D.
- *
- * L'état de "focus ville" vit ici : la légende Paris/Raleigh devient un
- * jeu de boutons fiables (cible facile, mobile-friendly) qui font pivoter
- * le globe vers la ville. Un bouton "Vue libre" relance la rotation auto.
- */
 const GlobeScene = dynamic(() => import("./globe-scene"), {
   ssr: false,
   loading: () => (
@@ -39,7 +30,6 @@ export function Globe() {
       transition={{ duration: DURATION.cinematic, ease: EASE_OUT_EXPO }}
       className="relative w-full"
     >
-      {/* En-tête de section — était absent (seul module sans titre avec Heure) */}
       <SectionHeading
         eyebrow="Liaison orbitale"
         icon={Globe2}
@@ -49,9 +39,7 @@ export function Globe() {
         accent="cyan"
       />
 
-      {/* La scène 3D — hauteur adaptée mobile / desktop */}
       <div className="relative h-[380px] w-full sm:h-[480px]">
-        {/* Halo néon derrière le globe (effet "bloom" fiable, sans post-process) */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-1/2 h-[70%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-60 blur-[70px]"
@@ -61,10 +49,11 @@ export function Globe() {
           }}
         />
         <div className="relative h-full w-full cursor-grab active:cursor-grabbing">
-          <GlobeScene focusCity={focusCity} onFocusCity={setFocusCity} />
+          <ModuleErrorBoundary fallbackTitle="Globe 3D non supporté sur ce navigateur">
+            <GlobeScene focusCity={focusCity} onFocusCity={setFocusCity} />
+          </ModuleErrorBoundary>
         </div>
 
-        {/* Bouton "Vue libre" — visible seulement quand une ville est ciblée */}
         <AnimatePresence>
           {focusCity && (
             <motion.button
@@ -82,7 +71,6 @@ export function Globe() {
         </AnimatePresence>
       </div>
 
-      {/* ── HUD : légende = boutons de focus vers chaque ville ── */}
       <div className="flex items-center justify-center gap-3 font-mono text-[10px] uppercase tracking-micro sm:text-[11px]">
         <button
           type="button"

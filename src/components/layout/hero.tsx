@@ -53,10 +53,9 @@ export function Hero() {
     <header className="relative flex min-h-[88vh] flex-col items-center justify-center text-center">
       <motion.div style={{ x: tx, y: ty }}>
         <motion.p
-          variants={fadeUpBlur}
-          initial="hidden"
-          animate="visible"
-          custom={0}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
           className="eyebrow mb-4 text-neon-cyan"
         >
           <MapPin className="h-3.5 w-3.5" />
@@ -64,10 +63,9 @@ export function Hero() {
         </motion.p>
 
         <motion.h1
-          variants={fadeUpBlur}
-          initial="hidden"
-          animate="visible"
-          custom={0.15}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.25 }}
           className="animate-text-shimmer bg-gradient-to-r from-neon-violet via-neon-cyan to-neon-rose bg-clip-text font-display text-5xl font-bold tracking-tight text-transparent sm:text-7xl"
           style={{ backgroundSize: "200% auto" }}
         >
@@ -77,10 +75,9 @@ export function Hero() {
         </motion.h1>
 
         <motion.p
-          variants={fadeUpBlur}
-          initial="hidden"
-          animate="visible"
-          custom={0.3}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-5 text-balance text-sm text-muted-foreground sm:text-base"
         >
           Un océan entre nous. Aucune distance entre nos deux écrans.

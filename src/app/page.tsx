@@ -14,12 +14,8 @@ import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
 import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
+import { ModuleErrorBoundary } from "@/components/ui/error-boundary";
 
-/**
- * Page d'accueil — assemblage de tous les modules.
- * Chaque <section id> est une cible de la navigation (NavDock).
- * `scroll-mt-24` laisse de l'air sous le haut d'écran au défilement.
- */
 export default function Home() {
   return (
     <>
@@ -38,48 +34,63 @@ export default function Home() {
       {/* pb-28 : de l'espace pour ne pas passer sous le dock */}
       <main className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col items-center gap-20 px-4 py-16 pb-28">
         {/* ── HERO ── */}
-        <Hero />
+        <ModuleErrorBoundary fallbackTitle="En-tête indisponible">
+          <Hero />
+        </ModuleErrorBoundary>
 
         {/* ── MODULE 1 : TIME SYNC ── */}
         <section id="time" className="w-full scroll-mt-24">
-          <TimeSync />
+          <ModuleErrorBoundary fallbackTitle="Module Heure indisponible">
+            <TimeSync />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── MODULE 2 : GLOBE 3D ── */}
         <section id="globe" className="w-full scroll-mt-24">
-          <Globe />
+          <ModuleErrorBoundary fallbackTitle="Module Globe 3D indisponible">
+            <Globe />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── MODULE 3 : THINKING OF YOU ── */}
         <section id="signal" className="w-full scroll-mt-24">
-          <ThinkingOfYou />
+          <ModuleErrorBoundary fallbackTitle="Module Signal indisponible">
+            <ThinkingOfYou />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── MODULE 4 : OPEN WHEN... ── */}
         <section id="letters" className="w-full scroll-mt-24">
-          <OpenWhen />
+          <ModuleErrorBoundary fallbackTitle="Module Lettres indisponible">
+            <OpenWhen />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── MODULE 7 : LA CRÉATURE PARTAGÉE ── */}
         <section id="pet" className="w-full scroll-mt-24">
-          <Pet />
+          <ModuleErrorBoundary fallbackTitle="Module Créature indisponible">
+            <Pet />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── MODULE 5 : JOURNAL ── */}
         <section id="journal" className="w-full scroll-mt-24">
-          <Journal />
+          <ModuleErrorBoundary fallbackTitle="Module Journal indisponible">
+            <Journal />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── MODULE 6 : MUSIC PLAYER ── */}
         <section id="music" className="w-full scroll-mt-24">
-          <MusicPlayer />
+          <ModuleErrorBoundary fallbackTitle="Module Musique indisponible">
+            <MusicPlayer />
+          </ModuleErrorBoundary>
         </section>
 
         {/* ── Signature ── */}
         <motion.p
           initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
           className="label-micro flex items-center gap-2"
         >

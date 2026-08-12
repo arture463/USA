@@ -26,7 +26,7 @@ export function IntroLoader() {
       /* storage indisponible → on montre quand même */
     }
     setMounted(true);
-    const t = window.setTimeout(() => {
+    const t1 = window.setTimeout(() => {
       setDone(true);
       try {
         sessionStorage.setItem("intro-seen", "1");
@@ -34,7 +34,15 @@ export function IntroLoader() {
         /* ignore */
       }
     }, DURATION_MS);
-    return () => window.clearTimeout(t);
+
+    const t2 = window.setTimeout(() => {
+      setMounted(false);
+    }, DURATION_MS + 900);
+
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+    };
   }, [reduced]);
 
   if (!mounted) return null;

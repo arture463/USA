@@ -572,6 +572,16 @@ function CityMarker({
   );
 }
 
+function CityTimeDisplay({ timeZone }: { timeZone: string }) {
+  const now = useClock();
+  if (!now) return null;
+  return (
+    <span className="tabular-nums text-white/55">
+      {formatShortTime(now, timeZone)}
+    </span>
+  );
+}
+
 /** Étiquette de ville : taille écran fixe, masquée quand la Terre passe devant. */
 function CityLabel({
   position,
@@ -584,9 +594,8 @@ function CityLabel({
   emoji: string;
   accent: string;
 }) {
-  const now = useClock();
   const city = LOCATIONS[cityKey];
-  const pos = position.clone().multiplyScalar(1.16);
+  const pos = useMemo(() => position.clone().multiplyScalar(1.16), [position]);
 
   return (
     <Html position={pos} center occlude zIndexRange={[20, 0]}>
@@ -598,11 +607,7 @@ function CityLabel({
       >
         <span aria-hidden>{emoji}</span>
         <span className="font-semibold">{city.label}</span>
-        {now && (
-          <span className="tabular-nums text-white/55">
-            {formatShortTime(now, city.timeZone)}
-          </span>
-        )}
+        <CityTimeDisplay timeZone={city.timeZone} />
       </div>
     </Html>
   );
