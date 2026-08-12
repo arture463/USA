@@ -352,17 +352,6 @@ export function Creature({
                 strokeLinecap="round"
               />
             ))}
-            {/* Poitrail plus clair sur le renard */}
-            {species === "renard" && (
-              <ellipse
-                cx="100"
-                cy={spec.belly.y - 6}
-                rx={spec.belly.rx * 0.6}
-                ry={spec.belly.ry * 0.9}
-                fill="hsl(0 0% 100%)"
-                opacity="0.14"
-              />
-            )}
           </g>
 
           {/* Le liseré, par-dessus : un seul trait continu */}
