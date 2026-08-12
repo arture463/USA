@@ -552,3 +552,38 @@ $$;
 -- ════════════════════════════════════════════════════════════════════════
 -- drop function if exists public.dev_pet_reset(text);
 -- drop function if exists public.dev_pet_set(text, int, text, int, text);
+
+
+-- ════════════════════════════════════════════════════════════════════════
+--  6. MODULE 8 — LA SALLE DE SPORT RPG (Arthur & Clara)
+-- ════════════════════════════════════════════════════════════════════════
+create table if not exists public.gym_sessions (
+  id         uuid        primary key default gen_random_uuid(),
+  who        text        not null check (who in ('paris', 'raleigh')),
+  type       text        not null check (type in ('push', 'pull', 'legs', 'cardio')),
+  notes      text,
+  created_at timestamptz not null default now()
+);
+
+alter table public.gym_sessions enable row level security;
+
+drop policy if exists "gym_sessions lecture publique" on public.gym_sessions;
+create policy "gym_sessions lecture publique"
+  on public.gym_sessions for select using (true);
+
+drop policy if exists "gym_sessions insertion publique" on public.gym_sessions;
+create policy "gym_sessions insertion publique"
+  on public.gym_sessions for insert with check (true);
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+     where pubname = 'supabase_realtime'
+       and schemaname = 'public'
+       and tablename = 'gym_sessions'
+  ) then
+    alter publication supabase_realtime add table public.gym_sessions;
+  end if;
+end $$;
+

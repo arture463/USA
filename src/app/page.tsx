@@ -14,6 +14,7 @@ import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
 import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
+import { Gym } from "@/components/modules/gym/gym";
 import { InstallPwa } from "@/components/ui/install-pwa";
 import { ModuleErrorBoundary } from "@/components/ui/error-boundary";
 
@@ -81,6 +82,13 @@ export default function Home() {
         <section id="journal" className="w-full scroll-mt-24">
           <ModuleErrorBoundary fallbackTitle="Module Journal indisponible">
             <Journal />
+          </ModuleErrorBoundary>
+        </section>
+
+        {/* ── MODULE 8 : GYM RPG ── */}
+        <section id="gym" className="w-full scroll-mt-24">
+          <ModuleErrorBoundary fallbackTitle="Module Gym RPG indisponible">
+            <Gym />
           </ModuleErrorBoundary>
         </section>
 

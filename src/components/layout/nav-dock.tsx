@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2 } from "lucide-react";
+import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -21,6 +21,7 @@ const ITEMS = [
   { id: "letters", label: "Lettres", Icon: Mail },
   { id: "pet", label: "Bestiole", Icon: Egg },
   { id: "journal", label: "Journal", Icon: BookHeart },
+  { id: "gym", label: "Gym", Icon: Dumbbell },
   { id: "music", label: "Musique", Icon: Music2 },
 ] as const;
 
