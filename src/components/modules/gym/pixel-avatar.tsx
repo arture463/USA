@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Flame, Dumbbell, Zap } from "lucide-react";
+import { Trophy } from "lucide-react";
 import type { MuscleStats } from "@/lib/gym-data";
 
 interface PixelAvatarProps {
@@ -20,10 +20,9 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
       {/* ── ARÈNE DUAL GYM : ARTHUR 🇫🇷 (GAUCHE) VS CLARA 🇺🇸 (DROITE) ── */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {/* ════════════════════════════════════════════════════════ */}
-        {/*  GAUCHE : CARTE ARTHUR (PARIS)                           */}
+        {/*  GAUCHE : ARTHUR (PARIS)                                 */}
         {/* ════════════════════════════════════════════════════════ */}
         <div className="group relative overflow-hidden rounded-2xl border border-neon-cyan/30 bg-[#12111a] p-4 shadow-[0_0_30px_rgba(56,189,248,0.15)] transition-all hover:border-neon-cyan/50">
-          {/* Tag Identité */}
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-neon-cyan/10 text-lg">
@@ -43,10 +42,9 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
           </div>
 
           {/* Miroir de Muscu Arthur */}
-          <div className="relative h-64 w-full overflow-hidden rounded-xl border-4 border-[#3e2723] bg-[#1e232a] shadow-inner">
-            {/* Texture Carrelage Blanc Salle de Sport */}
+          <div className="relative h-72 w-full overflow-hidden rounded-xl border-4 border-[#3e2723] bg-[#1e232a] shadow-inner">
             <div
-              className="absolute inset-0 opacity-30"
+              className="absolute inset-0 opacity-25"
               style={{
                 backgroundImage: `
                   linear-gradient(to right, #38bdf8 1px, transparent 1px),
@@ -55,65 +53,73 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                 backgroundSize: "24px 24px",
               }}
             />
-
-            {/* Reflet de lumière sur le miroir */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-400/10 to-white/10" />
 
-            {/* Avatar Vectoriel Arthur (Flex Biceps & Débardeur) */}
-            <svg viewBox="0 0 200 240" className="relative h-full w-full">
+            {/* Avatar Plein Corps Arthur (avec Jambes & Baskets) */}
+            <svg viewBox="0 0 200 260" className="relative h-full w-full">
               {/* Ombre au sol */}
-              <ellipse cx="100" cy="225" rx="45" ry="8" fill="#000" opacity="0.4" />
+              <ellipse cx="100" cy="245" rx="55" ry="10" fill="#000" opacity="0.45" />
 
-              {/* Bras Biceps Flex (Taille selon niveau) */}
-              <g id="arthur-left-biceps">
+              {/* BICEPS FLEX GAUCHE */}
+              <g id="arthur-biceps-left">
                 <motion.path
-                  d="M 45 130 C 25 110, 20 150, 55 155 C 65 155, 70 135, 45 130 Z"
+                  d="M 40 105 C 18 85, 12 125, 48 130 C 60 130, 65 110, 40 105 Z"
                   fill="#e59f6f"
                   stroke="#5c361e"
                   strokeWidth="2.5"
-                  animate={{ scale: [1, 1.04, 1] }}
-                  transition={{ duration: 3, repeat: Infinity }}
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity }}
                 />
-                <rect x="35" y="95" width="18" height="35" rx="3" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
+                <rect x="30" y="70" width="18" height="35" rx="3" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
               </g>
 
-              <g id="arthur-right-biceps">
+              {/* BICEPS FLEX DROIT */}
+              <g id="arthur-biceps-right">
                 <motion.path
-                  d="M 155 130 C 175 110, 180 150, 145 155 C 135 155, 130 135, 155 130 Z"
+                  d="M 160 105 C 182 85, 188 125, 152 130 C 140 130, 135 110, 160 105 Z"
                   fill="#e59f6f"
                   stroke="#5c361e"
                   strokeWidth="2.5"
-                  animate={{ scale: [1, 1.04, 1] }}
-                  transition={{ duration: 3, repeat: Infinity, delay: 0.2 }}
+                  animate={{ scale: [1, 1.05, 1] }}
+                  transition={{ duration: 2.5, repeat: Infinity, delay: 0.2 }}
                 />
-                <rect x="147" y="95" width="18" height="35" rx="3" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
+                <rect x="152" y="70" width="18" height="35" rx="3" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
               </g>
 
-              {/* Cheveux Noirs Ébouriffés Arthur */}
-              <path
-                d="M 75 55 L 85 40 L 95 50 L 110 32 L 125 50 L 135 38 L 145 55 L 140 85 L 70 85 Z"
-                fill="#18171a"
-              />
-              <polygon points="90,42 98,28 105,44" fill="#18171a" />
-              <polygon points="115,36 124,22 130,38" fill="#18171a" />
+              {/* CHEVEUX & VISAGE ARTHUR */}
+              <path d="M 75 35 L 85 20 L 95 30 L 110 12 L 125 30 L 135 18 L 145 35 L 140 65 L 70 65 Z" fill="#18171a" />
+              <polygon points="90,22 98,8 105,24" fill="#18171a" />
+              <polygon points="115,16 124,2 130,18" fill="#18171a" />
 
-              {/* Visage Arthur */}
-              <rect x="75" y="75" width="50" height="42" rx="6" fill="#e59f6f" stroke="#5c361e" strokeWidth="2" />
-              {/* Yeux & Expression Confiante */}
-              <rect x="85" y="86" width="9" height="8" rx="2" fill="#fff" />
-              <rect x="88" y="88" width="5" height="5" fill="#2d1a0e" />
-              <rect x="106" y="86" width="9" height="8" rx="2" fill="#fff" />
-              <rect x="107" y="88" width="5" height="5" fill="#2d1a0e" />
-              <line x1="82" y1="81" x2="96" y2="84" stroke="#18171a" strokeWidth="3" strokeLinecap="round" />
-              <line x1="118" y1="81" x2="104" y2="84" stroke="#18171a" strokeWidth="3" strokeLinecap="round" />
-              <path d="M 94 105 Q 100 110 106 105" fill="none" stroke="#5c361e" strokeWidth="2" strokeLinecap="round" />
+              <rect x="75" y="55" width="50" height="38" rx="6" fill="#e59f6f" stroke="#5c361e" strokeWidth="2" />
+              <rect x="85" y="64" width="9" height="8" rx="2" fill="#fff" />
+              <rect x="88" y="66" width="5" height="5" fill="#2d1a0e" />
+              <rect x="106" y="64" width="9" height="8" rx="2" fill="#fff" />
+              <rect x="107" y="66" width="5" height="5" fill="#2d1a0e" />
+              <line x1="82" y1="59" x2="96" y2="62" stroke="#18171a" strokeWidth="3" strokeLinecap="round" />
+              <line x1="118" y1="59" x2="104" y2="62" stroke="#18171a" strokeWidth="3" strokeLinecap="round" />
+              <path d="M 94 82 Q 100 87 106 82" fill="none" stroke="#5c361e" strokeWidth="2" strokeLinecap="round" />
 
-              {/* Débardeur Noir Musclé */}
-              <path d="M 60 117 L 140 117 L 132 215 L 68 215 Z" fill="#121216" stroke="#2d2d38" strokeWidth="2.5" />
-              <path d="M 85 117 C 85 138, 115 138, 115 117 Z" fill="#e59f6f" />
-              <text x="100" y="165" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="monospace" fontWeight="bold" opacity="0.8">
+              {/* TORSE & DÉBARDEUR NOIR */}
+              <path d="M 60 92 L 140 92 L 132 165 L 68 165 Z" fill="#121216" stroke="#2d2d38" strokeWidth="2.5" />
+              <path d="M 85 92 C 85 110, 115 110, 115 92 Z" fill="#e59f6f" />
+              <text x="100" y="135" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="monospace" fontWeight="bold" opacity="0.9">
                 PARIS 🇫🇷
               </text>
+
+              {/* SHORT DE SPORT NOIR */}
+              <path d="M 66 165 L 134 165 L 138 200 L 62 200 Z" fill="#1e1e24" stroke="#38bdf8" strokeWidth="1.5" />
+              <line x1="100" y1="180" x2="100" y2="200" stroke="#0f0f12" strokeWidth="2" />
+
+              {/* 🦵 JAMBES ET CUISSES ARTHUR */}
+              <rect x="70" y="200" width="24" height="32" rx="3" fill="#e59f6f" stroke="#5c361e" strokeWidth="1.5" />
+              <rect x="106" y="200" width="24" height="32" rx="3" fill="#e59f6f" stroke="#5c361e" strokeWidth="1.5" />
+
+              {/* 👟 BASKETS DE SPORT NEON CYAN */}
+              <path d="M 64 230 L 96 230 L 98 245 L 60 245 Z" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
+              <path d="M 104 230 L 136 230 L 140 245 L 102 245 Z" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
+              <rect x="62" y="240" width="36" height="5" fill="#ffffff" />
+              <rect x="102" y="240" width="36" height="5" fill="#ffffff" />
             </svg>
           </div>
 
@@ -133,10 +139,9 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
         </div>
 
         {/* ════════════════════════════════════════════════════════ */}
-        {/*  DROITE : CARTE CLARA (RALEIGH)                          */}
+        {/*  DROITE : CLARA (RALEIGH)                                */}
         {/* ════════════════════════════════════════════════════════ */}
         <div className="group relative overflow-hidden rounded-2xl border border-neon-rose/30 bg-[#12111a] p-4 shadow-[0_0_30px_rgba(244,63,94,0.15)] transition-all hover:border-neon-rose/50">
-          {/* Tag Identité */}
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-neon-rose/10 text-lg">
@@ -156,10 +161,9 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
           </div>
 
           {/* Miroir de Muscu Clara */}
-          <div className="relative h-64 w-full overflow-hidden rounded-xl border-4 border-[#3e2723] bg-[#1e232a] shadow-inner">
-            {/* Texture Carrelage Rose/Blanc Salle de Sport */}
+          <div className="relative h-72 w-full overflow-hidden rounded-xl border-4 border-[#3e2723] bg-[#1e232a] shadow-inner">
             <div
-              className="absolute inset-0 opacity-30"
+              className="absolute inset-0 opacity-25"
               style={{
                 backgroundImage: `
                   linear-gradient(to right, #f43f5e 1px, transparent 1px),
@@ -168,55 +172,64 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                 backgroundSize: "24px 24px",
               }}
             />
-
-            {/* Reflet de lumière sur le miroir */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-rose-400/10 to-white/10" />
 
-            {/* Avatar Vectoriel Clara (Cheveux Longs, Crop Top & Smartphone) */}
-            <svg viewBox="0 0 200 240" className="relative h-full w-full">
+            {/* Avatar Plein Corps Clara (avec Jambes & Baskets) */}
+            <svg viewBox="0 0 200 260" className="relative h-full w-full">
               {/* Ombre au sol */}
-              <ellipse cx="100" cy="225" rx="40" ry="8" fill="#000" opacity="0.4" />
+              <ellipse cx="100" cy="245" rx="50" ry="10" fill="#000" opacity="0.45" />
 
-              {/* Cheveux Longs Noirs Clara (Arrière) */}
-              <path d="M 65 60 C 55 20, 145 20, 135 60 L 145 180 L 55 180 Z" fill="#0d0c10" />
+              {/* CHEVEUX LONGS NOIRS CLARA (ARRIÈRE) */}
+              <path d="M 65 40 C 55 10, 145 10, 135 40 L 145 180 L 55 180 Z" fill="#0d0c10" />
 
-              {/* Visage Clara */}
-              <rect x="75" y="60" width="50" height="42" rx="8" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="2" />
-              {/* Frange Droit Noire */}
-              <path d="M 70 52 L 130 52 L 130 72 Q 100 76 70 72 Z" fill="#0d0c10" />
+              {/* VISAGE & CHEVEUX CLARA */}
+              <rect x="75" y="45" width="50" height="38" rx="8" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="2" />
+              <path d="M 70 38 L 130 38 L 130 58 Q 100 62 70 58 Z" fill="#0d0c10" />
 
-              {/* Yeux Noirs Mignons Pixel */}
-              <rect x="83" y="74" width="9" height="10" rx="2" fill="#fff" />
-              <rect x="85" y="76" width="5" height="6" fill="#121115" />
-              <circle cx="86" cy="77" r="1" fill="#fff" />
+              {/* Yeux Noirs Mignons */}
+              <rect x="83" y="58" width="9" height="10" rx="2" fill="#fff" />
+              <rect x="85" y="60" width="5" height="6" fill="#121115" />
+              <circle cx="86" cy="61" r="1" fill="#fff" />
 
-              <rect x="108" y="74" width="9" height="10" rx="2" fill="#fff" />
-              <rect x="109" y="76" width="5" height="6" fill="#121115" />
-              <circle cx="110" cy="77" r="1" fill="#fff" />
+              <rect x="108" y="58" width="9" height="10" rx="2" fill="#fff" />
+              <rect x="109" y="60" width="5" height="6" fill="#121115" />
+              <circle cx="110" cy="61" r="1" fill="#fff" />
 
-              {/* Joues Rosées */}
-              <ellipse cx="80" cy="88" rx="4" ry="2.5" fill="#f48fb1" opacity="0.6" />
-              <ellipse cx="120" cy="88" rx="4" ry="2.5" fill="#f48fb1" opacity="0.6" />
-              <path d="M 96 93 Q 100 97 104 93" fill="none" stroke="#6b3e26" strokeWidth="2" strokeLinecap="round" />
+              <ellipse cx="80" cy="70" rx="4" ry="2.5" fill="#f48fb1" opacity="0.6" />
+              <ellipse cx="120" cy="70" rx="4" ry="2.5" fill="#f48fb1" opacity="0.6" />
+              <path d="M 96 74 Q 100 78 104 74" fill="none" stroke="#6b3e26" strokeWidth="2" strokeLinecap="round" />
 
-              {/* Crop Top Blanc Clara */}
-              <path d="M 72 108 L 128 108 L 133 150 L 67 150 Z" fill="#ffffff" stroke="#d1d5db" strokeWidth="2" />
-              <path d="M 85 108 C 85 120, 115 120, 115 108 Z" fill="#f5c2a3" />
-              <text x="100" y="138" textAnchor="middle" fill="#f43f5e" fontSize="9" fontFamily="monospace" fontWeight="bold">
+              {/* CROP TOP BLANC CLARA */}
+              <path d="M 72 88 L 128 88 L 133 130 L 67 130 Z" fill="#ffffff" stroke="#d1d5db" strokeWidth="2" />
+              <path d="M 85 88 C 85 100, 115 100, 115 88 Z" fill="#f5c2a3" />
+              <text x="100" y="118" textAnchor="middle" fill="#f43f5e" fontSize="9" fontFamily="monospace" fontWeight="bold">
                 RALEIGH 🇺🇸
               </text>
 
-              {/* Smartphone Bleu Selfie en Main */}
+              {/* SMARTPHONE BLEU SELFIE */}
               <g id="clara-phone">
-                <path d="M 125 118 L 150 115 L 145 155 L 125 142 Z" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="2" />
-                <rect x="140" y="105" width="18" height="32" rx="3" fill="#0284c7" stroke="#0f172a" strokeWidth="2" />
-                <circle cx="145" cy="112" r="2.5" fill="#1e293b" />
-                <rect x="143" y="118" width="12" height="15" rx="1" fill="#38bdf8" opacity="0.8" />
+                <path d="M 125 98 L 150 95 L 145 135 L 125 122 Z" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="2" />
+                <rect x="140" y="85" width="18" height="32" rx="3" fill="#0284c7" stroke="#0f172a" strokeWidth="2" />
+                <circle cx="145" cy="92" r="2.5" fill="#1e293b" />
+                <rect x="143" y="98" width="12" height="15" rx="1" fill="#38bdf8" opacity="0.8" />
               </g>
 
-              {/* Short Noir & Cuisses */}
-              <rect x="75" y="150" width="50" height="20" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
-              <path d="M 70 170 L 130 170 L 134 205 L 66 205 Z" fill="#18181b" stroke="#3f3f46" strokeWidth="2" />
+              {/* TAILLE & ABDOS EXPOSÉS */}
+              <rect x="75" y="130" width="50" height="20" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
+
+              {/* SHORT NOIR HIGH-WAIST FITNESS */}
+              <path d="M 70 150 L 130 150 L 134 185 L 66 185 Z" fill="#18181b" stroke="#f43f5e" strokeWidth="1.5" />
+              <line x1="100" y1="165" x2="100" y2="185" stroke="#09090b" strokeWidth="2" />
+
+              {/* 🦵 JAMBES ET CUISSES GALBÉES CLARA */}
+              <rect x="72" y="185" width="22" height="48" rx="4" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
+              <rect x="106" y="185" width="22" height="48" rx="4" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
+
+              {/* 👟 BASKETS DE SPORT NEON ROSE & BLANCHE */}
+              <path d="M 66 230 L 96 230 L 98 245 L 62 245 Z" fill="#e11d48" stroke="#f43f5e" strokeWidth="1.5" />
+              <path d="M 104 230 L 134 230 L 138 245 L 102 245 Z" fill="#e11d48" stroke="#f43f5e" strokeWidth="1.5" />
+              <rect x="64" y="240" width="34" height="5" fill="#ffffff" />
+              <rect x="102" y="240" width="34" height="5" fill="#ffffff" />
             </svg>
           </div>
 
