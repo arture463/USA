@@ -2,13 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
-/**
- * ── POLICES (auto-hébergées par next/font, zéro requête vers Google) ──
- * Chaque police expose une variable CSS consommée par tailwind.config.ts :
- *   --font-inter          → font-sans     (corps de texte)
- *   --font-space-grotesk  → font-display  (titres futuristes)
- *   --font-jetbrains-mono → font-mono     (données chiffrées / HUD)
- */
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -28,15 +21,26 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Us — across the ocean",
-  description: "Notre espace privé pour rester connectés, Paris ↔ Raleigh.",
+  title: "US Together — Paris ↔ Raleigh",
+  description: "Notre espace privé pour rester connectés pendant les 4 mois, Paris ↔ Raleigh.",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "US Together",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/apple-icon.png",
+  },
 };
 
-// Meta viewport (Next 16 : le viewport se déclare séparément des metadata)
 export const viewport: Viewport = {
-  themeColor: "#09090b",
+  themeColor: "#0d0814",
   width: "device-width",
   initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -45,12 +49,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // `dark` force le thème sombre ; les variables de police sont injectées ici
     <html
       lang="fr"
       className={`dark ${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable}`}
     >
-      <body className="flex min-h-dvh flex-col">{children}</body>
+      <body className="flex min-h-dvh flex-col select-none">{children}</body>
     </html>
   );
 }

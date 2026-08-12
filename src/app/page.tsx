@@ -14,6 +14,7 @@ import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
 import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
+import { InstallPwa } from "@/components/ui/install-pwa";
 import { ModuleErrorBoundary } from "@/components/ui/error-boundary";
 
 export default function Home() {
@@ -30,6 +31,9 @@ export default function Home() {
 
       {/* Navigation flottante */}
       <NavDock />
+
+      {/* Bannière PWA mobile */}
+      <InstallPwa />
 
       {/* pb-28 : de l'espace pour ne pas passer sous le dock */}
       <main className="mx-auto flex min-h-dvh w-full max-w-4xl flex-col items-center gap-20 px-4 py-16 pb-28">
