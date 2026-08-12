@@ -243,6 +243,11 @@ export function Creature({
           <stop offset="100%" stopColor={accent} stopOpacity="0.15" />
         </linearGradient>
 
+        {/* Texture/Art 3D haute définition de l'espèce */}
+        <pattern id={`art-${uid}`} patternUnits="userSpaceOnUse" x="0" y="0" width="200" height="200">
+          <image href={`/pet/${species}.jpg`} x="0" y="0" width="200" height="200" preserveAspectRatio="xMidYMid slice" />
+        </pattern>
+
         {/* Nappe claire du ventre et des joues */}
         <radialGradient id={`pale-${uid}`} cx="50%" cy="38%" r="68%">
           <stop offset="0%" stopColor="hsl(0 0% 100%)" stopOpacity="0.3" />
@@ -299,8 +304,9 @@ export function Creature({
           {/* Les oreilles passent sous la silhouette : la jointure disparaît */}
           <Ears species={species} spec={spec} uid={uid} accent={accent} />
 
-          {/* LA SILHOUETTE — une seule forme, un seul contour */}
-          <path d={spec.silhouette} fill={`url(#skin-${uid})`} />
+          {/* LA SILHOUETTE — remplie par l'illustration cosmique et la nappe néon */}
+          <path d={spec.silhouette} fill={`url(#art-${uid})`} />
+          <path d={spec.silhouette} fill={`url(#skin-${uid})`} opacity="0.45" />
 
           {/* Tous les détails, découpés par le contour */}
           <g clipPath={`url(#clip-${uid})`}>
