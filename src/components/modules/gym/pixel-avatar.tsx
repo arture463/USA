@@ -60,30 +60,38 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
               {/* Ombre au sol */}
               <ellipse cx="100" cy="245" rx="55" ry="10" fill="#000" opacity="0.45" />
 
-              {/* BICEPS FLEX GAUCHE */}
+              {/* BICEPS FLEX GAUCHE ARTHUR */}
               <g id="arthur-biceps-left">
+                {/* Epaule & Bras connecté au torse */}
+                <path d="M 60 92 L 35 85 L 28 120 L 52 125 Z" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
+                {/* Biceps bombé */}
                 <motion.path
-                  d="M 40 105 C 18 85, 12 125, 48 130 C 60 130, 65 110, 40 105 Z"
+                  d="M 32 95 C 12 85, 15 125, 42 125 Z"
                   fill="#e59f6f"
                   stroke="#5c361e"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity }}
                 />
-                <rect x="30" y="70" width="18" height="35" rx="3" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
+                {/* Poing fermé levé */}
+                <rect x="24" y="60" width="16" height="26" rx="4" fill="#e59f6f" stroke="#5c361e" strokeWidth="2" />
               </g>
 
-              {/* BICEPS FLEX DROIT */}
+              {/* BICEPS FLEX DROIT ARTHUR */}
               <g id="arthur-biceps-right">
+                {/* Epaule & Bras connecté au torse */}
+                <path d="M 140 92 L 165 85 L 172 120 L 148 125 Z" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
+                {/* Biceps bombé */}
                 <motion.path
-                  d="M 160 105 C 182 85, 188 125, 152 130 C 140 130, 135 110, 160 105 Z"
+                  d="M 168 95 C 188 85, 185 125, 158 125 Z"
                   fill="#e59f6f"
                   stroke="#5c361e"
-                  strokeWidth="2.5"
+                  strokeWidth="2"
                   animate={{ scale: [1, 1.05, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, delay: 0.2 }}
                 />
-                <rect x="152" y="70" width="18" height="35" rx="3" fill="#d08b5c" stroke="#5c361e" strokeWidth="2" />
+                {/* Poing fermé levé */}
+                <rect x="160" y="60" width="16" height="26" rx="4" fill="#e59f6f" stroke="#5c361e" strokeWidth="2" />
               </g>
 
               {/* CHEVEUX & VISAGE ARTHUR */}
@@ -174,13 +182,25 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
             />
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-rose-400/10 to-white/10" />
 
-            {/* Avatar Plein Corps Clara (avec Jambes & Baskets) */}
+            {/* Avatar Plein Corps Clara (avec Bras Gauche/Droit & Smartphone) */}
             <svg viewBox="0 0 200 260" className="relative h-full w-full">
               {/* Ombre au sol */}
               <ellipse cx="100" cy="245" rx="50" ry="10" fill="#000" opacity="0.45" />
 
               {/* CHEVEUX LONGS NOIRS CLARA (ARRIÈRE) */}
               <path d="M 65 40 C 55 10, 145 10, 135 40 L 145 180 L 55 180 Z" fill="#0d0c10" />
+
+              {/* 🦾 BRAS DROIT CLARA (CÔTÉ GAUCHE SUR L'ÉCRAN - POSÉ SUR LA HANCHE) */}
+              <g id="clara-arm-right">
+                <path d="M 72 90 L 52 110 L 58 140 L 68 140 L 62 115 L 75 98 Z" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
+                {/* Main posée sur la hanche */}
+                <ellipse cx="64" cy="140" rx="6" ry="4" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
+              </g>
+
+              {/* 🦾 BRAS GAUCHE CLARA (CÔTÉ DROIT SUR L'ÉCRAN - TENANT LE TELEPHONE) */}
+              <g id="clara-arm-left">
+                <path d="M 128 90 L 148 95 L 142 125 L 128 115 Z" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
+              </g>
 
               {/* VISAGE & CHEVEUX CLARA */}
               <rect x="75" y="45" width="50" height="38" rx="8" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="2" />
@@ -208,10 +228,11 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
 
               {/* SMARTPHONE BLEU SELFIE */}
               <g id="clara-phone">
-                <path d="M 125 98 L 150 95 L 145 135 L 125 122 Z" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="2" />
-                <rect x="140" y="85" width="18" height="32" rx="3" fill="#0284c7" stroke="#0f172a" strokeWidth="2" />
-                <circle cx="145" cy="92" r="2.5" fill="#1e293b" />
-                <rect x="143" y="98" width="12" height="15" rx="1" fill="#38bdf8" opacity="0.8" />
+                <rect x="142" y="85" width="18" height="32" rx="3" fill="#0284c7" stroke="#0f172a" strokeWidth="2" />
+                <circle cx="147" cy="92" r="2.5" fill="#1e293b" />
+                <rect x="145" y="98" width="12" height="15" rx="1" fill="#38bdf8" opacity="0.8" />
+                {/* Main tenant le téléphone */}
+                <rect x="136" y="94" width="10" height="14" rx="3" fill="#f5c2a3" stroke="#6b3e26" strokeWidth="1.5" />
               </g>
 
               {/* TAILLE & ABDOS EXPOSÉS */}
