@@ -263,17 +263,6 @@ export function Pet() {
         />
 
         <div className="panel-roomy relative overflow-hidden">
-          {/* Halo à la couleur de l'espèce */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute left-1/2 top-8 h-56 w-56 -translate-x-1/2 rounded-full blur-[70px] transition-colors duration-1000"
-            style={{
-              background:
-                nature?.accentSoft ??
-                meta?.accentSoft ??
-                "hsl(265 90% 65% / 0.22)",
-            }}
-          />
 
           {/* ── La scène ── */}
           <div
