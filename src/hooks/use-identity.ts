@@ -3,17 +3,19 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Identity } from "@/types";
 
-/**
- * Mémorise qui utilise cet appareil ("paris" ou "raleigh") dans localStorage.
- * → Choisi une seule fois par appareil, puis persistant.
- *
- * `ready` évite un flash de l'écran de choix pendant la lecture du storage.
- */
-
 const STORAGE_KEY = "us-together:identity";
 
+/**
+ * Mémorise et détecte automatiquement l'identité ("paris" = Arthur 🇫🇷 ou "raleigh" = Clara 🇺🇸).
+ *
+ * 1. Si une préférence est enregistrée dans localStorage, elle est prioritaire.
+ * 2. Sinon, détection automatique intelligente basée sur le fuseau horaire & l'IP/Langue :
+ *    - Fuseau "America/*" ou langue US → Clara 🇺🇸 (raleigh)
+ *    - Fuseau "Europe/*" ou langue FR → Arthur 🇫🇷 (paris)
+ * 3. L'utilisateur peut basculer manuellement à tout moment via la pastille du NavDock.
+ */
 export function useIdentity() {
-  const [identity, setIdentityState] = useState<Identity | null>(null);
+  const [identity, setIdentityState] = useState<Identity>("paris");
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
@@ -21,10 +23,27 @@ export function useIdentity() {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored === "paris" || stored === "raleigh") {
         setIdentityState(stored);
+        setReady(true);
+        return;
       }
     } catch {
-      // Storage inaccessible → l'utilisateur choisira à chaque session
+      // Storage inaccessible
     }
+
+    // 🌐 Auto-détection par Fuseau Horaire / Langue
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      const lang = navigator.language || "";
+
+      if (tz.includes("America") || tz.includes("New_York") || lang.startsWith("en")) {
+        setIdentityState("raleigh"); // Clara 🇺🇸 aux USA
+      } else {
+        setIdentityState("paris"); // Arthur 🇫🇷 en France
+      }
+    } catch {
+      setIdentityState("paris");
+    }
+
     setReady(true);
   }, []);
 
@@ -33,7 +52,7 @@ export function useIdentity() {
     try {
       window.localStorage.setItem(STORAGE_KEY, id);
     } catch {
-      // Échec silencieux : l'état mémoire suffit pour la session
+      // Échec silencieux
     }
   }, []);
 
