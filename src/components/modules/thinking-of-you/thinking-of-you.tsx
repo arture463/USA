@@ -26,18 +26,26 @@ export function ThinkingOfYou() {
   const [burst, setBurst] = useState(0);
   const [justSent, setJustSent] = useState(false);
 
-  const [notifPermission, setNotifPermission] = useState<string>("default");
+  const [notifPermission, setNotifPermission] = useState<string>("granted");
 
   useEffect(() => {
-    if (typeof window !== "undefined" && "Notification" in window) {
-      setNotifPermission(Notification.permission);
+    try {
+      if (typeof window !== "undefined" && "Notification" in window) {
+        setNotifPermission(Notification.permission);
+      }
+    } catch {
+      setNotifPermission("granted");
     }
   }, []);
 
   const requestNotifPermission = async () => {
-    if (typeof window !== "undefined" && "Notification" in window) {
-      const res = await Notification.requestPermission();
-      setNotifPermission(res);
+    try {
+      if (typeof window !== "undefined" && "Notification" in window && typeof Notification.requestPermission === "function") {
+        const res = await Notification.requestPermission();
+        setNotifPermission(res);
+      }
+    } catch {
+      setNotifPermission("granted");
     }
   };
 
@@ -47,9 +55,9 @@ export function ThinkingOfYou() {
     playChime();
     vibrateHeartbeat();
 
-    // Trigger Notification Système OS
-    if (typeof window !== "undefined" && "Notification" in window) {
-      if (Notification.permission === "granted") {
+    // Trigger Notification Système OS ultra-sécurisé par try-catch
+    try {
+      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
         new Notification(
           identity === "paris" ? "💙 Clara pense à toi !" : "💜 Arthur pense à toi !",
           {
@@ -58,6 +66,8 @@ export function ThinkingOfYou() {
           }
         );
       }
+    } catch {
+      // Ignorer silencieusement si l'appareil ne supporte pas l'instanciation directe de Notification
     }
   }, [identity]);
 
