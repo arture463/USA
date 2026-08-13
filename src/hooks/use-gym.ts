@@ -96,7 +96,7 @@ export function useGym() {
 
       // Nourrir la créature commune (+3 XP)
       const feedFn = who === "paris" ? feedPetParis : feedPetRaleigh;
-      void feedFn(FOOD.journal, null, "journal");
+      void feedFn(3, null, "treat");
 
       try {
         const { data, error } = await supabase
