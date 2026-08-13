@@ -10,6 +10,7 @@ import { NavDock } from "@/components/layout/nav-dock";
 import { Globe } from "@/components/modules/globe/globe";
 import { TimeSync } from "@/components/modules/time-sync/time-sync";
 import { OpenWhen } from "@/components/modules/open-when/open-when";
+import { BucketList } from "@/components/modules/bucket-list/bucket-list";
 import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
 import { Journal } from "@/components/modules/journal/journal";
@@ -68,6 +69,13 @@ export default function Home() {
         <section id="letters" className="w-full scroll-mt-24">
           <ModuleErrorBoundary fallbackTitle="Module Lettres indisponible">
             <OpenWhen />
+          </ModuleErrorBoundary>
+        </section>
+
+        {/* ── MODULE 9 : BUCKET LIST ── */}
+        <section id="bucket" className="w-full scroll-mt-24">
+          <ModuleErrorBoundary fallbackTitle="Module Envies indisponible">
+            <BucketList />
           </ModuleErrorBoundary>
         </section>
 
