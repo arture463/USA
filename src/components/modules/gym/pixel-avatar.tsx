@@ -186,14 +186,14 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
             </svg>
           </div>
 
-          {/* Barres de Niveaux */}
-          <div className="relative z-10 mt-4 space-y-2.5 text-[11px]">
+          {/* Barres de Niveaux Arthur */}
+          <div className="relative z-10 mt-4 grid grid-cols-2 gap-2 text-[11px]">
             <div className="space-y-1">
               <div className="flex justify-between text-foreground/80 font-medium">
-                <span className="flex items-center gap-1.5"><Dumbbell className="h-3.5 w-3.5 text-cyan-400" /> Push (Pecs / Épaules)</span>
+                <span className="flex items-center gap-1"><Dumbbell className="h-3 w-3 text-cyan-400" /> Push</span>
                 <span className="font-mono font-bold text-cyan-300">Niv. {arthurPushLevel}</span>
               </div>
-              <div className="h-2.5 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
+              <div className="h-2 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-300 shadow-[0_0_12px_#38bdf8]"
                   initial={{ width: 0 }}
@@ -205,14 +205,44 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
 
             <div className="space-y-1">
               <div className="flex justify-between text-foreground/80 font-medium">
-                <span className="flex items-center gap-1.5"><Zap className="h-3.5 w-3.5 text-cyan-400" /> Pull (Dos / Biceps)</span>
+                <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-cyan-400" /> Pull</span>
                 <span className="font-mono font-bold text-cyan-300">Niv. {arthurPullLevel}</span>
               </div>
-              <div className="h-2.5 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
+              <div className="h-2 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-[0_0_12px_#38bdf8]"
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(100, (arthurStats.pullLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-cyan-400" /> Legs</span>
+                <span className="font-mono font-bold text-cyan-300">Niv. {Math.min(5, Math.floor(arthurStats.legsLevel))}</span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-teal-500 to-cyan-400 shadow-[0_0_12px_#38bdf8]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (arthurStats.legsLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1"><Star className="h-3 w-3 text-cyan-400" /> Cardio</span>
+                <span className="font-mono font-bold text-cyan-300">Niv. {Math.min(5, Math.floor(arthurStats.cardioLevel))}</span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-sky-400 to-blue-500 shadow-[0_0_12px_#38bdf8]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (arthurStats.cardioLevel / 5) * 100)}%` }}
                   transition={{ duration: 1, ease: "easeOut" }}
                 />
               </div>
@@ -374,14 +404,44 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
             </svg>
           </div>
 
-          {/* Barres de Niveaux */}
-          <div className="relative z-10 mt-4 space-y-2.5 text-[11px]">
+          {/* Barres de Niveaux Clara */}
+          <div className="relative z-10 mt-4 grid grid-cols-2 gap-2 text-[11px]">
             <div className="space-y-1">
               <div className="flex justify-between text-foreground/80 font-medium">
-                <span className="flex items-center gap-1.5"><Flame className="h-3.5 w-3.5 text-rose-400" /> Legs (Cuisses / Fessiers)</span>
+                <span className="flex items-center gap-1"><Dumbbell className="h-3 w-3 text-rose-400" /> Push</span>
+                <span className="font-mono font-bold text-rose-300">Niv. {Math.min(5, Math.floor(claraStats.pushLevel))}</span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-rose-500 to-pink-300 shadow-[0_0_12px_#f43f5e]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (claraStats.pushLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-rose-400" /> Pull</span>
+                <span className="font-mono font-bold text-rose-300">Niv. {Math.min(5, Math.floor(claraStats.pullLevel))}</span>
+              </div>
+              <div className="h-2 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-pink-600 to-rose-400 shadow-[0_0_12px_#f43f5e]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (claraStats.pullLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
+                />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-rose-400" /> Legs</span>
                 <span className="font-mono font-bold text-rose-300">Niv. {claraLegsLevel}</span>
               </div>
-              <div className="h-2.5 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
+              <div className="h-2 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-rose-500 to-pink-300 shadow-[0_0_12px_#f43f5e]"
                   initial={{ width: 0 }}
@@ -393,10 +453,10 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
 
             <div className="space-y-1">
               <div className="flex justify-between text-foreground/80 font-medium">
-                <span className="flex items-center gap-1.5"><Zap className="h-3.5 w-3.5 text-rose-400" /> Cardio & Abdos</span>
+                <span className="flex items-center gap-1"><Star className="h-3 w-3 text-rose-400" /> Cardio</span>
                 <span className="font-mono font-bold text-rose-300">Niv. {claraCardioLevel}</span>
               </div>
-              <div className="h-2.5 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
+              <div className="h-2 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-pink-500 to-rose-400 shadow-[0_0_12px_#f43f5e]"
                   initial={{ width: 0 }}
