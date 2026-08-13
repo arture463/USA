@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { BackgroundFX } from "@/components/layout/background-fx";
@@ -20,6 +21,21 @@ import { InstallPwa } from "@/components/ui/install-pwa";
 import { ModuleErrorBoundary } from "@/components/ui/error-boundary";
 
 export default function Home() {
+  // Purger automatiquement les caches de test au lancement officiel
+  useEffect(() => {
+    try {
+      const resetDone = window.localStorage.getItem("us-together:reset-v1-done");
+      if (!resetDone) {
+        window.localStorage.removeItem("us-together:gym-sessions");
+        window.localStorage.removeItem("us-together:bucket-list");
+        window.localStorage.removeItem("us-together:opened-envelopes");
+        window.localStorage.removeItem("us-together:thoughts");
+        window.localStorage.removeItem("us-together:journal-entries");
+        window.localStorage.setItem("us-together:reset-v1-done", "true");
+      }
+    } catch {}
+  }, []);
+
   return (
     <>
       {/* Intro cinématique (1re visite de la session) */}
