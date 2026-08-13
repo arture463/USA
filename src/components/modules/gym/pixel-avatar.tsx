@@ -10,11 +10,11 @@ interface PixelAvatarProps {
 }
 
 export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
-  const arthurPushLevel = Math.min(5, Math.floor(arthurStats.pushLevel) + 1);
-  const arthurPullLevel = Math.min(5, Math.floor(arthurStats.pullLevel) + 1);
+  const arthurPushLevel = Math.min(5, Math.floor(arthurStats.pushLevel));
+  const arthurPullLevel = Math.min(5, Math.floor(arthurStats.pullLevel));
 
-  const claraLegsLevel = Math.min(5, Math.floor(claraStats.legsLevel) + 1);
-  const claraCardioLevel = Math.min(5, Math.floor(claraStats.cardioLevel) + 1);
+  const claraLegsLevel = Math.min(5, Math.floor(claraStats.legsLevel));
+  const claraCardioLevel = Math.min(5, Math.floor(claraStats.cardioLevel));
 
   return (
     <div className="relative w-full space-y-6">
