@@ -21,7 +21,6 @@ const ITEMS = [
   { id: "time", label: "Heure", Icon: Clock },
   { id: "globe", label: "Globe", Icon: Globe2 },
   { id: "signal", label: "Signal", Icon: Radio },
-  { id: "combo", label: "Combo", Icon: Heart },
   { id: "gacha", label: "Roulette", Icon: Dices },
   { id: "letters", label: "Lettres", Icon: Mail },
   { id: "bucket", label: "Envies", Icon: HeartHandshake },
