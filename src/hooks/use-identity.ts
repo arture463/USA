@@ -17,12 +17,14 @@ const STORAGE_KEY = "us-together:identity";
 export function useIdentity() {
   const [identity, setIdentityState] = useState<Identity>("paris");
   const [ready, setReady] = useState(false);
+  const [hasChosen, setHasChosen] = useState(false);
 
   useEffect(() => {
     try {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored === "paris" || stored === "raleigh") {
         setIdentityState(stored);
+        setHasChosen(true);
         setReady(true);
         return;
       }
@@ -30,7 +32,7 @@ export function useIdentity() {
       // Storage inaccessible
     }
 
-    // 🌐 Auto-détection par Fuseau Horaire / Langue
+    // 🌐 Auto-détection par Fuseau Horaire / Langue comme secours
     try {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const lang = navigator.language || "";
@@ -49,6 +51,7 @@ export function useIdentity() {
 
   const setIdentity = useCallback((id: Identity) => {
     setIdentityState(id);
+    setHasChosen(true);
     try {
       window.localStorage.setItem(STORAGE_KEY, id);
     } catch {
@@ -56,5 +59,5 @@ export function useIdentity() {
     }
   }, []);
 
-  return { identity, setIdentity, ready };
+  return { identity, setIdentity, ready, hasChosen };
 }

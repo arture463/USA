@@ -6,6 +6,7 @@ import { Sparkles } from "lucide-react";
 import { BackgroundFX } from "@/components/layout/background-fx";
 import { CursorGlow } from "@/components/fx/cursor-glow";
 import { IntroLoader } from "@/components/layout/intro-loader";
+import { IdentityWelcomeModal } from "@/components/layout/identity-welcome-modal";
 import { Hero } from "@/components/layout/hero";
 import { NavDock } from "@/components/layout/nav-dock";
 import { Globe } from "@/components/modules/globe/globe";
@@ -41,6 +42,9 @@ export default function Home() {
     <>
       {/* Intro cinématique (1re visite de la session) */}
       <IntroLoader />
+
+      {/* Cérémonie d'accueil & sélection de profil (1re visite) */}
+      <IdentityWelcomeModal />
 
       {/* Couche d'ambiance : étoiles + aurora + grille sci-fi */}
       <BackgroundFX />
