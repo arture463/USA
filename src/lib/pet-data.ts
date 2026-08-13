@@ -275,8 +275,8 @@ export function predictType(pet: PetRow | null): PetType {
 /** Seuils d'expérience de chaque stade (une fois éclos). */
 export const STAGE_XP = {
   baby: 0,
-  teen: 40,
-  adult: 120,
+  teen: 150,
+  adult: 450,
 } as const;
 
 export const STAGE_LABEL: Record<Stage, string> = {
