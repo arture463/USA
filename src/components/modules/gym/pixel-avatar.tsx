@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Trophy, Dumbbell, Zap, Flame, Sparkles } from "lucide-react";
+import { Trophy, Dumbbell, Zap, Flame, Sparkles, Star } from "lucide-react";
 import type { MuscleStats } from "@/lib/gym-data";
 
 interface PixelAvatarProps {
@@ -9,54 +9,63 @@ interface PixelAvatarProps {
   claraStats: MuscleStats;
 }
 
-/**
- * GYM AVATARS — VECTOR ANIME CHIBI (HIGH-END SMOOTH GRAPHICS)
- * Avec dégradés de peau, ombrages anatomiques, cheveux à reflets, et miroirs Néon.
- */
 export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
   const arthurPushLevel = Math.min(5, Math.floor(arthurStats.pushLevel) + 1);
   const arthurPullLevel = Math.min(5, Math.floor(arthurStats.pullLevel) + 1);
-  const arthurTotalLevel = arthurStats.totalSessions;
 
   const claraLegsLevel = Math.min(5, Math.floor(claraStats.legsLevel) + 1);
   const claraCardioLevel = Math.min(5, Math.floor(claraStats.cardioLevel) + 1);
-  const claraTotalLevel = claraStats.totalSessions;
 
   return (
     <div className="relative w-full space-y-6">
-      {/* ── ARÈNE DUAL GYM : ARTHUR 🇫🇷 (GAUCHE) VS CLARA 🇺🇸 (DROITE) ── */}
+      {/* ── ARÈNE DUAL GYM PREMIUM 3D GLASS ── */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {/* ════════════════════════════════════════════════════════ */}
-        {/*  CARTE GAUCHE : ARTHUR (PARIS 🇫🇷)                        */}
+        {/*  CARTE ARTHUR (PARIS 🇫🇷) - GLASS NÉON CYAN               */}
         {/* ════════════════════════════════════════════════════════ */}
-        <div className="group relative overflow-hidden rounded-2xl border border-neon-cyan/40 bg-[#0c0d14] p-4 shadow-[0_0_35px_rgba(56,189,248,0.2)] transition-all hover:border-neon-cyan/70">
+        <motion.div
+          whileHover={{ y: -4, scale: 1.01 }}
+          transition={{ duration: 0.3 }}
+          className="group relative overflow-hidden rounded-3xl border border-cyan-500/30 bg-gradient-to-b from-[#0b1329]/90 via-[#0d1633]/70 to-[#070b17]/90 p-5 shadow-[0_15px_40px_rgba(56,189,248,0.18)] backdrop-blur-xl transition-all hover:border-cyan-400/60 hover:shadow-[0_20px_50px_rgba(56,189,248,0.3)]"
+        >
+          {/* Neon Light Pulse Corner Glow */}
+          <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-cyan-500/20 blur-3xl group-hover:bg-cyan-400/30 transition-all" />
+
           {/* Header Identité */}
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-neon-cyan/20 text-lg border border-neon-cyan/40 shadow-[0_0_10px_rgba(56,189,248,0.3)]">
+          <div className="relative z-10 mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-cyan-500/20 text-xl border border-cyan-400/40 shadow-[0_0_15px_rgba(56,189,248,0.3)]">
                 🇫🇷
+                <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]" />
               </div>
               <div>
-                <h4 className="font-display font-bold text-base text-neon-cyan flex items-center gap-1.5">
-                  Arthur <Sparkles className="h-3.5 w-3.5 text-cyan-300" />
+                <h4 className="font-display font-bold text-lg text-cyan-300 flex items-center gap-1.5 drop-shadow">
+                  Arthur <Sparkles className="h-4 w-4 text-cyan-400 animate-pulse" />
                 </h4>
-                <p className="text-[11px] text-foreground/50 font-mono">Paris · Salle de Sport</p>
+                <p className="text-[11px] text-cyan-200/60 font-mono">Paris · Salle de Sport</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 rounded-full bg-neon-cyan/20 px-3 py-1 font-mono text-xs font-bold text-neon-cyan border border-neon-cyan/40 shadow-sm">
-              <Trophy className="h-3.5 w-3.5" /> Niv. {arthurTotalLevel}
+            <div className="flex items-center gap-1.5 rounded-full bg-cyan-500/20 px-3.5 py-1.5 font-mono text-xs font-bold text-cyan-300 border border-cyan-400/40 shadow-inner">
+              <Trophy className="h-3.5 w-3.5 text-cyan-400" /> Niv. {arthurStats.totalSessions}
             </div>
           </div>
 
-          {/* Miroir Néon Cyan Arthur */}
-          <div className="relative h-80 w-full overflow-hidden rounded-xl border-4 border-[#2c1d18] bg-[#141824] shadow-2xl">
-            {/* Ligne LED Néon Cyan */}
-            <div className="absolute inset-0 border border-cyan-400/50 rounded-lg pointer-events-none shadow-[inset_0_0_20px_rgba(56,189,248,0.3)]" />
+          {/* Miroir de Musculation CADRE MÉTAL & NÉON Arthur */}
+          <div className="relative h-84 w-full overflow-hidden rounded-2xl border-4 border-[#2d221c] bg-[#121722] shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]">
+            {/* Ligne LED Néon Cyan intense */}
+            <div className="absolute inset-0 border-2 border-cyan-400/60 rounded-xl pointer-events-none shadow-[inset_0_0_25px_rgba(56,189,248,0.4)]" />
 
-            {/* Fond Carrelage & Lumière */}
+            {/* Balayage de lumière diaphane animé */}
+            <motion.div
+              animate={{ x: ["-100%", "200%"] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+              className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-cyan-300/15 to-transparent skew-x-12"
+            />
+
+            {/* Texture Carrelage & Fond de la salle */}
             <div
-              className="absolute inset-0 opacity-20"
+              className="absolute inset-0 opacity-25"
               style={{
                 backgroundImage: `
                   linear-gradient(to right, #38bdf8 1px, transparent 1px),
@@ -65,34 +74,42 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                 backgroundSize: "22px 22px",
               }}
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-400/10 to-white/10" />
 
-            {/* VECTOR ANIME ARTWORK ARTHUR */}
-            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-xl">
+            {/* VECTOR ANIME CHIBI HIGH-END ARTHUR */}
+            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-2xl">
               <defs>
-                {/* Dégradés Peau Arthur */}
                 <linearGradient id="arthurSkin" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f3be9b" />
-                  <stop offset="100%" stopColor="#d99166" />
+                  <stop offset="0%" stopColor="#f5c2a3" />
+                  <stop offset="100%" stopColor="#d88d64" />
                 </linearGradient>
                 <linearGradient id="arthurHair" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#312d42" />
-                  <stop offset="100%" stopColor="#171521" />
+                  <stop offset="0%" stopColor="#2c283d" />
+                  <stop offset="100%" stopColor="#14121e" />
                 </linearGradient>
                 <linearGradient id="arthurTank" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#22212e" />
-                  <stop offset="100%" stopColor="#0f0e17" stopOpacity="0.95" />
+                  <stop offset="0%" stopColor="#1f1d2b" />
+                  <stop offset="100%" stopColor="#0b0a12" />
                 </linearGradient>
+                <filter id="glowCyan" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
               </defs>
 
               {/* Ombre au sol */}
-              <ellipse cx="100" cy="255" rx="50" ry="8" fill="#000" opacity="0.45" />
+              <ellipse cx="100" cy="255" rx="55" ry="8" fill="#000" opacity="0.5" />
+
+              {/* Aura Lumineuse des biceps si niveau > 1 */}
+              {arthurPushLevel >= 2 && (
+                <circle cx="28" cy="74" r="22" fill="#38bdf8" opacity="0.15" filter="url(#glowCyan)" />
+              )}
+              {arthurPullLevel >= 2 && (
+                <circle cx="172" cy="74" r="22" fill="#38bdf8" opacity="0.15" filter="url(#glowCyan)" />
+              )}
 
               {/* BRAS FLEX GAUCHE ARTHUR */}
               <g id="arthur-arm-left">
-                {/* Épaule arrondie */}
                 <path d="M 64 94 Q 42 80, 26 108 C 22 125, 40 134, 54 130 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
-                {/* Biceps bombé avec animation */}
                 <motion.path
                   d="M 36 94 C 12 85, 10 130, 48 128 Z"
                   fill="url(#arthurSkin)"
@@ -101,15 +118,12 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                   animate={{ scale: [1, 1.04, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity }}
                 />
-                {/* Poing fermé */}
                 <circle cx="28" cy="74" r="11" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
               </g>
 
               {/* BRAS FLEX DROIT ARTHUR */}
               <g id="arthur-arm-right">
-                {/* Épaule arrondie */}
                 <path d="M 136 94 Q 158 80, 174 108 C 178 125, 160 134, 146 130 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
-                {/* Biceps bombé avec animation */}
                 <motion.path
                   d="M 164 94 C 188 85, 190 130, 152 128 Z"
                   fill="url(#arthurSkin)"
@@ -118,18 +132,13 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                   animate={{ scale: [1, 1.04, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, delay: 0.2 }}
                 />
-                {/* Poing fermé */}
                 <circle cx="172" cy="74" r="11" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
               </g>
 
               {/* CHEVEUX ANIME NOIRS SCULPTÉS & VISAGE ARTHUR */}
               <g id="arthur-head">
-                {/* Mèches de cheveux arrière fluides */}
                 <path d="M 68 40 Q 82 12, 100 8 Q 118 12, 132 40 C 145 28, 155 52, 144 72 Q 100 80, 56 72 C 45 52, 55 28, 68 40 Z" fill="url(#arthurHair)" />
-                {/* Mèches pointues anime sur le haut */}
                 <path d="M 78 28 Q 88 4, 98 22 Q 112 2, 124 24 Q 138 12, 142 34 Z" fill="url(#arthurHair)" />
-
-                {/* Visage Oval Chaleureux */}
                 <path d="M 72 56 Q 100 52, 128 56 C 132 82, 118 100, 100 102 C 82 100, 68 82, 72 56 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
 
                 {/* Yeux Anime Expressifs */}
@@ -141,7 +150,6 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                 <ellipse cx="113" cy="73" rx="4" ry="5" fill="#2d1a0e" />
                 <circle cx="114" cy="71" r="1.5" fill="#ffffff" />
 
-                {/* Sourcils & Sourire */}
                 <path d="M 78 63 Q 86 61, 93 65" fill="none" stroke="#1d1526" strokeWidth="2.5" strokeLinecap="round" />
                 <path d="M 122 63 Q 114 61, 107 65" fill="none" stroke="#1d1526" strokeWidth="2.5" strokeLinecap="round" />
                 <path d="M 94 88 Q 100 93 106 88" fill="none" stroke="#4a2715" strokeWidth="2" strokeLinecap="round" />
@@ -179,66 +187,85 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
           </div>
 
           {/* Barres de Niveaux */}
-          <div className="mt-3.5 space-y-2 text-[11px]">
+          <div className="relative z-10 mt-4 space-y-2.5 text-[11px]">
             <div className="space-y-1">
-              <div className="flex justify-between text-foreground/70">
-                <span className="flex items-center gap-1"><Dumbbell className="h-3 w-3 text-cyan-400" /> Push (Pecs / Épaules)</span>
-                <span className="font-mono font-bold text-neon-cyan">Niv. {arthurPushLevel}</span>
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1.5"><Dumbbell className="h-3.5 w-3.5 text-cyan-400" /> Push (Pecs / Épaules)</span>
+                <span className="font-mono font-bold text-cyan-300">Niv. {arthurPushLevel}</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden p-0.5">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-300 shadow-[0_0_8px_#38bdf8] transition-all duration-500"
-                  style={{ width: `${Math.min(100, (arthurStats.pushLevel / 5) * 100)}%` }}
+              <div className="h-2.5 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-sky-300 shadow-[0_0_12px_#38bdf8]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (arthurStats.pushLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <div className="flex justify-between text-foreground/70">
-                <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-cyan-400" /> Pull (Dos / Biceps)</span>
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1.5"><Zap className="h-3.5 w-3.5 text-cyan-400" /> Pull (Dos / Biceps)</span>
                 <span className="font-mono font-bold text-cyan-300">Niv. {arthurPullLevel}</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden p-0.5">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-400 shadow-[0_0_8px_#38bdf8] transition-all duration-500"
-                  style={{ width: `${Math.min(100, (arthurStats.pullLevel / 5) * 100)}%` }}
+              <div className="h-2.5 w-full rounded-full bg-cyan-950/50 border border-cyan-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 shadow-[0_0_12px_#38bdf8]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (arthurStats.pullLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
 
         {/* ════════════════════════════════════════════════════════ */}
-        {/*  CARTE DROITE : CLARA (RALEIGH 🇺🇸)                      */}
+        {/*  CARTE CLARA (RALEIGH 🇺🇸) - GLASS NÉON ROSE              */}
         {/* ════════════════════════════════════════════════════════ */}
-        <div className="group relative overflow-hidden rounded-2xl border border-neon-rose/40 bg-[#0c0d14] p-4 shadow-[0_0_35px_rgba(244,63,94,0.2)] transition-all hover:border-neon-rose/70">
+        <motion.div
+          whileHover={{ y: -4, scale: 1.01 }}
+          transition={{ duration: 0.3 }}
+          className="group relative overflow-hidden rounded-3xl border border-rose-500/30 bg-gradient-to-b from-[#250b18]/90 via-[#260e20]/70 to-[#140710]/90 p-5 shadow-[0_15px_40px_rgba(244,63,94,0.18)] backdrop-blur-xl transition-all hover:border-rose-400/60 hover:shadow-[0_20px_50px_rgba(244,63,94,0.3)]"
+        >
+          {/* Neon Light Pulse Corner Glow */}
+          <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-rose-500/20 blur-3xl group-hover:bg-rose-400/30 transition-all" />
+
           {/* Header Identité */}
-          <div className="mb-3 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-neon-rose/20 text-lg border border-neon-rose/40 shadow-[0_0_10px_rgba(244,63,94,0.3)]">
+          <div className="relative z-10 mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/20 text-xl border border-rose-400/40 shadow-[0_0_15px_rgba(244,63,94,0.3)]">
                 🇺🇸
+                <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-rose-400 shadow-[0_0_8px_#f43f5e]" />
               </div>
               <div>
-                <h4 className="font-display font-bold text-base text-neon-rose flex items-center gap-1.5">
-                  Clara <Sparkles className="h-3.5 w-3.5 text-rose-300" />
+                <h4 className="font-display font-bold text-lg text-rose-300 flex items-center gap-1.5 drop-shadow">
+                  Clara <Sparkles className="h-4 w-4 text-rose-400 animate-pulse" />
                 </h4>
-                <p className="text-[11px] text-foreground/50 font-mono">Raleigh · Planet Fitness</p>
+                <p className="text-[11px] text-rose-200/60 font-mono">Raleigh · Planet Fitness</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 rounded-full bg-neon-rose/20 px-3 py-1 font-mono text-xs font-bold text-neon-rose border border-neon-rose/40 shadow-sm">
-              <Trophy className="h-3.5 w-3.5" /> Niv. {claraTotalLevel}
+            <div className="flex items-center gap-1.5 rounded-full bg-rose-500/20 px-3.5 py-1.5 font-mono text-xs font-bold text-rose-300 border border-rose-400/40 shadow-inner">
+              <Trophy className="h-3.5 w-3.5 text-rose-400" /> Niv. {claraStats.totalSessions}
             </div>
           </div>
 
-          {/* Miroir Néon Rose Clara */}
-          <div className="relative h-80 w-full overflow-hidden rounded-xl border-4 border-[#2c1d18] bg-[#141824] shadow-2xl">
-            {/* Ligne LED Néon Rose */}
-            <div className="absolute inset-0 border border-rose-400/50 rounded-lg pointer-events-none shadow-[inset_0_0_20px_rgba(244,63,94,0.3)]" />
+          {/* Miroir de Musculation CADRE MÉTAL & NÉON Clara */}
+          <div className="relative h-84 w-full overflow-hidden rounded-2xl border-4 border-[#2d221c] bg-[#121722] shadow-[inset_0_0_30px_rgba(0,0,0,0.8)]">
+            {/* Ligne LED Néon Rose intense */}
+            <div className="absolute inset-0 border-2 border-rose-400/60 rounded-xl pointer-events-none shadow-[inset_0_0_25px_rgba(244,63,94,0.4)]" />
 
-            {/* Fond Carrelage & Lumière */}
+            {/* Balayage de lumière diaphane animé */}
+            <motion.div
+              animate={{ x: ["-100%", "200%"] }}
+              transition={{ duration: 6, repeat: Infinity, ease: "linear", delay: 1 }}
+              className="pointer-events-none absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-rose-300/15 to-transparent skew-x-12"
+            />
+
+            {/* Texture Carrelage & Fond de la salle */}
             <div
-              className="absolute inset-0 opacity-20"
+              className="absolute inset-0 opacity-25"
               style={{
                 backgroundImage: `
                   linear-gradient(to right, #f43f5e 1px, transparent 1px),
@@ -247,12 +274,10 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                 backgroundSize: "22px 22px",
               }}
             />
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-rose-400/10 to-white/10" />
 
-            {/* VECTOR ANIME ARTWORK CLARA */}
-            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-xl">
+            {/* VECTOR ANIME CHIBI HIGH-END CLARA */}
+            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-2xl">
               <defs>
-                {/* Dégradés Peau Clara */}
                 <linearGradient id="claraSkin" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="#fcd3c1" />
                   <stop offset="100%" stopColor="#e5a78c" />
@@ -261,10 +286,14 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                   <stop offset="0%" stopColor="#242133" />
                   <stop offset="100%" stopColor="#0e0d14" />
                 </linearGradient>
+                <filter id="glowRose" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
               </defs>
 
               {/* Ombre au sol */}
-              <ellipse cx="100" cy="255" rx="45" ry="8" fill="#000" opacity="0.45" />
+              <ellipse cx="100" cy="255" rx="45" ry="8" fill="#000" opacity="0.5" />
 
               {/* CHEVEUX LONGS NOIRS CLARA (ARRIÈRE) */}
               <path d="M 60 44 C 48 10, 152 10, 140 44 L 152 195 L 48 195 Z" fill="url(#claraHair)" />
@@ -283,7 +312,6 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
               {/* VISAGE ANIME CLARA */}
               <g id="clara-head">
                 <path d="M 72 50 Q 100 46, 128 50 C 132 76, 118 94, 100 96 C 82 94, 68 76, 72 50 Z" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
-                {/* Frange Droit Lisse */}
                 <path d="M 66 42 Q 100 38, 134 42 L 134 62 Q 100 66, 66 62 Z" fill="url(#claraHair)" />
 
                 {/* Yeux Mignons Expressifs */}
@@ -295,7 +323,6 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                 <ellipse cx="114" cy="69" rx="4" ry="5" fill="#181524" />
                 <circle cx="115" cy="67" r="1.5" fill="#ffffff" />
 
-                {/* Joues Rosées & Sourire */}
                 <ellipse cx="78" cy="76" rx="5" ry="3.5" fill="#f48fb1" opacity="0.65" />
                 <ellipse cx="122" cy="76" rx="5" ry="3.5" fill="#f48fb1" opacity="0.65" />
                 <path d="M 95 82 Q 100 86 105 82" fill="none" stroke="#5c2e17" strokeWidth="2" strokeLinecap="round" />
@@ -348,34 +375,38 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
           </div>
 
           {/* Barres de Niveaux */}
-          <div className="mt-3.5 space-y-2 text-[11px]">
+          <div className="relative z-10 mt-4 space-y-2.5 text-[11px]">
             <div className="space-y-1">
-              <div className="flex justify-between text-foreground/70">
-                <span className="flex items-center gap-1"><Flame className="h-3 w-3 text-rose-400" /> Legs (Cuisses / Fessiers)</span>
-                <span className="font-mono font-bold text-neon-rose">Niv. {claraLegsLevel}</span>
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1.5"><Flame className="h-3.5 w-3.5 text-rose-400" /> Legs (Cuisses / Fessiers)</span>
+                <span className="font-mono font-bold text-rose-300">Niv. {claraLegsLevel}</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden p-0.5">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-rose-500 to-pink-300 shadow-[0_0_8px_#f43f5e] transition-all duration-500"
-                  style={{ width: `${Math.min(100, (claraStats.legsLevel / 5) * 100)}%` }}
+              <div className="h-2.5 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-rose-500 to-pink-300 shadow-[0_0_12px_#f43f5e]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (claraStats.legsLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
               </div>
             </div>
 
             <div className="space-y-1">
-              <div className="flex justify-between text-foreground/70">
-                <span className="flex items-center gap-1"><Zap className="h-3 w-3 text-rose-400" /> Cardio & Abdos</span>
+              <div className="flex justify-between text-foreground/80 font-medium">
+                <span className="flex items-center gap-1.5"><Zap className="h-3.5 w-3.5 text-rose-400" /> Cardio & Abdos</span>
                 <span className="font-mono font-bold text-rose-300">Niv. {claraCardioLevel}</span>
               </div>
-              <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden p-0.5">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-pink-600 to-rose-400 shadow-[0_0_8px_#f43f5e] transition-all duration-500"
-                  style={{ width: `${Math.min(100, (claraStats.cardioLevel / 5) * 100)}%` }}
+              <div className="h-2.5 w-full rounded-full bg-rose-950/50 border border-rose-500/20 overflow-hidden p-0.5">
+                <motion.div
+                  className="h-full rounded-full bg-gradient-to-r from-pink-500 to-rose-400 shadow-[0_0_12px_#f43f5e]"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${Math.min(100, (claraStats.cardioLevel / 5) * 100)}%` }}
+                  transition={{ duration: 1, ease: "easeOut" }}
                 />
               </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
