@@ -41,7 +41,9 @@ export function usePresence(identity: Identity | null) {
       if (stored) setLastSeenIso(stored);
     } catch {}
 
-    const channel = supabase.channel("presence-room", {
+    // Générer un nom de canal unique par composant abonné pour éviter tout conflit d'instance
+    const channelId = `presence-room-${identity}-${Math.random().toString(36).substring(7)}`;
+    const channel = supabase.channel(channelId, {
       config: { presence: { key: identity } },
     });
 
