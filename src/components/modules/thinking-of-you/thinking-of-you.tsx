@@ -26,12 +26,40 @@ export function ThinkingOfYou() {
   const [burst, setBurst] = useState(0);
   const [justSent, setJustSent] = useState(false);
 
-  // Réception d'une pensée de l'autre → onde de choc + carillon + vibration
+  const [notifPermission, setNotifPermission] = useState<string>("default");
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      setNotifPermission(Notification.permission);
+    }
+  }, []);
+
+  const requestNotifPermission = async () => {
+    if (typeof window !== "undefined" && "Notification" in window) {
+      const res = await Notification.requestPermission();
+      setNotifPermission(res);
+    }
+  };
+
+  // Réception d'une pensée de l'autre → onde de choc + carillon + vibration + notification OS
   const handleReceive = useCallback((_thought: Thought) => {
     setBurst((b) => b + 1);
     playChime();
     vibrateHeartbeat();
-  }, []);
+
+    // Trigger Notification Système OS
+    if (typeof window !== "undefined" && "Notification" in window) {
+      if (Notification.permission === "granted") {
+        new Notification(
+          identity === "paris" ? "💙 Clara pense à toi !" : "💜 Arthur pense à toi !",
+          {
+            body: identity === "paris" ? "Une pensée vient d'arriver depuis Raleigh 🇺🇸 💖" : "Une pensée vient d'arriver depuis Paris 🇫🇷 💖",
+            icon: "/icons/icon-192.png",
+          }
+        );
+      }
+    }
+  }, [identity]);
 
   const { received, connected, sending, send } = useThinkingOfYou(
     identity,
@@ -179,6 +207,19 @@ export function ThinkingOfYou() {
               } aujourd'hui`
             : "Aucune pensée reçue aujourd'hui… pour l'instant"}
         </p>
+
+        {/* Bouton d'activation des notifications OS */}
+        {notifPermission !== "granted" && (
+          <div className="mt-4 flex justify-center">
+            <button
+              type="button"
+              onClick={requestNotifPermission}
+              className="btn-ghost btn-xs gap-1.5 border-rose-500/30 text-rose-300 hover:bg-rose-500/10"
+            >
+              🔔 Activer les notifications PUSH d'amour sur cet appareil
+            </button>
+          </div>
+        )}
       </motion.section>
     </>
   );
