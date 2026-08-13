@@ -9,8 +9,11 @@ interface PixelAvatarProps {
   claraStats: MuscleStats;
 }
 
+/**
+ * GYM AVATARS — VECTOR ANIME CHIBI (HIGH-END SMOOTH GRAPHICS)
+ * Avec dégradés de peau, ombrages anatomiques, cheveux à reflets, et miroirs Néon.
+ */
 export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
-  // Calcul des niveaux musculaires
   const arthurPushLevel = Math.min(5, Math.floor(arthurStats.pushLevel) + 1);
   const arthurPullLevel = Math.min(5, Math.floor(arthurStats.pullLevel) + 1);
   const arthurTotalLevel = arthurStats.totalSessions;
@@ -21,13 +24,13 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
 
   return (
     <div className="relative w-full space-y-6">
-      {/* ── DUEL DE MIROIRS DUAL GYM (ARTHUR 🇫🇷 vs CLARA 🇺🇸) ── */}
+      {/* ── ARÈNE DUAL GYM : ARTHUR 🇫🇷 (GAUCHE) VS CLARA 🇺🇸 (DROITE) ── */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         {/* ════════════════════════════════════════════════════════ */}
         {/*  CARTE GAUCHE : ARTHUR (PARIS 🇫🇷)                        */}
         {/* ════════════════════════════════════════════════════════ */}
-        <div className="group relative overflow-hidden rounded-2xl border border-neon-cyan/40 bg-[#0d0c14] p-4 shadow-[0_0_35px_rgba(56,189,248,0.2)] transition-all hover:border-neon-cyan/70">
-          {/* Header Identité & Rank */}
+        <div className="group relative overflow-hidden rounded-2xl border border-neon-cyan/40 bg-[#0c0d14] p-4 shadow-[0_0_35px_rgba(56,189,248,0.2)] transition-all hover:border-neon-cyan/70">
+          {/* Header Identité */}
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-neon-cyan/20 text-lg border border-neon-cyan/40 shadow-[0_0_10px_rgba(56,189,248,0.3)]">
@@ -46,12 +49,12 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
             </div>
           </div>
 
-          {/* Miroir de Musculation NÉON Arthur */}
-          <div className="relative h-80 w-full overflow-hidden rounded-xl border-4 border-[#2a1d17] bg-[#161b22] shadow-2xl">
-            {/* Ligne de LED Néon Cyan le long du miroir */}
-            <div className="absolute inset-0 border border-cyan-400/40 rounded-lg pointer-events-none shadow-[inset_0_0_15px_rgba(56,189,248,0.25)]" />
+          {/* Miroir Néon Cyan Arthur */}
+          <div className="relative h-80 w-full overflow-hidden rounded-xl border-4 border-[#2c1d18] bg-[#141824] shadow-2xl">
+            {/* Ligne LED Néon Cyan */}
+            <div className="absolute inset-0 border border-cyan-400/50 rounded-lg pointer-events-none shadow-[inset_0_0_20px_rgba(56,189,248,0.3)]" />
 
-            {/* Texture Carrelage & Arrière-plan reflété avec Haltères */}
+            {/* Fond Carrelage & Lumière */}
             <div
               className="absolute inset-0 opacity-20"
               style={{
@@ -59,118 +62,123 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                   linear-gradient(to right, #38bdf8 1px, transparent 1px),
                   linear-gradient(to bottom, #38bdf8 1px, transparent 1px)
                 `,
-                backgroundSize: "20px 20px",
+                backgroundSize: "22px 22px",
               }}
             />
-            {/* Silhouette d'un banc de muscu / rack d'haltères au fond */}
-            <div className="absolute bottom-6 left-4 right-4 h-12 opacity-15 border-b-2 border-cyan-400 flex justify-between items-end">
-              <div className="h-8 w-4 bg-cyan-300 rounded-t-sm" />
-              <div className="h-6 w-16 bg-cyan-300 rounded-t-sm" />
-              <div className="h-8 w-4 bg-cyan-300 rounded-t-sm" />
-            </div>
-
-            {/* Reflet de verre diaphane */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-cyan-400/10 to-white/10" />
 
-            {/* 🎨 ILLUSTRATION PIXEL ART ANIME ARTHUR (FULL BODY) */}
-            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-md">
-              {/* Ombre portée au sol */}
-              <ellipse cx="100" cy="255" rx="55" ry="8" fill="#000" opacity="0.5" />
+            {/* VECTOR ANIME ARTWORK ARTHUR */}
+            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-xl">
+              <defs>
+                {/* Dégradés Peau Arthur */}
+                <linearGradient id="arthurSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#f3be9b" />
+                  <stop offset="100%" stopColor="#d99166" />
+                </linearGradient>
+                <linearGradient id="arthurHair" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#312d42" />
+                  <stop offset="100%" stopColor="#171521" />
+                </linearGradient>
+                <linearGradient id="arthurTank" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#22212e" />
+                  <stop offset="100%" stopColor="#0f0e17" stopOpacity="0.95" />
+                </linearGradient>
+              </defs>
 
-              {/* 🦾 BICEPS FLEX GAUCHE ARTHUR */}
+              {/* Ombre au sol */}
+              <ellipse cx="100" cy="255" rx="50" ry="8" fill="#000" opacity="0.45" />
+
+              {/* BRAS FLEX GAUCHE ARTHUR */}
               <g id="arthur-arm-left">
-                {/* Épaule courte & Deltoïde */}
-                <path d="M 62 95 Q 40 85, 30 115 L 48 135 L 64 125 Z" fill="#d48c5c" stroke="#4a2511" strokeWidth="2" />
-                {/* Biceps bombé avec animation de flex */}
+                {/* Épaule arrondie */}
+                <path d="M 64 94 Q 42 80, 26 108 C 22 125, 40 134, 54 130 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
+                {/* Biceps bombé avec animation */}
                 <motion.path
-                  d="M 32 98 C 12 85, 10 130, 48 130 Z"
-                  fill="#f0b088"
-                  stroke="#4a2511"
-                  strokeWidth="2"
+                  d="M 36 94 C 12 85, 10 130, 48 128 Z"
+                  fill="url(#arthurSkin)"
+                  stroke="#4a2715"
+                  strokeWidth="1.5"
                   animate={{ scale: [1, 1.04, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity }}
                 />
-                {/* Poing fermé levé */}
-                <path d="M 22 65 L 40 62 C 44 75, 42 88, 26 90 Z" fill="#f0b088" stroke="#4a2511" strokeWidth="2" />
+                {/* Poing fermé */}
+                <circle cx="28" cy="74" r="11" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
               </g>
 
-              {/* 🦾 BICEPS FLEX DROIT ARTHUR */}
+              {/* BRAS FLEX DROIT ARTHUR */}
               <g id="arthur-arm-right">
-                {/* Épaule courte & Deltoïde */}
-                <path d="M 138 95 Q 160 85, 170 115 L 152 135 L 136 125 Z" fill="#d48c5c" stroke="#4a2511" strokeWidth="2" />
-                {/* Biceps bombé avec animation de flex */}
+                {/* Épaule arrondie */}
+                <path d="M 136 94 Q 158 80, 174 108 C 178 125, 160 134, 146 130 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
+                {/* Biceps bombé avec animation */}
                 <motion.path
-                  d="M 168 98 C 188 85, 190 130, 152 130 Z"
-                  fill="#f0b088"
-                  stroke="#4a2511"
-                  strokeWidth="2"
+                  d="M 164 94 C 188 85, 190 130, 152 128 Z"
+                  fill="url(#arthurSkin)"
+                  stroke="#4a2715"
+                  strokeWidth="1.5"
                   animate={{ scale: [1, 1.04, 1] }}
                   transition={{ duration: 2.5, repeat: Infinity, delay: 0.2 }}
                 />
-                {/* Poing fermé levé */}
-                <path d="M 178 65 L 160 62 C 156 75, 158 88, 174 90 Z" fill="#f0b088" stroke="#4a2511" strokeWidth="2" />
+                {/* Poing fermé */}
+                <circle cx="172" cy="74" r="11" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
               </g>
 
-              {/* 💇‍♂️ CHEVEUX ANIME NOIRS ÉBOURIFFÉS & VISAGE ARTHUR */}
+              {/* CHEVEUX ANIME NOIRS SCULPTÉS & VISAGE ARTHUR */}
               <g id="arthur-head">
-                {/* Cheveux arrière & mèches ébouriffées */}
-                <path d="M 70 38 L 82 20 L 94 32 L 108 10 L 124 30 L 136 16 L 148 38 L 142 70 L 68 70 Z" fill="#181620" />
-                <polygon points="86,24 96,8 102,26" fill="#181620" />
-                <polygon points="112,18 122,2 128,20" fill="#181620" />
-                <polygon points="68,48 56,36 72,56" fill="#181620" />
-                <polygon points="144,48 156,36 140,56" fill="#181620" />
+                {/* Mèches de cheveux arrière fluides */}
+                <path d="M 68 40 Q 82 12, 100 8 Q 118 12, 132 40 C 145 28, 155 52, 144 72 Q 100 80, 56 72 C 45 52, 55 28, 68 40 Z" fill="url(#arthurHair)" />
+                {/* Mèches pointues anime sur le haut */}
+                <path d="M 78 28 Q 88 4, 98 22 Q 112 2, 124 24 Q 138 12, 142 34 Z" fill="url(#arthurHair)" />
 
-                {/* Visage Teint Chaleureux */}
-                <rect x="74" y="56" width="52" height="40" rx="7" fill="#f0b088" stroke="#4a2511" strokeWidth="2" />
+                {/* Visage Oval Chaleureux */}
+                <path d="M 72 56 Q 100 52, 128 56 C 132 82, 118 100, 100 102 C 82 100, 68 82, 72 56 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
 
-                {/* Yeux Anime Expressifs avec Reflets */}
-                <rect x="83" y="66" width="10" height="9" rx="2" fill="#ffffff" />
-                <rect x="86" y="68" width="6" height="6" fill="#2e1a0e" />
-                <circle cx="87" cy="69" r="1" fill="#ffffff" />
+                {/* Yeux Anime Expressifs */}
+                <ellipse cx="86" cy="72" rx="6" ry="7" fill="#ffffff" />
+                <ellipse cx="87" cy="73" rx="4" ry="5" fill="#2d1a0e" />
+                <circle cx="88" cy="71" r="1.5" fill="#ffffff" />
 
-                <rect x="107" y="66" width="10" height="9" rx="2" fill="#ffffff" />
-                <rect x="108" y="68" width="6" height="6" fill="#2e1a0e" />
-                <circle cx="109" cy="69" r="1" fill="#ffffff" />
+                <ellipse cx="114" cy="72" rx="6" ry="7" fill="#ffffff" />
+                <ellipse cx="113" cy="73" rx="4" ry="5" fill="#2d1a0e" />
+                <circle cx="114" cy="71" r="1.5" fill="#ffffff" />
 
-                {/* Sourcils Inclinés & Sourire Confiant */}
-                <line x1="80" y1="61" x2="95" y2="64" stroke="#181620" strokeWidth="3" strokeLinecap="round" />
-                <line x1="120" y1="61" x2="105" y2="64" stroke="#181620" strokeWidth="3" strokeLinecap="round" />
-                <path d="M 94 85 Q 100 90 106 85" fill="none" stroke="#4a2511" strokeWidth="2.5" strokeLinecap="round" />
+                {/* Sourcils & Sourire */}
+                <path d="M 78 63 Q 86 61, 93 65" fill="none" stroke="#1d1526" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M 122 63 Q 114 61, 107 65" fill="none" stroke="#1d1526" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M 94 88 Q 100 93 106 88" fill="none" stroke="#4a2715" strokeWidth="2" strokeLinecap="round" />
               </g>
 
-              {/* 👕 DÉBARDEUR DE SPORT NOIR COMPRESSION */}
+              {/* DÉBARDEUR ATHLÉTIQUE COMPRESSION NOIR */}
               <g id="arthur-torso">
-                <path d="M 60 96 L 140 96 L 132 170 L 68 170 Z" fill="#121118" stroke="#2c2a3b" strokeWidth="2.5" />
-                <path d="M 84 96 C 84 114, 116 114, 116 96 Z" fill="#f0b088" />
-                {/* Logo Neon Paris */}
-                <text x="100" y="140" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="monospace" fontWeight="bold" letterSpacing="1">
+                <path d="M 64 96 C 80 94, 120 94, 136 96 L 130 172 C 100 176, 100 176, 70 172 Z" fill="url(#arthurTank)" stroke="#353347" strokeWidth="2" />
+                <path d="M 82 96 Q 100 114, 118 96 Z" fill="url(#arthurSkin)" />
+                <text x="100" y="142" textAnchor="middle" fill="#38bdf8" fontSize="10" fontFamily="sans-serif" fontWeight="bold" letterSpacing="1">
                   PARIS 🇫🇷
                 </text>
               </g>
 
-              {/* 🩳 SHORT DE SPORT NOIR ATHLÉTIQUE */}
+              {/* SHORT DE FIT NOIR */}
               <g id="arthur-shorts">
-                <path d="M 66 170 L 134 170 L 138 208 L 62 208 Z" fill="#1b1a26" stroke="#38bdf8" strokeWidth="1.5" />
-                <line x1="100" y1="185" x2="100" y2="208" stroke="#0e0d14" strokeWidth="2" />
+                <path d="M 68 172 Q 100 176, 132 172 L 136 210 Q 100 215, 64 210 Z" fill="#1b1a26" stroke="#38bdf8" strokeWidth="1.5" />
+                <line x1="100" y1="188" x2="100" y2="212" stroke="#0e0d14" strokeWidth="2" />
               </g>
 
-              {/* 🦵 CUISSES & MOLLETS MUSCLÉS */}
+              {/* CUISSES ET MOLLETS ANATOMIQUES */}
               <g id="arthur-legs">
-                <rect x="70" y="208" width="24" height="34" rx="3" fill="#f0b088" stroke="#4a2511" strokeWidth="1.5" />
-                <rect x="106" y="208" width="24" height="34" rx="3" fill="#f0b088" stroke="#4a2511" strokeWidth="1.5" />
+                <path d="M 70 210 Q 82 210, 92 210 L 90 244 L 72 244 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
+                <path d="M 108 210 Q 118 210, 130 210 L 128 244 L 110 244 Z" fill="url(#arthurSkin)" stroke="#4a2715" strokeWidth="1.5" />
               </g>
 
-              {/* 👟 BASKETS DE SPORT NEON CYAN */}
+              {/* BASKETS NEON CYAN */}
               <g id="arthur-sneakers">
-                <path d="M 64 240 L 96 240 L 98 256 L 58 256 Z" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
-                <path d="M 104 240 L 136 240 L 142 256 L 102 256 Z" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
-                <rect x="60" y="250" width="38" height="6" fill="#ffffff" rx="1" />
-                <rect x="102" y="250" width="38" height="6" fill="#ffffff" rx="1" />
+                <path d="M 64 242 C 64 238, 96 238, 96 242 L 98 256 L 58 256 Z" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
+                <path d="M 104 242 C 104 238, 136 238, 136 242 L 142 256 L 102 256 Z" fill="#0284c7" stroke="#38bdf8" strokeWidth="1.5" />
+                <rect x="58" y="250" width="40" height="6" fill="#ffffff" rx="2" />
+                <rect x="102" y="250" width="40" height="6" fill="#ffffff" rx="2" />
               </g>
             </svg>
           </div>
 
-          {/* Barres de Niveaux & Muscles */}
+          {/* Barres de Niveaux */}
           <div className="mt-3.5 space-y-2 text-[11px]">
             <div className="space-y-1">
               <div className="flex justify-between text-foreground/70">
@@ -203,8 +211,8 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
         {/* ════════════════════════════════════════════════════════ */}
         {/*  CARTE DROITE : CLARA (RALEIGH 🇺🇸)                      */}
         {/* ════════════════════════════════════════════════════════ */}
-        <div className="group relative overflow-hidden rounded-2xl border border-neon-rose/40 bg-[#0d0c14] p-4 shadow-[0_0_35px_rgba(244,63,94,0.2)] transition-all hover:border-neon-rose/70">
-          {/* Header Identité & Rank */}
+        <div className="group relative overflow-hidden rounded-2xl border border-neon-rose/40 bg-[#0c0d14] p-4 shadow-[0_0_35px_rgba(244,63,94,0.2)] transition-all hover:border-neon-rose/70">
+          {/* Header Identité */}
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-neon-rose/20 text-lg border border-neon-rose/40 shadow-[0_0_10px_rgba(244,63,94,0.3)]">
@@ -223,12 +231,12 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
             </div>
           </div>
 
-          {/* Miroir de Musculation NÉON Clara */}
-          <div className="relative h-80 w-full overflow-hidden rounded-xl border-4 border-[#2a1d17] bg-[#161b22] shadow-2xl">
-            {/* Ligne de LED Néon Rose le long du miroir */}
-            <div className="absolute inset-0 border border-rose-400/40 rounded-lg pointer-events-none shadow-[inset_0_0_15px_rgba(244,63,94,0.25)]" />
+          {/* Miroir Néon Rose Clara */}
+          <div className="relative h-80 w-full overflow-hidden rounded-xl border-4 border-[#2c1d18] bg-[#141824] shadow-2xl">
+            {/* Ligne LED Néon Rose */}
+            <div className="absolute inset-0 border border-rose-400/50 rounded-lg pointer-events-none shadow-[inset_0_0_20px_rgba(244,63,94,0.3)]" />
 
-            {/* Texture Carrelage & Arrière-plan reflété */}
+            {/* Fond Carrelage & Lumière */}
             <div
               className="absolute inset-0 opacity-20"
               style={{
@@ -236,106 +244,110 @@ export function PixelAvatar({ arthurStats, claraStats }: PixelAvatarProps) {
                   linear-gradient(to right, #f43f5e 1px, transparent 1px),
                   linear-gradient(to bottom, #f43f5e 1px, transparent 1px)
                 `,
-                backgroundSize: "20px 20px",
+                backgroundSize: "22px 22px",
               }}
             />
-            {/* Silhouette banc / miroir au fond */}
-            <div className="absolute bottom-6 left-4 right-4 h-12 opacity-15 border-b-2 border-rose-400 flex justify-between items-end">
-              <div className="h-6 w-16 bg-rose-300 rounded-t-sm" />
-              <div className="h-8 w-4 bg-rose-300 rounded-t-sm" />
-              <div className="h-6 w-16 bg-rose-300 rounded-t-sm" />
-            </div>
-
-            {/* Reflet de verre diaphane */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-tr from-transparent via-rose-400/10 to-white/10" />
 
-            {/* 🎨 ILLUSTRATION PIXEL ART ANIME CLARA (FULL BODY) */}
-            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-md">
-              {/* Ombre portée au sol */}
-              <ellipse cx="100" cy="255" rx="50" ry="8" fill="#000" opacity="0.5" />
+            {/* VECTOR ANIME ARTWORK CLARA */}
+            <svg viewBox="0 0 200 270" className="relative h-full w-full drop-shadow-xl">
+              <defs>
+                {/* Dégradés Peau Clara */}
+                <linearGradient id="claraSkin" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fcd3c1" />
+                  <stop offset="100%" stopColor="#e5a78c" />
+                </linearGradient>
+                <linearGradient id="claraHair" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#242133" />
+                  <stop offset="100%" stopColor="#0e0d14" />
+                </linearGradient>
+              </defs>
 
-              {/* 💇‍♀️ CHEVEUX LONGS NOIRS CLARA (ARRIÈRE) */}
-              <path d="M 62 42 C 50 10, 150 10, 138 42 L 148 190 L 52 190 Z" fill="#0d0c14" />
+              {/* Ombre au sol */}
+              <ellipse cx="100" cy="255" rx="45" ry="8" fill="#000" opacity="0.45" />
 
-              {/* 🦾 BRAS DROIT CLARA (CÔTÉ GAUCHE SUR L'ÉCRAN - POSÉ SUR LA HANCHE) */}
+              {/* CHEVEUX LONGS NOIRS CLARA (ARRIÈRE) */}
+              <path d="M 60 44 C 48 10, 152 10, 140 44 L 152 195 L 48 195 Z" fill="url(#claraHair)" />
+
+              {/* BRAS DROIT CLARA (CÔTÉ GAUCHE SUR L'ÉCRAN - HANCHE) */}
               <g id="clara-arm-right">
-                <path d="M 72 94 L 50 114 L 56 145 L 68 145 L 60 120 L 76 102 Z" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
-                <ellipse cx="62" cy="145" rx="6" ry="4.5" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
+                <path d="M 72 96 Q 52 110, 56 142 L 68 142 L 62 118 L 76 102 Z" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
+                <ellipse cx="62" cy="142" rx="6" ry="4.5" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
               </g>
 
-              {/* 🦾 BRAS GAUCHE CLARA (CÔTÉ DROIT - TENANT LE SMARTPHONE) */}
+              {/* BRAS GAUCHE CLARA (CÔTÉ DROIT - TENANT LE SMARTPHONE) */}
               <g id="clara-arm-left">
-                <path d="M 128 94 L 150 98 L 144 130 L 128 120 Z" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
+                <path d="M 128 96 L 150 100 L 144 132 L 128 122 Z" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
               </g>
 
-              {/* 👩 VISAGE ANIME ULTRA MIGNON & CHEVEUX CLARA */}
+              {/* VISAGE ANIME CLARA */}
               <g id="clara-head">
-                <rect x="74" y="48" width="52" height="40" rx="8" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="2" />
-                {/* Frange Droit Noire Lisse */}
-                <path d="M 68 40 L 132 40 L 132 62 Q 100 66 68 62 Z" fill="#0d0c14" />
+                <path d="M 72 50 Q 100 46, 128 50 C 132 76, 118 94, 100 96 C 82 94, 68 76, 72 50 Z" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
+                {/* Frange Droit Lisse */}
+                <path d="M 66 42 Q 100 38, 134 42 L 134 62 Q 100 66, 66 62 Z" fill="url(#claraHair)" />
 
                 {/* Yeux Mignons Expressifs */}
-                <rect x="82" y="62" width="10" height="11" rx="3" fill="#ffffff" />
-                <rect x="84" y="64" width="6" height="7" fill="#161420" />
-                <circle cx="85" cy="65" r="1.5" fill="#ffffff" />
+                <ellipse cx="85" cy="68" rx="6" ry="7" fill="#ffffff" />
+                <ellipse cx="86" cy="69" rx="4" ry="5" fill="#181524" />
+                <circle cx="87" cy="67" r="1.5" fill="#ffffff" />
 
-                <rect x="108" y="62" width="10" height="11" rx="3" fill="#ffffff" />
-                <rect x="109" y="64" width="6" height="7" fill="#161420" />
-                <circle cx="110" cy="65" r="1.5" fill="#ffffff" />
+                <ellipse cx="115" cy="68" rx="6" ry="7" fill="#ffffff" />
+                <ellipse cx="114" cy="69" rx="4" ry="5" fill="#181524" />
+                <circle cx="115" cy="67" r="1.5" fill="#ffffff" />
 
-                {/* Joues Rosées & Sourire Mignon */}
-                <ellipse cx="79" cy="74" rx="4.5" ry="3" fill="#f48fb1" opacity="0.6" />
-                <ellipse cx="121" cy="74" rx="4.5" ry="3" fill="#f48fb1" opacity="0.6" />
-                <path d="M 95 78 Q 100 82 105 78" fill="none" stroke="#5c2e17" strokeWidth="2" strokeLinecap="round" />
+                {/* Joues Rosées & Sourire */}
+                <ellipse cx="78" cy="76" rx="5" ry="3.5" fill="#f48fb1" opacity="0.65" />
+                <ellipse cx="122" cy="76" rx="5" ry="3.5" fill="#f48fb1" opacity="0.65" />
+                <path d="M 95 82 Q 100 86 105 82" fill="none" stroke="#5c2e17" strokeWidth="2" strokeLinecap="round" />
 
                 {/* Pendentif Croissant de Lune */}
-                <path d="M 90 90 Q 100 98 110 90" fill="none" stroke="#e2e8f0" strokeWidth="1.5" />
-                <circle cx="100" cy="95" r="2.5" fill="#fbbf24" />
+                <path d="M 90 92 Q 100 100 110 92" fill="none" stroke="#e2e8f0" strokeWidth="1.5" />
+                <circle cx="100" cy="97" r="2.5" fill="#fbbf24" />
               </g>
 
-              {/* 👚 CROP TOP BLANC CLARA */}
+              {/* CROP TOP BLANC CLARA */}
               <g id="clara-top">
-                <path d="M 70 94 L 130 94 L 135 134 L 65 134 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
-                <path d="M 84 94 C 84 106, 116 106, 116 94 Z" fill="#f7c5a8" />
-                <text x="100" y="122" textAnchor="middle" fill="#f43f5e" fontSize="9" fontFamily="monospace" fontWeight="bold">
+                <path d="M 68 96 C 80 94, 120 94, 132 96 L 136 136 C 100 140, 100 140, 64 136 Z" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
+                <path d="M 84 96 Q 100 108, 116 96 Z" fill="url(#claraSkin)" />
+                <text x="100" y="124" textAnchor="middle" fill="#f43f5e" fontSize="9" fontFamily="sans-serif" fontWeight="bold">
                   RALEIGH 🇺🇸
                 </text>
               </g>
 
-              {/* 📱 SMARTPHONE BLEU MIRROR SELFIE */}
+              {/* SMARTPHONE BLEU MIRROR SELFIE */}
               <g id="clara-phone">
-                <rect x="142" y="88" width="19" height="34" rx="3.5" fill="#0284c7" stroke="#0f172a" strokeWidth="2" />
-                <circle cx="147" cy="95" r="2.5" fill="#1e293b" />
-                <rect x="145" y="102" width="13" height="16" rx="1" fill="#38bdf8" opacity="0.85" />
-                <rect x="135" y="98" width="11" height="15" rx="3" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
+                <rect x="142" y="90" width="19" height="34" rx="3.5" fill="#0284c7" stroke="#0f172a" strokeWidth="2" />
+                <circle cx="147" cy="97" r="2.5" fill="#1e293b" />
+                <rect x="145" y="104" width="13" height="16" rx="1" fill="#38bdf8" opacity="0.85" />
+                <rect x="135" y="100" width="11" height="15" rx="3" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
               </g>
 
-              {/* 👙 TAILLE & ABDOS EXPOSÉS */}
-              <rect x="74" y="134" width="52" height="20" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
+              {/* TAILLE & ABDOS EXPOSÉS */}
+              <rect x="74" y="136" width="52" height="20" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
 
-              {/* 🩳 SHORT NOIR HIGH-WAIST FITNESS */}
+              {/* SHORT NOIR HIGH-WAIST FITNESS */}
               <g id="clara-shorts">
-                <path d="M 68 154 L 132 154 L 136 190 L 64 190 Z" fill="#181722" stroke="#f43f5e" strokeWidth="1.5" />
-                <line x1="100" y1="168" x2="100" y2="190" stroke="#0a0910" strokeWidth="2" />
+                <path d="M 68 156 Q 100 160, 132 156 L 136 192 Q 100 196, 64 192 Z" fill="#181722" stroke="#f43f5e" strokeWidth="1.5" />
+                <line x1="100" y1="170" x2="100" y2="192" stroke="#0a0910" strokeWidth="2" />
               </g>
 
-              {/* 🦵 JAMBES ET CUISSES GALBÉES */}
+              {/* JAMBES ET CUISSES GALBÉES */}
               <g id="clara-legs">
-                <rect x="71" y="190" width="23" height="50" rx="4" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
-                <rect x="106" y="190" width="23" height="50" rx="4" fill="#f7c5a8" stroke="#5c2e17" strokeWidth="1.5" />
+                <path d="M 72 192 Q 82 192, 92 192 L 90 244 L 72 244 Z" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
+                <path d="M 108 192 Q 118 192, 128 192 L 126 244 L 108 244 Z" fill="url(#claraSkin)" stroke="#5c2e17" strokeWidth="1.5" />
               </g>
 
-              {/* 👟 BASKETS DE SPORT NEON ROSE & BLANCHE */}
+              {/* BASKETS NEON ROSE & BLANCHE */}
               <g id="clara-sneakers">
-                <path d="M 65 240 L 96 240 L 98 256 L 59 256 Z" fill="#e11d48" stroke="#f43f5e" strokeWidth="1.5" />
-                <path d="M 104 240 L 135 240 L 141 256 L 102 256 Z" fill="#e11d48" stroke="#f43f5e" strokeWidth="1.5" />
-                <rect x="61" y="250" width="36" height="6" fill="#ffffff" rx="1" />
-                <rect x="102" y="250" width="36" height="6" fill="#ffffff" rx="1" />
+                <path d="M 65 242 C 65 238, 96 238, 96 242 L 98 256 L 59 256 Z" fill="#e11d48" stroke="#f43f5e" strokeWidth="1.5" />
+                <path d="M 104 242 C 104 238, 135 238, 135 242 L 141 256 L 102 256 Z" fill="#e11d48" stroke="#f43f5e" strokeWidth="1.5" />
+                <rect x="61" y="250" width="37" height="6" fill="#ffffff" rx="2" />
+                <rect x="102" y="250" width="37" height="6" fill="#ffffff" rx="2" />
               </g>
             </svg>
           </div>
 
-          {/* Barres de Niveaux & Muscles */}
+          {/* Barres de Niveaux */}
           <div className="mt-3.5 space-y-2 text-[11px]">
             <div className="space-y-1">
               <div className="flex justify-between text-foreground/70">
