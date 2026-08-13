@@ -8,7 +8,7 @@ import {
   useTransform,
 } from "framer-motion";
 import { MapPin, ChevronDown } from "lucide-react";
-import { DISTANCE_KM } from "@/lib/constants";
+import { DISTANCE_KM, DEPARTURE_DATE, RETURN_DATE } from "@/lib/constants";
 import { fadeUpBlur } from "@/lib/motion";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
@@ -21,6 +21,15 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
  */
 export function Hero() {
   const reduced = useReducedMotion();
+
+  // Calcul dynamique des jours restants et de la progression (13 août 13h -> 23 décembre)
+  const now = new Date().getTime();
+  const depTime = DEPARTURE_DATE.getTime();
+  const retTime = RETURN_DATE.getTime();
+  const totalDuration = Math.max(1, retTime - depTime);
+  const elapsed = Math.max(0, now - depTime);
+  const percent = Math.min(100, Math.max(0, Math.round((elapsed / totalDuration) * 100)));
+  const daysLeft = Math.max(0, Math.ceil((retTime - now) / (1000 * 60 * 60 * 24)));
 
   // Parallaxe : position souris normalisée (-0.5 → 0.5) → petit décalage lissé
   const mx = useMotionValue(0);
@@ -92,23 +101,23 @@ export function Hero() {
         >
           <div className="flex items-center justify-between text-xs mb-2">
             <span className="font-semibold text-neon-cyan flex items-center gap-1">
-              ✈️ 4 Mois à Distance
+              ✈️ 13 Août (13h) ➔ 23 Déc.
             </span>
             <span className="font-mono text-neon-rose font-bold">
-              Paris 🇫🇷 ↔ Raleigh 🇺🇸
+              {daysLeft} jours restants ({percent}%)
             </span>
           </div>
 
-          <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden p-0.5">
+          <div className="h-2.5 w-full rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
             <motion.div
-              className="h-full rounded-full bg-gradient-to-r from-neon-violet via-neon-cyan to-neon-rose shadow-[0_0_10px_rgba(56,189,248,0.5)]"
+              className="h-full rounded-full bg-gradient-to-r from-neon-violet via-neon-cyan to-neon-rose shadow-[0_0_12px_rgba(56,189,248,0.6)]"
               initial={{ width: "0%" }}
-              animate={{ width: "25%" }}
+              animate={{ width: `${percent}%` }}
               transition={{ duration: 1.5, ease: "easeOut" }}
             />
           </div>
-          <p className="mt-1.5 text-[11px] text-foreground/50 text-center">
-            Chaque jour partagé nous rapproche des retrouvailles ❤️
+          <p className="mt-2 text-[11px] text-foreground/60 text-center font-medium">
+            Retrouvailles le 23 Décembre 2026 · Paris 🇫🇷 ↔ Raleigh 🇺🇸 ❤️
           </p>
         </motion.div>
       </motion.div>

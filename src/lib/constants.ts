@@ -1,7 +1,6 @@
 /**
  * Constantes globales du projet.
  * Centralise géographie, fuseaux horaires et dates du séjour.
- * → C'est LE seul fichier à modifier pour ajuster ces données.
  */
 
 export interface CityLocation {
@@ -34,8 +33,9 @@ export const LOCATIONS: Record<"paris" | "raleigh", CityLocation> = {
 export const DISTANCE_KM = 6379;
 
 /**
- * ⚠️ À AJUSTER : vraies dates de départ et de retour.
- * Utilisées par le compte à rebours (Module 1).
+ * VRAIES DATES DU SÉJOUR :
+ * Décollage : 13 Août à 13h00 (Paris)
+ * Retrouvailles : 23 Décembre 2026
  */
-export const DEPARTURE_DATE = new Date("2026-07-24T10:00:00+02:00");
-export const RETURN_DATE = new Date("2026-11-24T18:00:00+01:00");
+export const DEPARTURE_DATE = new Date("2026-08-13T13:00:00+02:00");
+export const RETURN_DATE = new Date("2026-12-23T18:00:00+01:00");
