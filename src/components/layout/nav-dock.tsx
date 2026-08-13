@@ -5,11 +5,14 @@ import { motion } from "framer-motion";
 import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+import { useIdentity } from "@/hooks/use-identity";
+
 /**
  * Dock de navigation flottant (bas d'écran).
  *  - défilement doux vers chaque section au clic
  *  - "scroll-spy" : la section visible est mise en avant (IntersectionObserver)
  *  - l'indicateur actif GLISSE d'une icône à l'autre (layoutId Framer Motion)
+ *  - Sélecteur rapide d'identité (Arthur 🇫🇷 ↔ Clara 🇺🇸)
  *
  * Les `id` doivent correspondre aux <section id="..."> de la page.
  */
@@ -27,6 +30,7 @@ const ITEMS = [
 
 export function NavDock() {
   const [active, setActive] = useState<string>(ITEMS[0].id);
+  const { identity, setIdentity } = useIdentity();
 
   useEffect(() => {
     // Une section est "active" quand elle occupe la bande centrale de l'écran
@@ -88,6 +92,16 @@ export function NavDock() {
             </button>
           );
         })}
+
+        {/* Bouton de bascule rapide d'identité Arthur 🇫🇷 ↔ Clara 🇺🇸 */}
+        <button
+          type="button"
+          onClick={() => setIdentity(identity === "paris" ? "raleigh" : "paris")}
+          className="focus-ring relative ml-1 flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1.5 text-xs font-semibold transition-all hover:bg-white/20 border border-white/15 shadow-sm"
+          title="Changer d'identité (Arthur / Clara)"
+        >
+          <span>{identity === "paris" ? "🇫🇷 Arthur" : "🇺🇸 Clara"}</span>
+        </button>
       </nav>
     </div>
   );

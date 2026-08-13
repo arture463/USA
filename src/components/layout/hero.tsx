@@ -82,6 +82,35 @@ export function Hero() {
         >
           Un océan entre nous. Aucune distance entre nos deux écrans.
         </motion.p>
+
+        {/* ── BARRE DE RETROUVAILLES 4 MOIS (PARIS ↔ RALEIGH) ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.55 }}
+          className="mx-auto mt-6 w-full max-w-sm rounded-2xl border border-white/10 bg-white/5 p-3.5 backdrop-blur-md shadow-lg"
+        >
+          <div className="flex items-center justify-between text-xs mb-2">
+            <span className="font-semibold text-neon-cyan flex items-center gap-1">
+              ✈️ 4 Mois à Distance
+            </span>
+            <span className="font-mono text-neon-rose font-bold">
+              Paris 🇫🇷 ↔ Raleigh 🇺🇸
+            </span>
+          </div>
+
+          <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden p-0.5">
+            <motion.div
+              className="h-full rounded-full bg-gradient-to-r from-neon-violet via-neon-cyan to-neon-rose shadow-[0_0_10px_rgba(56,189,248,0.5)]"
+              initial={{ width: "0%" }}
+              animate={{ width: "25%" }}
+              transition={{ duration: 1.5, ease: "easeOut" }}
+            />
+          </div>
+          <p className="mt-1.5 text-[11px] text-foreground/50 text-center">
+            Chaque jour partagé nous rapproche des retrouvailles ❤️
+          </p>
+        </motion.div>
       </motion.div>
 
       {/* Indicateur de scroll */}
