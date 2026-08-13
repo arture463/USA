@@ -21,18 +21,30 @@ export function usePresence(identity: Identity | null) {
       config: { presence: { key: identity } },
     });
 
+    const updatePresenceState = () => {
+      const state = channel.presenceState();
+      setOnlineKeys(Object.keys(state));
+    };
+
     channel
-      .on("presence", { event: "sync" }, () => {
-        // presenceState() → { paris: [...], raleigh: [...] }
-        setOnlineKeys(Object.keys(channel.presenceState()));
-      })
+      .on("presence", { event: "sync" }, updatePresenceState)
+      .on("presence", { event: "join" }, updatePresenceState)
+      .on("presence", { event: "leave" }, updatePresenceState)
       .subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
           await channel.track({ online_at: new Date().toISOString() });
         }
       });
 
+    // Pings de battement de cœur (Heartbeat) toutes les 15 secondes pour maintenir la présence active
+    const heartbeat = setInterval(async () => {
+      try {
+        await channel.track({ online_at: new Date().toISOString() });
+      } catch {}
+    }, 15000);
+
     return () => {
+      clearInterval(heartbeat);
       void supabase.removeChannel(channel);
     };
   }, [identity]);
