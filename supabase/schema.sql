@@ -196,8 +196,8 @@ immutable
 as $$
   select case
     when p_species is null then 'egg'
-    when p_xp >= 120       then 'adult'
-    when p_xp >= 40        then 'teen'
+    when p_xp >= 900       then 'adult'
+    when p_xp >= 400       then 'teen'
     else 'baby'
   end;
 $$;
