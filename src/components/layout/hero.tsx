@@ -19,7 +19,13 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
  *  - entrées séquencées avec dé-flou (variants `fadeUpBlur` du design system)
  *  - indicateur de scroll animé
  */
+import { useIdentity } from "@/hooks/use-identity";
+import { usePresence } from "@/hooks/use-presence";
+
 export function Hero() {
+  const { identity } = useIdentity();
+  const { otherOnline, lastSeenFormatted } = usePresence(identity);
+  const otherName = identity === "paris" ? "Clara 🇺🇸" : "Arthur 🇫🇷";
   const reduced = useReducedMotion();
 
   // Parallaxe : position souris normalisée (-0.5 → 0.5) → petit décalage lissé
@@ -52,6 +58,28 @@ export function Hero() {
   return (
     <header className="relative flex min-h-[88vh] flex-col items-center justify-center text-center">
       <motion.div style={{ x: tx, y: ty }}>
+        {/* Badge de Présence Permanente & Dernier Passage */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-4 flex items-center justify-center"
+        >
+          {otherOnline ? (
+            <span className="chip-text border-emerald-500/50 bg-emerald-950/40 text-emerald-300 shadow-[0_0_20px_rgba(16,185,129,0.3)] backdrop-blur-md px-3.5 py-1.5 font-medium text-xs">
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+              {otherName} est en ligne en ce moment ! 🟢
+            </span>
+          ) : (
+            <span className="chip-text border-white/10 bg-white/5 text-foreground/70 backdrop-blur-md px-3.5 py-1.5 text-xs font-mono">
+              ⚪ {otherName} · Dernier passage : {lastSeenFormatted}
+            </span>
+          )}
+        </motion.div>
+
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
