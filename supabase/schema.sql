@@ -494,7 +494,7 @@ begin
   returning * into v_pet;
 
   -- Sinon les repas à usage unique (lettres lues) resteraient consommés
-  delete from public.pet_events;
+  delete from public.pet_events where true;
 
   return v_pet;
 end;
