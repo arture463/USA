@@ -16,6 +16,10 @@ export async function GET(req: NextRequest) {
   const who = req.nextUrl.searchParams.get("state") || "paris";
   const error = req.nextUrl.searchParams.get("error");
 
+  const redirectUri =
+    process.env.SPOTIFY_REDIRECT_URI ||
+    `${req.nextUrl.origin}/api/spotify/callback`;
+
   if (error || !code) {
     return NextResponse.redirect(
       `${req.nextUrl.origin}/?spotify_error=${error || "no_code"}`
@@ -34,7 +38,7 @@ export async function GET(req: NextRequest) {
     body: new URLSearchParams({
       grant_type: "authorization_code",
       code,
-      redirect_uri: `${req.nextUrl.origin}/api/spotify/callback`,
+      redirect_uri: redirectUri,
     }),
   });
 
