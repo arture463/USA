@@ -29,7 +29,14 @@ export function usePresence(identity: Identity | null) {
     channel
       .on("presence", { event: "sync" }, updatePresenceState)
       .on("presence", { event: "join" }, updatePresenceState)
-      .on("presence", { event: "leave" }, updatePresenceState)
+      .on("presence", { event: "leave" }, (payload) => {
+        // Déconnexion instantanée : retirer immédiatement la clé qui vient de partir
+        const leftKey = (payload as unknown as { key?: string })?.key;
+        if (leftKey) {
+          setOnlineKeys((prev) => prev.filter((k) => k !== leftKey));
+        }
+        setTimeout(updatePresenceState, 100);
+      })
       .subscribe(async (status) => {
         if (status === "SUBSCRIBED") {
           await channel.track({ online_at: new Date().toISOString() });
@@ -43,8 +50,21 @@ export function usePresence(identity: Identity | null) {
       } catch {}
     }, 15000);
 
+    // Déconnexion propre à la fermeture de l'onglet/navigateur
+    const handleBeforeUnload = () => {
+      try {
+        void channel.untrack();
+      } catch {}
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
     return () => {
       clearInterval(heartbeat);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      try {
+        void channel.untrack();
+      } catch {}
       void supabase.removeChannel(channel);
     };
   }, [identity]);
