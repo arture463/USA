@@ -6,6 +6,7 @@ import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHand
 import { cn } from "@/lib/utils";
 
 import { useIdentity } from "@/hooks/use-identity";
+import { usePresence } from "@/hooks/use-presence";
 
 /**
  * Dock de navigation flottant (bas d'écran).
@@ -33,6 +34,8 @@ const ITEMS = [
 export function NavDock() {
   const [active, setActive] = useState<string>(ITEMS[0].id);
   const { identity, setIdentity } = useIdentity();
+  const { otherOnline, lastSeenFormatted } = usePresence(identity);
+  const otherName = identity === "paris" ? "Clara 🇺🇸" : "Arthur 🇫🇷";
 
   useEffect(() => {
     // Une section est "active" quand elle occupe la bande centrale de l'écran
@@ -95,15 +98,35 @@ export function NavDock() {
           );
         })}
 
-        {/* Bouton de bascule rapide d'identité Arthur 🇫🇷 ↔ Clara 🇺🇸 */}
-        <button
-          type="button"
-          onClick={() => setIdentity(identity === "paris" ? "raleigh" : "paris")}
-          className="focus-ring relative ml-1 flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1.5 text-xs font-semibold transition-all hover:bg-white/20 border border-white/15 shadow-sm"
-          title="Changer d'identité (Arthur / Clara)"
-        >
-          <span>{identity === "paris" ? "🇫🇷 Arthur" : "🇺🇸 Clara"}</span>
-        </button>
+        {/* Statut de présence de l'autre + Bouton d'identité */}
+        <div className="ml-1 flex items-center gap-1.5 border-l border-white/10 pl-1.5">
+          {/* Badge statut de l'autre */}
+          <div
+            className="flex items-center gap-1 px-2 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-foreground/80 cursor-default"
+            title={otherOnline ? `${otherName} est en ligne` : `${otherName} · Dernier passage: ${lastSeenFormatted}`}
+          >
+            {otherOnline ? (
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              </span>
+            ) : (
+              <span className="h-2 w-2 rounded-full bg-slate-500" />
+            )}
+            <span className="hidden md:inline font-sans font-medium text-[11px]">
+              {otherOnline ? `${otherName} en ligne 🟢` : lastSeenFormatted}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIdentity(identity === "paris" ? "raleigh" : "paris")}
+            className="focus-ring relative flex items-center gap-1 rounded-full bg-white/10 px-2.5 py-1.5 text-xs font-semibold transition-all hover:bg-white/20 border border-white/15 shadow-sm"
+            title="Changer d'identité (Arthur / Clara)"
+          >
+            <span>{identity === "paris" ? "🇫🇷 Arthur" : "🇺🇸 Clara"}</span>
+          </button>
+        </div>
       </nav>
     </div>
   );
