@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import type { Identity } from "@/types";
 
 const STORAGE_KEY = "us-together:identity";
+const EVENT_KEY = "us-together:identity-change";
 
 /**
  * Mémorise et détecte automatiquement l'identité ("paris" = Arthur 🇫🇷 ou "raleigh" = Clara 🇺🇸).
@@ -26,27 +27,34 @@ export function useIdentity() {
         setIdentityState(stored);
         setHasChosen(true);
         setReady(true);
-        return;
-      }
-    } catch {
-      // Storage inaccessible
-    }
-
-    // 🌐 Auto-détection par Fuseau Horaire / Langue comme secours
-    try {
-      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const lang = navigator.language || "";
-
-      if (tz.includes("America") || tz.includes("New_York") || lang.startsWith("en")) {
-        setIdentityState("raleigh"); // Clara 🇺🇸 aux USA
       } else {
-        setIdentityState("paris"); // Arthur 🇫🇷 en France
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const lang = navigator.language || "";
+        if (tz.includes("America") || tz.includes("New_York") || lang.startsWith("en")) {
+          setIdentityState("raleigh");
+        } else {
+          setIdentityState("paris");
+        }
+        setReady(true);
       }
     } catch {
       setIdentityState("paris");
+      setReady(true);
     }
 
-    setReady(true);
+    // Écouter les changements d'identité globaux déclenchés par NavDock ou IdentityWelcomeModal
+    const handleGlobalChange = (e: Event) => {
+      const customEvent = e as CustomEvent<Identity>;
+      if (customEvent.detail === "paris" || customEvent.detail === "raleigh") {
+        setIdentityState(customEvent.detail);
+        setHasChosen(true);
+      }
+    };
+
+    window.addEventListener(EVENT_KEY, handleGlobalChange);
+    return () => {
+      window.removeEventListener(EVENT_KEY, handleGlobalChange);
+    };
   }, []);
 
   const setIdentity = useCallback((id: Identity) => {
@@ -54,6 +62,7 @@ export function useIdentity() {
     setHasChosen(true);
     try {
       window.localStorage.setItem(STORAGE_KEY, id);
+      window.dispatchEvent(new CustomEvent<Identity>(EVENT_KEY, { detail: id }));
     } catch {
       // Échec silencieux
     }
