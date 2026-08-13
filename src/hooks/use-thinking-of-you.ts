@@ -44,12 +44,14 @@ export function useThinkingOfYou(
     startOfToday.setHours(0, 0, 0, 0);
 
     (async () => {
-      const { count } = await supabase
-        .from("thoughts")
-        .select("*", { count: "exact", head: true })
-        .neq("sender", identity)
-        .gte("created_at", startOfToday.toISOString());
-      if (!cancelled && typeof count === "number") setReceived(count);
+      try {
+        const { count } = await supabase
+          .from("thoughts")
+          .select("*", { count: "exact", head: true })
+          .neq("sender", identity)
+          .gte("created_at", startOfToday.toISOString());
+        if (!cancelled && typeof count === "number") setReceived(count);
+      } catch {}
     })();
 
     return () => {
@@ -61,27 +63,34 @@ export function useThinkingOfYou(
   useEffect(() => {
     if (!identity) return;
 
-    const channel = supabase
-      .channel("thoughts-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "thoughts" },
-        (payload) => {
-          const thought = payload.new as Thought;
-          // On ne réagit qu'aux pensées envoyées par l'autre personne
-          if (thought.sender !== identity) {
-            setReceived((c) => c + 1);
-            onReceiveRef.current(thought);
+    try {
+      const channel = supabase
+        .channel(`thoughts-realtime-${identity}`)
+        .on(
+          "postgres_changes",
+          { event: "INSERT", schema: "public", table: "thoughts" },
+          (payload) => {
+            try {
+              const thought = payload.new as Thought;
+              if (thought && thought.sender && thought.sender !== identity) {
+                setReceived((c) => c + 1);
+                onReceiveRef.current(thought);
+              }
+            } catch {}
           }
-        }
-      )
-      .subscribe((status) => {
-        setConnected(status === "SUBSCRIBED");
-      });
+        )
+        .subscribe((status) => {
+          setConnected(status === "SUBSCRIBED");
+        });
 
-    return () => {
-      void supabase.removeChannel(channel);
-    };
+      return () => {
+        try {
+          void supabase.removeChannel(channel);
+        } catch {}
+      };
+    } catch {
+      return undefined;
+    }
   }, [identity]);
 
   const send = useCallback(async () => {
@@ -89,7 +98,7 @@ export function useThinkingOfYou(
     setSending(true);
     try {
       await supabase.from("thoughts").insert({ sender: identity });
-    } finally {
+    } catch {} finally {
       setSending(false);
     }
   }, [identity]);
