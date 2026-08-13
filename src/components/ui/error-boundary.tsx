@@ -38,6 +38,16 @@ export class ModuleErrorBoundary extends Component<Props, State> {
           <p className="max-w-md text-xs text-foreground/50">
             Un problème d'affichage (ex. WebGL/accélération matérielle) est survenu sur ce composant.
           </p>
+          {this.state.error && (
+            <div className="my-2 max-w-lg overflow-auto rounded-lg bg-black/60 p-3 font-mono text-[11px] text-rose-300 border border-rose-500/30 text-left">
+              <p className="font-bold">{this.state.error.name}: {this.state.error.message}</p>
+              {this.state.error.stack && (
+                <pre className="mt-1 text-[10px] text-rose-200/70 whitespace-pre-wrap">
+                  {this.state.error.stack.slice(0, 300)}
+                </pre>
+              )}
+            </div>
+          )}
           <button
             type="button"
             onClick={() => this.setState({ hasError: false, error: null })}
