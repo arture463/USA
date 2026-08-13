@@ -17,14 +17,11 @@ async function getAccessToken(who: "paris" | "raleigh"): Promise<string | null> 
     return null;
   }
 
-  // Vérifier si l'access token est encore valide (avec 1 min de marge)
   const isExpired = new Date(data.expires_at).getTime() - 60000 < Date.now();
-
   if (!isExpired && data.access_token) {
     return data.access_token;
   }
 
-  // Rafraîchir le token
   try {
     const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
       method: "POST",
@@ -65,7 +62,6 @@ async function fetchUserPlaying(who: "paris" | "raleigh") {
   }
 
   try {
-    // 1. Essayer currently-playing
     const currentRes = await fetch(
       "https://api.spotify.com/v1/me/player/currently-playing",
       {
@@ -73,6 +69,15 @@ async function fetchUserPlaying(who: "paris" | "raleigh") {
         cache: "no-store",
       }
     );
+
+    if (currentRes.status === 403) {
+      return {
+        connected: true,
+        isPlaying: false,
+        requiresPremium: true,
+        error: "Spotify Premium requis par l'API Spotify Developer pour le mode automatique",
+      };
+    }
 
     if (currentRes.status === 200) {
       const current = await currentRes.json();
@@ -91,7 +96,6 @@ async function fetchUserPlaying(who: "paris" | "raleigh") {
       }
     }
 
-    // 2. Si rien en cours, récupérer le dernier titre écouté
     const recentRes = await fetch(
       "https://api.spotify.com/v1/me/player/recently-played?limit=1",
       {

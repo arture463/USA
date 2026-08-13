@@ -5,6 +5,8 @@ import { useEffect, useState, useCallback } from "react";
 export interface SpotifyTrackInfo {
   connected: boolean;
   isPlaying: boolean;
+  requiresPremium?: boolean;
+  error?: string;
   title?: string;
   artist?: string;
   album?: string;
@@ -43,7 +45,6 @@ export function useSpotifyNowPlaying() {
 
   useEffect(() => {
     void fetchNowPlaying();
-    // Poll toutes les 5 secondes pour une expérience en direct
     const interval = setInterval(() => {
       void fetchNowPlaying();
     }, 5000);
