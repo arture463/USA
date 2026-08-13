@@ -105,10 +105,39 @@ export function JournalEntryCard({ entry }: JournalEntryCardProps) {
         />
       )}
 
-      {entry.body && (
-        <p className="whitespace-pre-line text-[15px] leading-relaxed text-foreground/85">
-          {entry.body}
-        </p>
+      {entry.body && entry.body.startsWith("GACHA:") ? (
+        (() => {
+          try {
+            const item = JSON.parse(entry.body.replace("GACHA:", ""));
+            return (
+              <div className="rounded-xl border border-amber-500/40 bg-gradient-to-r from-amber-950/40 via-purple-950/30 to-amber-950/40 p-3 shadow.lg flex items-center gap-3">
+                <span className="text-3xl shrink-0">{item.emoji}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                      🎰 TIRAGE GACHA — {item.rarity}
+                    </span>
+                    <span className="text-[10px] font-mono text-emerald-400">+{item.xp} XP</span>
+                  </div>
+                  <h4 className="font-display font-bold text-xs text-amber-200 truncate">{item.title}</h4>
+                  <p className="text-[11px] text-foreground/70 line-clamp-2">{item.description}</p>
+                </div>
+              </div>
+            );
+          } catch {
+            return (
+              <p className="whitespace-pre-line text-[15px] leading-relaxed text-foreground/85">
+                {entry.body}
+              </p>
+            );
+          }
+        })()
+      ) : (
+        entry.body && (
+          <p className="whitespace-pre-line text-[15px] leading-relaxed text-foreground/85">
+            {entry.body}
+          </p>
+        )
       )}
     </motion.article>
   );
