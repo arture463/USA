@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Dices, Gift, Crown, Flame, Trophy, History, Orbit, Compass, Stars } from "lucide-react";
+import { Sparkles, Dices, Gift, Crown, Flame, Trophy, History, Orbit, Compass, Stars, Play, Wrench, RefreshCw, Zap } from "lucide-react";
 import confetti from "canvas-confetti";
 import { revealOnScroll } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -22,7 +22,6 @@ export interface GachaItem {
 }
 
 export const GACHA_POOL: GachaItem[] = [
-  // ⚪ COMMUN (50%)
   {
     id: "c1",
     title: "Selfie Grimace Instantané",
@@ -47,8 +46,6 @@ export const GACHA_POOL: GachaItem[] = [
     emoji: "💬",
     xp: 40,
   },
-
-  // 🔵 RARE (30%)
   {
     id: "r1",
     title: "Dédicace Musicale Surprise",
@@ -73,8 +70,6 @@ export const GACHA_POOL: GachaItem[] = [
     emoji: "📸",
     xp: 100,
   },
-
-  // 🟣 ÉPIQUE (15%)
   {
     id: "e1",
     title: "Destination Surprise Week-End 2027",
@@ -91,8 +86,6 @@ export const GACHA_POOL: GachaItem[] = [
     emoji: "🏎️",
     xp: 300,
   },
-
-  // 🟡 LÉGENDAIRE (4.5%)
   {
     id: "l1",
     title: "Passe-Droit Absolu 24h",
@@ -109,8 +102,6 @@ export const GACHA_POOL: GachaItem[] = [
     emoji: "🔮",
     xp: 750,
   },
-
-  // 🌈 MYTHIQUE / TROU NOIR JACKPOT (0.5%)
   {
     id: "m1",
     title: "JACKPOT TROU NOIR COSMIQUE — 3 VŒUX MAGIQUES !",
@@ -174,13 +165,14 @@ export function GachaWheel() {
   const { identity } = useIdentity();
   const feedPet = usePetFeeder(identity);
   const [spinning, setSpinning] = useState(false);
+  const [cutscenePhase, setCutscenePhase] = useState<"idle" | "singularity" | "warp" | "reveal">("idle");
   const [rotation, setRotation] = useState(0);
   const [wonItem, setWonItem] = useState<GachaItem | null>(null);
   const [history, setHistory] = useState<(GachaItem & { wonAt: string; who: string })[]>([]);
   const [cooldownMs, setCooldownMs] = useState(0);
+  const [devPanelOpen, setDevPanelOpen] = useState(false);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  // Synthétiseur Audio d'aspiration spatiale
   const playCosmicWarpSound = (frequency = 400, duration = 0.1) => {
     try {
       if (!audioCtxRef.current) {
@@ -261,54 +253,60 @@ export function GachaWheel() {
     return subPool[Math.floor(Math.random() * subPool.length)] || GACHA_POOL[0];
   };
 
-  const handleSpin = () => {
+  const handleSpin = (forcedItem?: GachaItem) => {
     if (spinning) return;
 
     setSpinning(true);
     setWonItem(null);
+    setCutscenePhase("singularity");
 
-    const prize = getRandomItem();
+    const prize = forcedItem || getRandomItem();
     const prizeIndex = GACHA_POOL.findIndex((i) => i.id === prize.id);
     const totalItems = GACHA_POOL.length;
     const sliceAngle = 360 / totalItems;
 
-    // 8 tours complets de trous noir avec accélération dramatique
     const extraRounds = 8 * 360;
     const targetAngle = extraRounds + (totalItems - prizeIndex) * sliceAngle - sliceAngle / 2;
     const finalRotation = rotation + targetAngle;
 
     setRotation(finalRotation);
 
-    // Sons de déformation spatio-temporelle
-    let speed = 30;
+    // Phase 1 : Singularity Sound & Ticks
+    let speed = 25;
     let ticks = 0;
     const playWarpTicks = () => {
-      if (ticks < 45) {
-        playCosmicWarpSound(200 + (ticks % 10) * 80, 0.08);
+      if (ticks < 40) {
+        playCosmicWarpSound(150 + (ticks % 10) * 90, 0.08);
         ticks++;
-        speed += 8;
+        speed += 7;
         setTimeout(playWarpTicks, speed);
       }
     };
     playWarpTicks();
 
-    // Révélation après 4.8 secondes
+    // Transition Phase 2 : Warp Speed Lines
+    setTimeout(() => {
+      setCutscenePhase("warp");
+    }, 2200);
+
+    // Transition Phase 3 : Reveal Holographic Card
     setTimeout(async () => {
       setSpinning(false);
+      setCutscenePhase("reveal");
       setWonItem(prize);
 
       const rarityConfig = RARITY_CONFIG[prize.rarity];
-      playCosmicWarpSound(rarityConfig.soundPitch, 0.4);
+      playCosmicWarpSound(rarityConfig.soundPitch, 0.5);
 
       if (prize.rarity === "legendary" || prize.rarity === "mythic") {
         void confetti({
-          particleCount: 200,
-          spread: 120,
+          particleCount: 250,
+          spread: 140,
           origin: { y: 0.5 },
         });
       } else {
         void confetti({
-          particleCount: 90,
+          particleCount: 100,
           spread: 80,
           origin: { y: 0.6 },
         });
@@ -335,7 +333,12 @@ export function GachaWheel() {
           body: `GACHA:${JSON.stringify(prize)}`,
         });
       } catch {}
-    }, 4800);
+    }, 4500);
+  };
+
+  const handleResetCooldown = () => {
+    window.localStorage.removeItem(`${STORAGE_KEY_LAST}:${identity}`);
+    setCooldownMs(0);
   };
 
   const formatTimeLeft = (ms: number) => {
@@ -348,35 +351,132 @@ export function GachaWheel() {
 
   return (
     <motion.section {...revealOnScroll} className="w-full">
-      <SectionHeading
-        eyebrow="Singularité Spatio-Temporelle 🌀"
-        icon={Orbit}
-        title="Le Trou Noir"
-        titleAccent="Gacha Cosmique"
-        subtitle="Aspirez la poussière d'étoiles pour débloquer des privilèges légendaires et des vœux secrets !"
-        accent="violet"
-      />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <SectionHeading
+          eyebrow="Singularité Spatio-Temporelle 🌀"
+          icon={Orbit}
+          title="Le Trou Noir"
+          titleAccent="Gacha Cosmique"
+          subtitle="Aspirez la poussière d'étoiles pour débloquer des privilèges légendaires et des vœux secrets !"
+          accent="violet"
+        />
+
+        {/* Bouton Panneau Testeur */}
+        <button
+          type="button"
+          onClick={() => setDevPanelOpen(!devPanelOpen)}
+          className="btn-ghost btn-xs gap-1.5 text-slate-400 hover:text-slate-200 border-white/10 shrink-0 self-start sm:self-auto"
+        >
+          <Wrench className="h-3.5 w-3.5" />
+          {devPanelOpen ? "Fermer Panel Test" : "🛠️ Panel Testeur"}
+        </button>
+      </div>
+
+      {/* ── PANNEAU DE TEST DEVELOPPER ── */}
+      <AnimatePresence>
+        {devPanelOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="rounded-2xl border border-amber-500/40 bg-amber-950/20 p-4 mb-4 backdrop-blur-md space-y-3"
+          >
+            <div className="flex items-center justify-between">
+              <h4 className="font-display font-bold text-xs text-amber-300 flex items-center gap-1.5">
+                <Wrench className="h-4 w-4" /> PANNEAU DE TEST GACHA (ADMIN MODE)
+              </h4>
+              <span className="text-[10px] font-mono text-amber-400/80">Bypass Cooldown Active</span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={handleResetCooldown}
+                className="btn-pill btn-xs border-amber-400/50 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 gap-1"
+              >
+                <RefreshCw className="h-3 w-3" /> Reset Cooldown (Rejouer Direct)
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSpin(GACHA_POOL.find((i) => i.rarity === "legendary"))}
+                className="btn-pill btn-xs border-purple-400/50 bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 gap-1"
+              >
+                <Crown className="h-3 w-3" /> Test Gagnant LÉGENDAIRE 👑
+              </button>
+
+              <button
+                type="button"
+                onClick={() => handleSpin(GACHA_POOL.find((i) => i.rarity === "mythic"))}
+                className="btn-pill btn-xs border-pink-400/50 bg-pink-500/20 text-pink-300 hover:bg-pink-500/30 gap-1"
+              >
+                <Zap className="h-3 w-3 animate-pulse" /> Test JACKPOT MYTHIQUE 🌀
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="panel-roomy relative overflow-hidden space-y-6">
+        {/* ── CUTSCENE OVERLAY OVERFLOW WORMHOLE CINEMATIC ── */}
+        <AnimatePresence>
+          {spinning && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 z-40 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center p-6 text-center"
+            >
+              {cutscenePhase === "singularity" && (
+                <motion.div
+                  initial={{ scale: 0.5, rotate: 0 }}
+                  animate={{ scale: [1, 1.3, 1], rotate: 360 }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                  className="flex flex-col items-center space-y-4"
+                >
+                  <div className="h-32 w-32 rounded-full border-4 border-purple-500/80 bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-400 shadow-[0_0_80px_#c084fc] flex items-center justify-center animate-spin">
+                    <Orbit className="h-16 w-16 text-white" />
+                  </div>
+                  <h3 className="font-display font-black text-2xl text-purple-300 animate-pulse">
+                    ASPIRATION DE LA SINGULARITÉ...
+                  </h3>
+                </motion.div>
+              )}
+
+              {cutscenePhase === "warp" && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1.2 }}
+                  transition={{ duration: 1.5 }}
+                  className="flex flex-col items-center space-y-4"
+                >
+                  <div className="h-40 w-40 rounded-full border-4 border-cyan-400 bg-cyan-500/30 shadow-[0_0_100px_#38bdf8] flex items-center justify-center animate-ping">
+                    <Sparkles className="h-20 w-20 text-white" />
+                  </div>
+                  <h3 className="font-display font-black text-3xl text-cyan-300 drop-shadow-[0_0_15px_#38bdf8]">
+                    SAUT QUANTIQUE EN COURS ! ⚡
+                  </h3>
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* ── ARÈNE CINÉMATIQUE TROU NOIR HOLOGRAPHIQUE ── */}
         <div className="flex flex-col items-center justify-center py-6 space-y-8">
           <div className="relative flex flex-col items-center">
-            {/* Pointeur Rayon Laser Violet Néon */}
             <div className="z-20 -mb-4 h-6 w-1 rounded-full bg-cyan-400 shadow-[0_0_15px_#38bdf8] animate-pulse" />
 
-            {/* Le Trou Noir Holo-Wormhole */}
             <div className="relative h-72 w-72 sm:h-96 sm:w-96 rounded-full border-4 border-purple-500/40 p-3 shadow-[0_0_70px_rgba(168,85,247,0.5)] bg-gradient-to-b from-black via-[#090314] to-[#04010a] overflow-hidden flex items-center justify-center">
-              {/* Anneaux de Plasma Néon Tournants */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 className="absolute inset-0 m-auto h-full w-full rounded-full border border-purple-500/20 shadow-[inset_0_0_40px_rgba(192,132,252,0.3)] pointer-events-none"
               />
 
-              {/* Accretion Disk (Disque d'accrétion tournant avec la roue) */}
               <motion.div
                 animate={{ rotate: rotation }}
-                transition={{ duration: 4.8, ease: [0.12, 0.8, 0.25, 1] }}
+                transition={{ duration: 4.5, ease: [0.12, 0.8, 0.25, 1] }}
                 className="h-full w-full rounded-full relative overflow-hidden flex items-center justify-center"
               >
                 {GACHA_POOL.map((item, idx) => {
@@ -406,7 +506,6 @@ export function GachaWheel() {
                 })}
               </motion.div>
 
-              {/* Centre du Trou Noir (Horizon des Événements) */}
               <div className="absolute inset-0 m-auto h-24 w-24 sm:h-28 sm:w-28 rounded-full border-2 border-cyan-400/50 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center shadow-[0_0_35px_rgba(56,189,248,0.8)] z-10 pointer-events-none">
                 <Orbit className={`h-8 w-8 text-cyan-300 ${spinning ? "animate-spin" : ""}`} />
                 <span className="text-[9px] font-mono text-cyan-200/80 font-bold tracking-widest mt-1">
@@ -416,11 +515,10 @@ export function GachaWheel() {
             </div>
           </div>
 
-          {/* Bouton Aspirer la Galaxie */}
           <div className="flex flex-col items-center gap-2">
             <button
               type="button"
-              onClick={handleSpin}
+              onClick={() => handleSpin()}
               disabled={spinning}
               className={`btn-neon btn-lg btn-pill gap-2 text-sm px-10 py-4 ${
                 cooldownMs > 0 && !spinning
