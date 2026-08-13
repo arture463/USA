@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import confetti from "canvas-confetti";
 import { supabase } from "@/lib/supabase/client";
+import { usePetFeeder } from "@/hooks/use-pet";
+import { FOOD } from "@/lib/pet-data";
 import {
   GYM_TITLES,
   WORKOUT_INFO,
@@ -12,6 +14,7 @@ import {
   type MuscleStats,
   type WorkoutType,
 } from "@/lib/gym-data";
+import type { Identity } from "@/types";
 
 const STORAGE_KEY = "us-together:gym-sessions";
 
@@ -48,7 +51,7 @@ export function useGym() {
   useEffect(() => {
     void fetchSessions();
 
-    // Ecoute Realtime des séances & des encouragements
+    // Écoute Realtime des séances & des encouragements
     const channel = supabase
       .channel("realtime:gym_sessions")
       .on(
@@ -57,7 +60,6 @@ export function useGym() {
         (payload) => {
           const record = payload.new as GymSessionRecord;
           setSessions((prev) => [record, ...prev]);
-          // Déclencher des confettis festifs !
           void confetti({
             particleCount: 80,
             spread: 70,
@@ -72,9 +74,12 @@ export function useGym() {
     };
   }, [fetchSessions]);
 
-  // Loguer une nouvelle séance avec confettis & XP !
+  const feedPetParis = usePetFeeder("paris");
+  const feedPetRaleigh = usePetFeeder("raleigh");
+
+  // Loguer une nouvelle séance avec confettis, XP et nourrit la créature !
   const logWorkout = useCallback(
-    async (who: "paris" | "raleigh", type: WorkoutType, notes?: string) => {
+    async (who: Identity, type: WorkoutType, notes?: string) => {
       const newRecord: Omit<GymSessionRecord, "id"> = {
         who,
         type,
@@ -88,6 +93,10 @@ export function useGym() {
         spread: 80,
         origin: { y: 0.5 },
       });
+
+      // Nourrir la créature commune (+3 XP)
+      const feedFn = who === "paris" ? feedPetParis : feedPetRaleigh;
+      void feedFn(FOOD.journal, null, "journal");
 
       try {
         const { data, error } = await supabase
@@ -125,11 +134,11 @@ export function useGym() {
         });
       }
     },
-    []
+    [feedPetParis, feedPetRaleigh]
   );
 
   // Envoyer un Check / High-Five virtuel à l'autre
-  const sendHighFive = useCallback((who: "paris" | "raleigh") => {
+  const sendHighFive = useCallback((who: Identity) => {
     const sender = who === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸";
     const receiver = who === "paris" ? "Clara" : "Arthur";
     setHighFiveToast(`${sender} a envoyé une gourde de motivation & un High-Five à ${receiver} ! 🥤⚡`);
@@ -144,7 +153,7 @@ export function useGym() {
   }, []);
 
   // Calcul des statistiques de musculation
-  const computeStats = (who: "paris" | "raleigh"): MuscleStats => {
+  const computeStats = (who: Identity): MuscleStats => {
     const userSessions = sessions.filter((s) => s.who === who);
     let xp = 0;
     let pushLevel = 0;
@@ -189,7 +198,6 @@ export function useGym() {
   const claraStats = computeStats("raleigh");
   const badges = getBadges(arthurStats.totalSessions, claraStats.totalSessions, sessions.length);
 
-  // Série en Duo (Streak)
   const streak = Math.min(
     7,
     Math.max(1, Math.floor((arthurStats.totalSessions + claraStats.totalSessions) / 2))

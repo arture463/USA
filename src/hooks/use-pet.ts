@@ -270,7 +270,7 @@ export function usePet(identity: Identity | null): UsePet {
  */
 export function usePetFeeder(identity: Identity | null) {
   return useCallback(
-    async (amount: number, key: string, source: MealSource) => {
+    async (amount: number, key?: string | null, source?: MealSource) => {
       if (!identity) return;
       // Silencieux par conception : si le SQL n'est pas encore passé, on ne
       // veut pas casser la lecture d'une lettre pour autant.
@@ -278,8 +278,8 @@ export function usePetFeeder(identity: Identity | null) {
         .rpc("feed_pet", {
           p_who: identity,
           p_amount: amount,
-          p_key: key,
-          p_source: source,
+          p_key: key ?? null,
+          p_source: source ?? null,
         })
         .then(undefined, () => undefined);
     },
