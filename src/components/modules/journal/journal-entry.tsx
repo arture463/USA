@@ -15,14 +15,14 @@ import { PhotoLightbox } from "./photo-lightbox";
 // Classes LITTÉRALES (le JIT Tailwind ne lit pas les classes concaténées)
 const AUTHOR_STYLE = {
   paris: {
-    label: LOCATIONS.paris.label,
+    label: "Arthur 🇫🇷",
     emoji: "💜",
     text: "text-neon-violet",
     border: "border-l-neon-violet/60",
     dot: "bg-neon-violet",
   },
   raleigh: {
-    label: LOCATIONS.raleigh.label,
+    label: "Clara 🇺🇸",
     emoji: "💙",
     text: "text-neon-cyan",
     border: "border-l-neon-cyan/60",
