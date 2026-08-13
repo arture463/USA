@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHandshake, Dices } from "lucide-react";
+import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHandshake, Dices, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useIdentity } from "@/hooks/use-identity";
@@ -21,6 +21,7 @@ const ITEMS = [
   { id: "time", label: "Heure", Icon: Clock },
   { id: "globe", label: "Globe", Icon: Globe2 },
   { id: "signal", label: "Signal", Icon: Radio },
+  { id: "combo", label: "Combo", Icon: Heart },
   { id: "gacha", label: "Roulette", Icon: Dices },
   { id: "letters", label: "Lettres", Icon: Mail },
   { id: "bucket", label: "Envies", Icon: HeartHandshake },

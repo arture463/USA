@@ -14,6 +14,7 @@ import { OpenWhen } from "@/components/modules/open-when/open-when";
 import { BucketList } from "@/components/modules/bucket-list/bucket-list";
 import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
+import { LoveCombo } from "@/components/modules/love-combo/love-combo";
 import { GachaWheel } from "@/components/modules/gacha/gacha-wheel";
 import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
@@ -79,6 +80,13 @@ export default function Home() {
         <section id="signal" className="w-full scroll-mt-24">
           <ModuleErrorBoundary fallbackTitle="Module Signal indisponible">
             <ThinkingOfYou />
+          </ModuleErrorBoundary>
+        </section>
+
+        {/* ── MODULE 11 : L'AMOUR-O-MÈTRE COMBO ── */}
+        <section id="combo" className="w-full scroll-mt-24">
+          <ModuleErrorBoundary fallbackTitle="Module Combo indisponible">
+            <LoveCombo />
           </ModuleErrorBoundary>
         </section>
 
