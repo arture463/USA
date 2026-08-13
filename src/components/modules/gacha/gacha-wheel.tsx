@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Dices, Gift, Crown, Flame, Trophy, Volume2, VolumeX, History } from "lucide-react";
+import { Sparkles, Dices, Gift, Crown, Flame, Trophy, History, Orbit, Compass, Stars } from "lucide-react";
 import confetti from "canvas-confetti";
 import { revealOnScroll } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -26,49 +26,49 @@ export const GACHA_POOL: GachaItem[] = [
   {
     id: "c1",
     title: "Selfie Grimace Instantané",
-    description: "Envoie un selfie drôle ou mignon dans le journal sous 10 min !",
+    description: "Envoie un selfie ultra-drôle ou mignon dans le journal sous 10 min !",
     rarity: "common",
     emoji: "🤪",
-    xp: 25,
+    xp: 30,
   },
   {
     id: "c2",
-    title: "Mot Doux du Matin",
-    description: "Promesse d'envoyer un petit mot gentil au réveil demain !",
+    title: "Vocal Doux du Réveil",
+    description: "Promesse d'envoyer un message vocal ultra-doux au réveil demain !",
     rarity: "common",
     emoji: "💌",
-    xp: 25,
+    xp: 30,
   },
   {
     id: "c3",
-    title: "Anecdote Inédite",
-    description: "Raconte un souvenir marrant ou gênant que l'autre ne connaît pas encore !",
+    title: "Anecdote Secrète",
+    description: "Raconte un souvenir marrant ou un petit secret que l'autre ne connaît pas !",
     rarity: "common",
     emoji: "💬",
-    xp: 30,
+    xp: 40,
   },
 
   // 🔵 RARE (30%)
   {
     id: "r1",
     title: "Dédicace Musicale Surprise",
-    description: "Dédie une chanson coup de cœur dans la section Musique !",
+    description: "Dédie une chanson coup de cœur dans la section Musique avec un mot doux !",
     rarity: "rare",
     emoji: "🎵",
-    xp: 75,
+    xp: 80,
   },
   {
     id: "r2",
-    title: "Vocal d'Amour 30s",
-    description: "Envoie une note vocale d'au moins 30 secondes en chuchotant !",
+    title: "Joker Soirée Fast-Food & Film au Lit",
+    description: "Au retour, plateau télé complet au lit sans aucune vaisselle à faire !",
     rarity: "rare",
-    emoji: "🎙️",
-    xp: 80,
+    emoji: "🍔",
+    xp: 100,
   },
   {
     id: "r3",
     title: "Photo Souvenir Nostalgie",
-    description: "Retrouve et partage une photo de vous deux datant de plusieurs mois !",
+    description: "Retrouve et partage une photo de vous deux datant d'au moins 6 mois !",
     rarity: "rare",
     emoji: "📸",
     xp: 100,
@@ -77,47 +77,47 @@ export const GACHA_POOL: GachaItem[] = [
   // 🟣 ÉPIQUE (15%)
   {
     id: "e1",
-    title: "Joker Soirée Cinéma",
-    description: "Tu choisis le film/série qu'on regarde ensemble à distance !",
+    title: "Destination Surprise Week-End 2027",
+    description: "L'autre choisit la destination de votre premier week-end surprise l'année prochaine !",
     rarity: "epic",
-    emoji: "🎬",
-    xp: 200,
+    emoji: "✈️",
+    xp: 250,
   },
   {
     id: "e2",
-    title: "Petit-Déjeuner Offert",
-    description: "L'autre te fait livrer ton petit-déjeuner / boisson préférée !",
+    title: "Sortie Sensation Forte / Activité Extrême",
+    description: "Une activité originale/karting/parc offerte par l'autre pendant les vacances !",
     rarity: "epic",
-    emoji: "🥐",
-    xp: 250,
+    emoji: "🏎️",
+    xp: 300,
   },
 
   // 🟡 LÉGENDAIRE (4.5%)
   {
     id: "l1",
-    title: "Massage Complet du 24 Décembre",
-    description: "Bon pour un massage royal complet le soir des retrouvailles !",
+    title: "Passe-Droit Absolu 24h",
+    description: "Pendant 24h, l'autre ne peut dire 'Non' à aucune idée d'activité ou de sortie !",
     rarity: "legendary",
     emoji: "👑",
-    xp: 500,
+    xp: 600,
   },
   {
     id: "l2",
-    title: "Repas de Chef aux Retrouvailles",
-    description: "L'autre cuisinera ton plat préféré absolu le jour de ton retour !",
+    title: "Capsule du Souhait Secret du 24 Décembre",
+    description: "Tu rédiges 1 souhait secrètement verrouillé jusqu'au 24 Décembre, l'autre s'engage à le réaliser sans savoir ce que c'est à l'avance !",
     rarity: "legendary",
-    emoji: "🥘",
-    xp: 600,
+    emoji: "🔮",
+    xp: 750,
   },
 
-  // 🌈 MYTHIQUE / JACKPOT (0.5%)
+  // 🌈 MYTHIQUE / TROU NOIR JACKPOT (0.5%)
   {
     id: "m1",
-    title: "JACKPOT COSMIQUE — Vœu Magique Accordé !",
-    description: "VŒU ABSOLU ACCORDÉ : L'autre doit réaliser 1 souhait de ton choix sans discuter !",
+    title: "JACKPOT TROU NOIR COSMIQUE — 3 VŒUX MAGIQUES !",
+    description: "SINGULARITÉ ABSOLUE : 3 Vœux magiques accordés sans aucune restriction + 1500 XP Créature !",
     rarity: "mythic",
-    emoji: "🌈",
-    xp: 1000,
+    emoji: "🌀",
+    xp: 1500,
   },
 ];
 
@@ -129,41 +129,41 @@ export const RARITY_CONFIG: Record<
     label: "COMMUN",
     color: "text-slate-300",
     border: "border-slate-500/40",
-    bg: "from-slate-900/90 to-slate-950/90",
-    shadow: "shadow-[0_0_15px_rgba(148,163,184,0.2)]",
-    soundPitch: 440,
+    bg: "from-slate-900/95 via-purple-950/40 to-slate-950/95",
+    shadow: "shadow-[0_0_20px_rgba(148,163,184,0.2)]",
+    soundPitch: 350,
   },
   rare: {
     label: "RARE",
-    color: "text-sky-400",
-    border: "border-sky-500/50",
-    bg: "from-sky-950/90 to-slate-950/90",
-    shadow: "shadow-[0_0_20px_rgba(56,189,248,0.3)]",
-    soundPitch: 587.33,
+    color: "text-sky-400 font-bold",
+    border: "border-sky-500/60",
+    bg: "from-sky-950/95 via-slate-950/80 to-indigo-950/95",
+    shadow: "shadow-[0_0_30px_rgba(56,189,248,0.4)]",
+    soundPitch: 520,
   },
   epic: {
     label: "ÉPIQUE",
-    color: "text-purple-400",
-    border: "border-purple-500/60",
-    bg: "from-purple-950/90 to-slate-950/90",
-    shadow: "shadow-[0_0_25px_rgba(192,132,252,0.4)]",
-    soundPitch: 783.99,
+    color: "text-purple-300 font-bold",
+    border: "border-purple-500/80",
+    bg: "from-purple-950/95 via-fuchsia-950/50 to-slate-950/95",
+    shadow: "shadow-[0_0_40px_rgba(192,132,252,0.6)]",
+    soundPitch: 700,
   },
   legendary: {
     label: "LÉGENDAIRE 🌟",
-    color: "text-amber-300 font-bold animate-pulse",
-    border: "border-amber-400/80",
-    bg: "from-amber-950/90 via-yellow-950/50 to-slate-950/90",
-    shadow: "shadow-[0_0_35px_rgba(251,191,36,0.6)]",
-    soundPitch: 1046.5,
+    color: "text-amber-300 font-extrabold animate-pulse",
+    border: "border-amber-400",
+    bg: "from-amber-950/95 via-yellow-950/60 to-purple-950/95",
+    shadow: "shadow-[0_0_60px_rgba(251,191,36,0.8)]",
+    soundPitch: 980,
   },
   mythic: {
-    label: "MYTHIQUE JACKPOT 🌈",
-    color: "text-pink-300 font-extrabold animate-bounce",
-    border: "border-pink-400/90",
-    bg: "from-pink-950/90 via-purple-950/70 to-cyan-950/90",
-    shadow: "shadow-[0_0_50px_rgba(244,114,182,0.8)]",
-    soundPitch: 1318.51,
+    label: "SINGULARITÉ TROU NOIR 🌀",
+    color: "text-pink-300 font-black animate-bounce",
+    border: "border-pink-500",
+    bg: "from-pink-950/95 via-purple-950/80 to-cyan-950/95",
+    shadow: "shadow-[0_0_80px_rgba(244,114,182,0.9)]",
+    soundPitch: 1200,
   },
 };
 
@@ -180,8 +180,8 @@ export function GachaWheel() {
   const [cooldownMs, setCooldownMs] = useState(0);
   const audioCtxRef = useRef<AudioContext | null>(null);
 
-  // Synthesizer Audio tick sound for dopamine spin
-  const playTickSound = (frequency = 600) => {
+  // Synthétiseur Audio d'aspiration spatiale
+  const playCosmicWarpSound = (frequency = 400, duration = 0.1) => {
     try {
       if (!audioCtxRef.current) {
         audioCtxRef.current = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
@@ -190,18 +190,17 @@ export function GachaWheel() {
       if (ctx.state === "suspended") void ctx.resume();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = "sine";
+      osc.type = "sawtooth";
       osc.frequency.setValueAtTime(frequency, ctx.currentTime);
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
+      gain.gain.setValueAtTime(0.06, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
-      osc.stop(ctx.currentTime + 0.05);
+      osc.stop(ctx.currentTime + duration);
     } catch {}
   };
 
-  // Synchronisation des gains
   useEffect(() => {
     const loadGachaData = async () => {
       try {
@@ -240,7 +239,6 @@ export function GachaWheel() {
     void loadGachaData();
   }, [identity]);
 
-  // Timer cooldown 24h
   useEffect(() => {
     if (cooldownMs <= 0) return;
     const interval = setInterval(() => {
@@ -249,16 +247,15 @@ export function GachaWheel() {
     return () => clearInterval(interval);
   }, [cooldownMs]);
 
-  // Tirage Gacha avec probabilités pondérées
   const getRandomItem = (): GachaItem => {
     const rand = Math.random() * 100;
     let targetRarity: Rarity = "common";
 
-    if (rand < 0.5) targetRarity = "mythic"; // 0.5%
-    else if (rand < 5.0) targetRarity = "legendary"; // 4.5%
-    else if (rand < 20.0) targetRarity = "epic"; // 15%
-    else if (rand < 50.0) targetRarity = "rare"; // 30%
-    else targetRarity = "common"; // 50%
+    if (rand < 0.5) targetRarity = "mythic";
+    else if (rand < 5.0) targetRarity = "legendary";
+    else if (rand < 20.0) targetRarity = "epic";
+    else if (rand < 50.0) targetRarity = "rare";
+    else targetRarity = "common";
 
     const subPool = GACHA_POOL.filter((i) => i.rarity === targetRarity);
     return subPool[Math.floor(Math.random() * subPool.length)] || GACHA_POOL[0];
@@ -275,58 +272,54 @@ export function GachaWheel() {
     const totalItems = GACHA_POOL.length;
     const sliceAngle = 360 / totalItems;
 
-    // Calcul de la rotation avec ralentissement dramatique (5 tours complets + angle cible)
-    const extraRounds = 5 * 360;
+    // 8 tours complets de trous noir avec accélération dramatique
+    const extraRounds = 8 * 360;
     const targetAngle = extraRounds + (totalItems - prizeIndex) * sliceAngle - sliceAngle / 2;
     const finalRotation = rotation + targetAngle;
 
     setRotation(finalRotation);
 
-    // Bruits de tics saccadés pendant le spin
-    let speed = 40;
+    // Sons de déformation spatio-temporelle
+    let speed = 30;
     let ticks = 0;
-    const playSpinTicks = () => {
-      if (ticks < 35) {
-        playTickSound(300 + (ticks % 8) * 60);
+    const playWarpTicks = () => {
+      if (ticks < 45) {
+        playCosmicWarpSound(200 + (ticks % 10) * 80, 0.08);
         ticks++;
-        speed += 6;
-        setTimeout(playSpinTicks, speed);
+        speed += 8;
+        setTimeout(playWarpTicks, speed);
       }
     };
-    playSpinTicks();
+    playWarpTicks();
 
-    // Révélation du lot après 4 secondes
+    // Révélation après 4.8 secondes
     setTimeout(async () => {
       setSpinning(false);
       setWonItem(prize);
 
-      // Effets visuels & sonores selon la rareté
       const rarityConfig = RARITY_CONFIG[prize.rarity];
-      playTickSound(rarityConfig.soundPitch);
+      playCosmicWarpSound(rarityConfig.soundPitch, 0.4);
 
       if (prize.rarity === "legendary" || prize.rarity === "mythic") {
         void confetti({
-          particleCount: 150,
-          spread: 100,
+          particleCount: 200,
+          spread: 120,
           origin: { y: 0.5 },
         });
       } else {
         void confetti({
-          particleCount: 70,
-          spread: 70,
+          particleCount: 90,
+          spread: 80,
           origin: { y: 0.6 },
         });
       }
 
-      // Nourrir la créature commune avec l'XP gagné !
       void feedPet(prize.xp, null, "treat");
 
-      // Cooldown 24h
       const now = Date.now();
       window.localStorage.setItem(`${STORAGE_KEY_LAST}:${identity}`, String(now));
       setCooldownMs(24 * 3600 * 1000);
 
-      // Sauvegarder dans Supabase
       const newWinRecord = {
         ...prize,
         wonAt: new Date().toISOString(),
@@ -342,7 +335,7 @@ export function GachaWheel() {
           body: `GACHA:${JSON.stringify(prize)}`,
         });
       } catch {}
-    }, 4200);
+    }, 4800);
   };
 
   const formatTimeLeft = (ms: number) => {
@@ -356,27 +349,35 @@ export function GachaWheel() {
   return (
     <motion.section {...revealOnScroll} className="w-full">
       <SectionHeading
-        eyebrow="Tirage Surprise Quotidien 🎰"
-        icon={Dices}
-        title="La Roulette"
-        titleAccent="Dopamine"
-        subtitle="1 lancer gratuit par jour ! Gagnez des privilèges exclusifs, du bonus d'XP et des défis uniques !"
-        accent="rose"
+        eyebrow="Singularité Spatio-Temporelle 🌀"
+        icon={Orbit}
+        title="Le Trou Noir"
+        titleAccent="Gacha Cosmique"
+        subtitle="Aspirez la poussière d'étoiles pour débloquer des privilèges légendaires et des vœux secrets !"
+        accent="violet"
       />
 
       <div className="panel-roomy relative overflow-hidden space-y-6">
-        {/* ── ARÈNE ROUE GACHA 3D ── */}
-        <div className="flex flex-col items-center justify-center py-4 space-y-6">
-          {/* Pointeur Flèche Néon */}
+        {/* ── ARÈNE CINÉMATIQUE TROU NOIR HOLOGRAPHIQUE ── */}
+        <div className="flex flex-col items-center justify-center py-6 space-y-8">
           <div className="relative flex flex-col items-center">
-            <div className="z-20 -mb-3 h-0 w-0 border-x-8 border-x-transparent border-t-[16px] border-t-amber-400 drop-shadow-[0_0_10px_#fbbf24]" />
+            {/* Pointeur Rayon Laser Violet Néon */}
+            <div className="z-20 -mb-4 h-6 w-1 rounded-full bg-cyan-400 shadow-[0_0_15px_#38bdf8] animate-pulse" />
 
-            {/* La Roue Tournante */}
-            <div className="relative h-64 w-64 sm:h-80 sm:w-80 rounded-full border-4 border-white/20 p-2 shadow-[0_0_40px_rgba(244,63,94,0.3)] bg-gradient-to-b from-slate-900 to-black overflow-hidden">
+            {/* Le Trou Noir Holo-Wormhole */}
+            <div className="relative h-72 w-72 sm:h-96 sm:w-96 rounded-full border-4 border-purple-500/40 p-3 shadow-[0_0_70px_rgba(168,85,247,0.5)] bg-gradient-to-b from-black via-[#090314] to-[#04010a] overflow-hidden flex items-center justify-center">
+              {/* Anneaux de Plasma Néon Tournants */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 m-auto h-full w-full rounded-full border border-purple-500/20 shadow-[inset_0_0_40px_rgba(192,132,252,0.3)] pointer-events-none"
+              />
+
+              {/* Accretion Disk (Disque d'accrétion tournant avec la roue) */}
               <motion.div
                 animate={{ rotate: rotation }}
-                transition={{ duration: 4, ease: [0.15, 0.85, 0.35, 1] }}
-                className="h-full w-full rounded-full relative overflow-hidden"
+                transition={{ duration: 4.8, ease: [0.12, 0.8, 0.25, 1] }}
+                className="h-full w-full rounded-full relative overflow-hidden flex items-center justify-center"
               >
                 {GACHA_POOL.map((item, idx) => {
                   const total = GACHA_POOL.length;
@@ -385,13 +386,15 @@ export function GachaWheel() {
                   return (
                     <div
                       key={item.id}
-                      className="absolute inset-0 origin-center flex items-start justify-center pt-3"
+                      className="absolute inset-0 origin-center flex items-start justify-center pt-4"
                       style={{
                         transform: `rotate(${angle}deg)`,
                       }}
                     >
                       <div className="flex flex-col items-center gap-0.5 text-center">
-                        <span className="text-xl sm:text-2xl drop-shadow">{item.emoji}</span>
+                        <span className="text-2xl sm:text-3xl drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]">
+                          {item.emoji}
+                        </span>
                         <span
                           className={`text-[8px] font-bold uppercase tracking-wider ${rarityConf.color}`}
                         >
@@ -403,103 +406,107 @@ export function GachaWheel() {
                 })}
               </motion.div>
 
-              {/* Centre de la Roue Néon */}
-              <div className="absolute inset-0 m-auto h-16 w-16 sm:h-20 sm:w-20 rounded-full border-2 border-white/30 bg-background/90 backdrop-blur-md flex flex-col items-center justify-center shadow-2xl z-10 pointer-events-none">
-                <Crown className="h-6 w-6 text-amber-400 animate-pulse" />
-                <span className="text-[9px] font-mono text-foreground/60">GACHA</span>
+              {/* Centre du Trou Noir (Horizon des Événements) */}
+              <div className="absolute inset-0 m-auto h-24 w-24 sm:h-28 sm:w-28 rounded-full border-2 border-cyan-400/50 bg-black/90 backdrop-blur-xl flex flex-col items-center justify-center shadow-[0_0_35px_rgba(56,189,248,0.8)] z-10 pointer-events-none">
+                <Orbit className={`h-8 w-8 text-cyan-300 ${spinning ? "animate-spin" : ""}`} />
+                <span className="text-[9px] font-mono text-cyan-200/80 font-bold tracking-widest mt-1">
+                  SINGULARITÉ
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Bouton Lancer Dopamine */}
+          {/* Bouton Aspirer la Galaxie */}
           <div className="flex flex-col items-center gap-2">
             <button
               type="button"
               onClick={handleSpin}
               disabled={spinning}
-              className={`btn-neon btn-lg btn-pill gap-2 text-sm px-8 py-3 ${
+              className={`btn-neon btn-lg btn-pill gap-2 text-sm px-10 py-4 ${
                 cooldownMs > 0 && !spinning
-                  ? "opacity-80 border-slate-600 bg-slate-800 text-slate-300"
-                  : "bg-gradient-to-r from-neon-rose via-purple-600 to-neon-violet text-white border-rose-400 shadow-[0_0_25px_rgba(244,63,94,0.5)]"
+                  ? "opacity-80 border-slate-700 bg-slate-900 text-slate-400"
+                  : "bg-gradient-to-r from-purple-600 via-fuchsia-600 to-cyan-500 text-white border-cyan-300 shadow-[0_0_35px_rgba(168,85,247,0.7)] hover:scale-105 transition-all"
               }`}
             >
-              <Dices className={`h-5 w-5 ${spinning ? "animate-spin" : ""}`} />
+              <Stars className={`h-5 w-5 ${spinning ? "animate-spin" : ""}`} />
               {spinning
-                ? "Tirage en cours..."
+                ? "ASPIRATION SPATIO-TEMPORELLE..."
                 : cooldownMs > 0
-                ? "Tirage Rejouable ! 🎲"
-                : "LANCER LA ROUETTE (GRATUIT) 🎰"}
+                ? "RECHARGER LE TROU NOIR 🎲"
+                : "ASPIRER LA GALAXIE (TIRAGE GRATUIT) 🌀"}
             </button>
 
             {cooldownMs > 0 && !spinning && (
               <p className="font-mono text-[11px] text-foreground/50">
-                Prochain tirage quotidien disponible dans {formatTimeLeft(cooldownMs)}
+                Prochain saut quantique dans {formatTimeLeft(cooldownMs)}
               </p>
             )}
           </div>
         </div>
 
-        {/* ── MODALE RÉSULTAT RARETÉ / REWARD ── */}
+        {/* ── MODALE RÉSULTAT HOLOGRAPHIQUE ── */}
         <AnimatePresence>
           {wonItem && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.8, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 20 }}
-              className={`rounded-2xl border p-6 text-center space-y-3 backdrop-blur-xl bg-gradient-to-b ${
+              initial={{ opacity: 0, scale: 0.7, rotate: -5 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              exit={{ opacity: 0, scale: 0.7, rotate: 5 }}
+              className={`rounded-3xl border p-6 text-center space-y-4 backdrop-blur-2xl bg-gradient-to-b ${
                 RARITY_CONFIG[wonItem.rarity].bg
               } ${RARITY_CONFIG[wonItem.rarity].border} ${
                 RARITY_CONFIG[wonItem.rarity].shadow
               }`}
             >
-              <span className="text-5xl block animate-bounce">{wonItem.emoji}</span>
+              <span className="text-6xl block animate-bounce drop-shadow-[0_0_20px_rgba(255,255,255,0.8)]">
+                {wonItem.emoji}
+              </span>
               <div>
                 <span
-                  className={`inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-mono font-bold tracking-widest ${
+                  className={`inline-block rounded-full bg-white/10 px-4 py-1 text-xs font-mono font-black tracking-widest ${
                     RARITY_CONFIG[wonItem.rarity].color
                   }`}
                 >
                   {RARITY_CONFIG[wonItem.rarity].label}
                 </span>
-                <h3 className="font-display font-bold text-xl text-foreground mt-2">
+                <h3 className="font-display font-black text-2xl text-foreground mt-2 drop-shadow">
                   {wonItem.title}
                 </h3>
-                <p className="text-xs text-foreground/80 mt-1 max-w-md mx-auto">
+                <p className="text-xs text-foreground/90 mt-2 max-w-md mx-auto leading-relaxed">
                   {wonItem.description}
                 </p>
               </div>
 
               <div className="pt-2 flex items-center justify-center gap-2">
-                <span className="chip-text bg-emerald-500/20 text-emerald-300 border-emerald-500/40">
-                  +{wonItem.xp} XP Créature 🎉
+                <span className="chip-text bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-xs py-1 px-3">
+                  +{wonItem.xp} XP Créature Spatiale 🎉
                 </span>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ── HISTORIQUE DES TIRAGES ── */}
+        {/* ── GALERIE DES GAINS COSMIQUES ── */}
         {history.length > 0 && (
           <div className="border-t border-white/10 pt-4 space-y-3">
             <h4 className="font-display font-semibold text-xs text-foreground/70 flex items-center gap-1.5">
-              <History className="h-3.5 w-3.5" /> Galerie des Lots Gagnés
+              <History className="h-3.5 w-3.5 text-cyan-400" /> Registre des Découvertes Spatiales
             </h4>
 
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
               {history.slice(0, 4).map((h, i) => {
                 const conf = RARITY_CONFIG[h.rarity];
                 return (
                   <div
                     key={`${h.id}-${i}`}
-                    className="flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 p-3 text-left"
+                    className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 p-3 text-left backdrop-blur-md"
                   >
-                    <span className="text-2xl shrink-0">{h.emoji}</span>
+                    <span className="text-3xl shrink-0">{h.emoji}</span>
                     <div className="min-w-0 flex-1">
                       <h5 className="font-bold text-xs text-foreground truncate">
                         {h.title}
                       </h5>
                       <p className="text-[10px] text-foreground/50 truncate">
-                        Gagné par {h.who === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸"}
+                        Obtenu par {h.who === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸"}
                       </p>
                     </div>
                     <span
