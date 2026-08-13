@@ -24,7 +24,6 @@ import {
   type Stage,
 } from "@/lib/pet-data";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { IdentityPicker } from "@/components/modules/thinking-of-you/identity-picker";
 import { Creature } from "./creature";
 import { Egg } from "./egg";
 import { HatchOverlay } from "./hatch-overlay";
@@ -189,21 +188,7 @@ export function Pet() {
     );
   }
 
-  if (!identity) {
-    return (
-      <motion.section {...revealOnScroll} className="w-full">
-        <SectionHeading
-          eyebrow="Notre créature"
-          icon={EggIcon}
-          title="Un œuf vous"
-          titleAccent="attend"
-          subtitle="Dis-moi qui tu es : l'œuf a besoin de vous reconnaître tous les deux."
-          accent="violet"
-        />
-        <IdentityPicker onPick={setIdentity} />
-      </motion.section>
-    );
-  }
+
 
   // L'aperçu de test court-circuite l'état réel pour l'affichage seulement :
   // la base, la progression et les boutons continuent de refléter la vérité.
