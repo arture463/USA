@@ -30,8 +30,8 @@ import { HatchOverlay } from "./hatch-overlay";
 import { EvolutionOverlay } from "./evolution-overlay";
 import { PetDevPanel, type PetPreview } from "./pet-dev-panel";
 
-/** Le panneau de test est activé pour les essais et la visualisation. */
-const IS_DEV = true;
+/** Le panneau de test est désactivé pour le lancement officiel. */
+const IS_DEV = false;
 
 /**
  * MODULE 7 — La créature partagée.
