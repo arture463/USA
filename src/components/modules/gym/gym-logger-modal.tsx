@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Dumbbell, Sparkles, X, Check } from "lucide-react";
+import { Dumbbell, Sparkles, X } from "lucide-react";
 import { WORKOUT_INFO, type WorkoutType } from "@/lib/gym-data";
 import type { Identity } from "@/types";
 
@@ -13,21 +13,27 @@ interface GymLoggerModalProps {
   currentIdentity: Identity;
 }
 
+/**
+ * Modale de saisie d'une séance de musculation.
+ * L'identité est automatiquement détectée (Arthur 🇫🇷 ou Clara 🇺🇸)
+ * → pas besoin de choisir manuellement.
+ */
 export function GymLoggerModal({
   open,
   onClose,
   onLog,
   currentIdentity,
 }: GymLoggerModalProps) {
-  const [who, setWho] = useState<Identity>(currentIdentity);
   const [selectedType, setSelectedType] = useState<WorkoutType>("push");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const isArthur = currentIdentity === "paris";
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    await onLog(who, selectedType, notes.trim() || undefined);
+    await onLog(currentIdentity, selectedType, notes.trim() || undefined);
     setNotes("");
     setSubmitting(false);
     onClose();
@@ -65,42 +71,19 @@ export function GymLoggerModal({
               </div>
               <div>
                 <h3 className="font-display text-lg font-semibold">
-                  Enregistrer une Séance de Muscu
+                  Enregistrer une Séance
                 </h3>
-                <p className="text-xs text-foreground/50">
-                  Booste les muscles de ton avatar & progresse dans la compétition !
+                <p className="text-xs text-foreground/50 flex items-center gap-1.5">
+                  Séance pour
+                  <span className={`font-bold ${isArthur ? "text-neon-cyan" : "text-neon-rose"}`}>
+                    {isArthur ? "Arthur 🇫🇷" : "Clara 🇺🇸"}
+                  </span>
+                  — détecté automatiquement
                 </p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Choix de l'identité */}
-              <div>
-                <label className="label-micro mb-2 block">
-                  Qui a fait la séance ?
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setWho("paris")}
-                    className={`btn-ghost py-2 text-xs font-semibold ${
-                      who === "paris" ? "border-neon-cyan bg-neon-cyan/10 text-neon-cyan" : ""
-                    }`}
-                  >
-                    Arthur 🇫🇷 (Paris)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setWho("raleigh")}
-                    className={`btn-ghost py-2 text-xs font-semibold ${
-                      who === "raleigh" ? "border-neon-rose bg-neon-rose/10 text-neon-rose" : ""
-                    }`}
-                  >
-                    Clara 🇺🇸 (Raleigh)
-                  </button>
-                </div>
-              </div>
-
               {/* Type de séance (Push / Pull / Legs / Cardio) */}
               <div>
                 <label className="label-micro mb-2 block">
@@ -125,6 +108,9 @@ export function GymLoggerModal({
                           <span>{info.emoji}</span>
                           <span style={{ color: active ? info.color : undefined }}>
                             {info.label}
+                          </span>
+                          <span className="rounded bg-amber-500/20 px-1.5 py-0.5 font-mono text-[10px] text-amber-300 font-bold">
+                            +{info.xp} XP
                           </span>
                         </div>
                         <p className="text-[11px] text-foreground/50">
@@ -165,7 +151,7 @@ export function GymLoggerModal({
                   className="btn-neon btn-sm gap-1 bg-amber-500 text-black hover:bg-amber-400 border-amber-400"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
-                  Valider & Fonder les muscles !
+                  {submitting ? "Envoi…" : "Valider & Fondre les muscles !"}
                 </button>
               </div>
             </form>
