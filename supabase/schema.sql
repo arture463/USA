@@ -587,3 +587,30 @@ begin
   end if;
 end $$;
 
+
+-- ════════════════════════════════════════════════════════════════════════
+--  7. SPOTIFY NOW PLAYING — TOKENS D'AUTHENTIFICATION
+-- ════════════════════════════════════════════════════════════════════════
+create table if not exists public.spotify_tokens (
+  who           text        primary key check (who in ('paris', 'raleigh')),
+  access_token  text        not null,
+  refresh_token text        not null,
+  expires_at    timestamptz not null,
+  updated_at    timestamptz not null default now()
+);
+
+alter table public.spotify_tokens enable row level security;
+
+drop policy if exists "spotify_tokens lecture publique" on public.spotify_tokens;
+create policy "spotify_tokens lecture publique"
+  on public.spotify_tokens for select using (true);
+
+drop policy if exists "spotify_tokens insertion publique" on public.spotify_tokens;
+create policy "spotify_tokens insertion publique"
+  on public.spotify_tokens for insert with check (true);
+
+drop policy if exists "spotify_tokens update publique" on public.spotify_tokens;
+create policy "spotify_tokens update publique"
+  on public.spotify_tokens for update using (true);
+
+
