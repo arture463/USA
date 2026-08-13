@@ -351,71 +351,14 @@ export function GachaWheel() {
 
   return (
     <motion.section {...revealOnScroll} className="w-full">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <SectionHeading
-          eyebrow="Singularité Spatio-Temporelle 🌀"
-          icon={Orbit}
-          title="Le Trou Noir"
-          titleAccent="Gacha Cosmique"
-          subtitle="Aspirez la poussière d'étoiles pour débloquer des privilèges légendaires et des vœux secrets !"
-          accent="violet"
-        />
-
-        {/* Bouton Panneau Testeur */}
-        <button
-          type="button"
-          onClick={() => setDevPanelOpen(!devPanelOpen)}
-          className="btn-ghost btn-xs gap-1.5 text-slate-400 hover:text-slate-200 border-white/10 shrink-0 self-start sm:self-auto"
-        >
-          <Wrench className="h-3.5 w-3.5" />
-          {devPanelOpen ? "Fermer Panel Test" : "🛠️ Panel Testeur"}
-        </button>
-      </div>
-
-      {/* ── PANNEAU DE TEST DEVELOPPER ── */}
-      <AnimatePresence>
-        {devPanelOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="rounded-2xl border border-amber-500/40 bg-amber-950/20 p-4 mb-4 backdrop-blur-md space-y-3"
-          >
-            <div className="flex items-center justify-between">
-              <h4 className="font-display font-bold text-xs text-amber-300 flex items-center gap-1.5">
-                <Wrench className="h-4 w-4" /> PANNEAU DE TEST GACHA (ADMIN MODE)
-              </h4>
-              <span className="text-[10px] font-mono text-amber-400/80">Bypass Cooldown Active</span>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={handleResetCooldown}
-                className="btn-pill btn-xs border-amber-400/50 bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 gap-1"
-              >
-                <RefreshCw className="h-3 w-3" /> Reset Cooldown (Rejouer Direct)
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSpin(GACHA_POOL.find((i) => i.rarity === "legendary"))}
-                className="btn-pill btn-xs border-purple-400/50 bg-purple-500/20 text-purple-300 hover:bg-purple-500/30 gap-1"
-              >
-                <Crown className="h-3 w-3" /> Test Gagnant LÉGENDAIRE 👑
-              </button>
-
-              <button
-                type="button"
-                onClick={() => handleSpin(GACHA_POOL.find((i) => i.rarity === "mythic"))}
-                className="btn-pill btn-xs border-pink-400/50 bg-pink-500/20 text-pink-300 hover:bg-pink-500/30 gap-1"
-              >
-                <Zap className="h-3 w-3 animate-pulse" /> Test JACKPOT MYTHIQUE 🌀
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      <SectionHeading
+        eyebrow="Singularité Spatio-Temporelle 🌀"
+        icon={Orbit}
+        title="Le Trou Noir"
+        titleAccent="Gacha Cosmique"
+        subtitle="Aspirez la poussière d'étoiles pour débloquer des privilèges légendaires et des vœux secrets !"
+        accent="violet"
+      />
 
       <div className="panel-roomy relative overflow-hidden space-y-6">
         {/* ── CUTSCENE OVERLAY OVERFLOW WORMHOLE CINEMATIC ── */}
