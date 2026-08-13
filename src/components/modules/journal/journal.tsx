@@ -6,17 +6,16 @@ import { useIdentity } from "@/hooks/use-identity";
 import { useJournal } from "@/hooks/use-journal";
 import { revealOnScroll } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { IdentityPicker } from "@/components/modules/thinking-of-you/identity-picker";
 import { JournalComposer } from "./journal-composer";
 import { JournalEntryCard } from "./journal-entry";
 
 /**
  * MODULE 5 — Journal & Capsule temporelle
  * Fil partagé en temps réel : messages, photos et notes vocales.
- * Réutilise l'identité choisie dans le module "Thinking of You".
+ * L'identité est automatiquement détectée par le fuseau horaire.
  */
 export function Journal() {
-  const { identity, setIdentity, ready } = useIdentity();
+  const { identity, ready } = useIdentity();
   const { entries, loading, sending, addText, addMedia } = useJournal(identity);
 
   return (
@@ -30,11 +29,7 @@ export function Journal() {
         accent="violet"
       />
 
-      {/* Sans identité → on invite à la choisir (composant réutilisé) */}
-      {ready && !identity ? (
-        <IdentityPicker onPick={setIdentity} />
-      ) : (
-        <div className="space-y-4">
+      <div className="space-y-4">
           <JournalComposer
             sending={sending}
             onSendText={addText}
@@ -62,7 +57,6 @@ export function Journal() {
             </motion.div>
           )}
         </div>
-      )}
     </motion.section>
   );
 }

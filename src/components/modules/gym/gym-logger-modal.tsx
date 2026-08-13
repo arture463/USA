@@ -10,7 +10,7 @@ interface GymLoggerModalProps {
   open: boolean;
   onClose: () => void;
   onLog: (who: Identity, type: WorkoutType, notes?: string) => Promise<void>;
-  currentIdentity: Identity | null;
+  currentIdentity: Identity;
 }
 
 export function GymLoggerModal({
@@ -19,7 +19,7 @@ export function GymLoggerModal({
   onLog,
   currentIdentity,
 }: GymLoggerModalProps) {
-  const [who, setWho] = useState<Identity>(currentIdentity ?? "paris");
+  const [who, setWho] = useState<Identity>(currentIdentity);
   const [selectedType, setSelectedType] = useState<WorkoutType>("push");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);

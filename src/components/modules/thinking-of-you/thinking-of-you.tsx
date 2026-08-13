@@ -13,7 +13,6 @@ import { playChime } from "@/lib/chime";
 import { vibrateHeartbeat, vibrateTick } from "@/lib/haptics";
 import { LOCATIONS } from "@/lib/constants";
 import { revealOnScroll } from "@/lib/motion";
-import { IdentityPicker } from "./identity-picker";
 import { Shockwave } from "./shockwave";
 import type { Thought } from "@/types";
 
@@ -61,15 +60,6 @@ export function ThinkingOfYou() {
   // Skeleton pendant la lecture du localStorage (évite le flash)
   if (!ready) {
     return <div className="skeleton h-72 w-full" />;
-  }
-
-  // Premier passage sur cet appareil → choix de l'identité
-  if (!identity) {
-    return (
-      <section className="w-full">
-        <IdentityPicker onPick={setIdentity} />
-      </section>
-    );
   }
 
   const other =
