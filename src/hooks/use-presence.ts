@@ -6,10 +6,8 @@ import type { Identity } from "@/types";
 
 /**
  * Présence temps réel (Supabase Presence).
- * Sait si L'AUTRE personne est connectée au site en ce moment même.
- *
- * Chaque appareil "track" sa présence sous une clé = son identité
- * ('paris' / 'raleigh'). On écoute la synchro pour savoir qui est là.
+ * Gestionnaire de présence Singleton partagé : Arthur 🇫🇷 et Clara 🇺🇸
+ * rejoignent la MÊME chambre ("presence-room") en temps réel.
  */
 const LAST_SEEN_KEY = "us-together:last-seen";
 
@@ -26,90 +24,115 @@ function formatLastSeen(iso: string | null): string {
   }
 }
 
-export function usePresence(identity: Identity | null) {
-  const [onlineKeys, setOnlineKeys] = useState<string[]>([]);
-  const [lastSeenIso, setLastSeenIso] = useState<string | null>(null);
+// État de présence global partagé entre tous les composants de l'application
+let globalOnlineKeys: string[] = [];
+let globalLastSeenMap: Record<string, string> = {};
+const presenceSubscribers = new Set<() => void>();
 
-  const other: Identity = identity === "paris" ? "raleigh" : "paris";
+let activeChannel: ReturnType<typeof supabase.channel> | null = null;
+let activeIdentity: Identity | null = null;
+let heartbeatInterval: NodeJS.Timeout | null = null;
+
+function notifySubscribers() {
+  presenceSubscribers.forEach((cb) => cb());
+}
+
+function initGlobalPresence(identity: Identity) {
+  if (activeIdentity === identity && activeChannel) return;
+
+  if (activeChannel) {
+    try {
+      void supabase.removeChannel(activeChannel);
+    } catch {}
+    activeChannel = null;
+  }
+
+  activeIdentity = identity;
+
+  // Canal unique partagé : Arthur 🇫🇷 & Clara 🇺🇸 rejoignent la MÊME pièce !
+  const channel = supabase.channel("presence-room", {
+    config: { presence: { key: identity } },
+  });
+
+  const syncState = () => {
+    const state = channel.presenceState();
+    globalOnlineKeys = Object.keys(state);
+
+    // Mémoriser l'heure du dernier passage pour Paris et Raleigh
+    ["paris", "raleigh"].forEach((key) => {
+      const presences = state[key] as unknown as { online_at?: string }[] | undefined;
+      if (presences && presences.length > 0 && presences[0]?.online_at) {
+        globalLastSeenMap[key] = presences[0].online_at;
+        try {
+          window.localStorage.setItem(`${LAST_SEEN_KEY}:${key}`, presences[0].online_at);
+        } catch {}
+      }
+    });
+
+    notifySubscribers();
+  };
+
+  channel
+    .on("presence", { event: "sync" }, syncState)
+    .on("presence", { event: "join" }, syncState)
+    .on("presence", { event: "leave" }, (payload) => {
+      const leftKey = (payload as unknown as { key?: string })?.key;
+      if (leftKey) {
+        globalOnlineKeys = globalOnlineKeys.filter((k) => k !== leftKey);
+        const nowIso = new Date().toISOString();
+        globalLastSeenMap[leftKey] = nowIso;
+        try {
+          window.localStorage.setItem(`${LAST_SEEN_KEY}:${leftKey}`, nowIso);
+        } catch {}
+      }
+      setTimeout(syncState, 100);
+      notifySubscribers();
+    })
+    .subscribe(async (status) => {
+      if (status === "SUBSCRIBED") {
+        await channel.track({ online_at: new Date().toISOString() });
+      }
+    });
+
+  activeChannel = channel;
+
+  if (heartbeatInterval) clearInterval(heartbeatInterval);
+  heartbeatInterval = setInterval(async () => {
+    try {
+      if (activeChannel) {
+        await activeChannel.track({ online_at: new Date().toISOString() });
+      }
+    } catch {}
+  }, 15000);
+}
+
+export function usePresence(identity: Identity | null) {
+  const [, setTick] = useState(0);
 
   useEffect(() => {
     if (!identity) return;
 
-    // Charger la dernière heure de passage mémorisée
+    // Charger les dates mémorisées localement
     try {
-      const stored = window.localStorage.getItem(`${LAST_SEEN_KEY}:${other}`);
-      if (stored) setLastSeenIso(stored);
+      ["paris", "raleigh"].forEach((k) => {
+        const stored = window.localStorage.getItem(`${LAST_SEEN_KEY}:${k}`);
+        if (stored) globalLastSeenMap[k] = stored;
+      });
     } catch {}
 
-    // Générer un nom de canal unique par composant abonné pour éviter tout conflit d'instance
-    const channelId = `presence-room-${identity}-${Math.random().toString(36).substring(7)}`;
-    const channel = supabase.channel(channelId, {
-      config: { presence: { key: identity } },
-    });
+    initGlobalPresence(identity);
 
-    const updatePresenceState = () => {
-      const state = channel.presenceState();
-      setOnlineKeys(Object.keys(state));
-
-      // Extraire l'horodatage de présence de l'autre
-      const otherPresences = state[other] as unknown as { online_at?: string }[] | undefined;
-      if (otherPresences && otherPresences.length > 0) {
-        const latestIso = otherPresences[0]?.online_at || new Date().toISOString();
-        setLastSeenIso(latestIso);
-        try {
-          window.localStorage.setItem(`${LAST_SEEN_KEY}:${other}`, latestIso);
-        } catch {}
-      }
-    };
-
-    channel
-      .on("presence", { event: "sync" }, updatePresenceState)
-      .on("presence", { event: "join" }, updatePresenceState)
-      .on("presence", { event: "leave" }, (payload) => {
-        const leftKey = (payload as unknown as { key?: string })?.key;
-        if (leftKey) {
-          setOnlineKeys((prev) => prev.filter((k) => k !== leftKey));
-          if (leftKey === other) {
-            const nowIso = new Date().toISOString();
-            setLastSeenIso(nowIso);
-            try {
-              window.localStorage.setItem(`${LAST_SEEN_KEY}:${other}`, nowIso);
-            } catch {}
-          }
-        }
-        setTimeout(updatePresenceState, 100);
-      })
-      .subscribe(async (status) => {
-        if (status === "SUBSCRIBED") {
-          await channel.track({ online_at: new Date().toISOString() });
-        }
-      });
-
-    const heartbeat = setInterval(async () => {
-      try {
-        await channel.track({ online_at: new Date().toISOString() });
-      } catch {}
-    }, 15000);
-
-    const handleBeforeUnload = () => {
-      try {
-        void channel.untrack();
-      } catch {}
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    const subscriber = () => setTick((t) => t + 1);
+    presenceSubscribers.add(subscriber);
 
     return () => {
-      clearInterval(heartbeat);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      try {
-        void channel.untrack();
-      } catch {}
-      void supabase.removeChannel(channel);
+      presenceSubscribers.delete(subscriber);
     };
-  }, [identity, other]);
+  }, [identity]);
 
-  const otherOnline = identity ? onlineKeys.includes(other) : false;
+  const other: Identity = identity === "paris" ? "raleigh" : "paris";
+  const otherOnline = identity ? globalOnlineKeys.includes(other) : false;
+  const lastSeenIso = globalLastSeenMap[other] || null;
 
   return {
     otherOnline,
