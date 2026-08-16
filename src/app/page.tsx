@@ -16,6 +16,7 @@ import { OpenWhen } from "@/components/modules/open-when/open-when";
 import { BucketList } from "@/components/modules/bucket-list/bucket-list";
 import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
+import { UsReal } from "@/components/modules/us-real/us-real";
 import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
 import { Gym } from "@/components/modules/gym/gym";
@@ -86,6 +87,13 @@ export default function Home() {
         <section id="signal" className="w-full scroll-mt-24">
           <ModuleErrorBoundary fallbackTitle="Module Signal indisponible">
             <ThinkingOfYou />
+          </ModuleErrorBoundary>
+        </section>
+
+        {/* ── MODULE BE REAL : US REAL ── */}
+        <section id="us-real" className="w-full scroll-mt-24">
+          <ModuleErrorBoundary fallbackTitle="Module US Real indisponible">
+            <UsReal />
           </ModuleErrorBoundary>
         </section>
 
