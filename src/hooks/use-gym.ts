@@ -17,15 +17,47 @@ import {
 import type { Identity } from "@/types";
 
 const STORAGE_KEY = "us-together:gym-sessions";
+const DELETED_STORAGE_KEY = "us-together:gym-deleted-ids";
+
+// Séances fantômes/tests initiales créées pendant le développement à ignorer d'office
+const INITIAL_BLACK_LIST = new Set(["1dd8c20a-77e7-4ec8-ae02-3da8891f3d23"]);
+
+function getDeletedIds(): Set<string> {
+  const set = new Set(INITIAL_BLACK_LIST);
+  try {
+    if (typeof window !== "undefined") {
+      const raw = window.localStorage.getItem(DELETED_STORAGE_KEY);
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          arr.forEach((id) => set.add(id));
+        }
+      }
+    }
+  } catch {}
+  return set;
+}
+
+function saveDeletedId(id: string) {
+  try {
+    if (typeof window !== "undefined") {
+      const set = getDeletedIds();
+      set.add(id);
+      window.localStorage.setItem(DELETED_STORAGE_KEY, JSON.stringify(Array.from(set)));
+    }
+  } catch {}
+}
 
 /** Déduplique les séances par ID et élimine les doublons créés à quelques secondes d'intervalle */
 function deduplicateSessions(list: GymSessionRecord[]): GymSessionRecord[] {
   if (!Array.isArray(list)) return [];
+  const deletedIds = getDeletedIds();
   const seenIds = new Set<string>();
   const result: GymSessionRecord[] = [];
 
   for (const s of list) {
     if (!s || !s.id) continue;
+    if (deletedIds.has(s.id)) continue;
     if (seenIds.has(s.id)) continue;
 
     // Détecter si une séance quasi identique existe déjà (même utilisateur, même type, intervalle < 60s)
@@ -202,6 +234,7 @@ export function useGym() {
 
   // Supprimer une séance (en cas de doublon ou d'erreur)
   const deleteWorkout = useCallback(async (id: string) => {
+    saveDeletedId(id);
     setSessions((prev) => {
       const next = prev.filter((s) => s.id !== id);
       try {

@@ -575,6 +575,14 @@ drop policy if exists "gym_sessions insertion publique" on public.gym_sessions;
 create policy "gym_sessions insertion publique"
   on public.gym_sessions for insert with check (true);
 
+drop policy if exists "gym_sessions suppression publique" on public.gym_sessions;
+create policy "gym_sessions suppression publique"
+  on public.gym_sessions for delete using (true);
+
+drop policy if exists "gym_sessions modification publique" on public.gym_sessions;
+create policy "gym_sessions modification publique"
+  on public.gym_sessions for update using (true);
+
 do $$
 begin
   if not exists (
