@@ -20,7 +20,10 @@ const STORAGE_KEY = "us-together:gym-sessions";
 const DELETED_STORAGE_KEY = "us-together:gym-deleted-ids";
 
 // Séances fantômes/tests initiales créées pendant le développement à ignorer d'office
-const INITIAL_BLACK_LIST = new Set(["1dd8c20a-77e7-4ec8-ae02-3da8891f3d23"]);
+const INITIAL_BLACK_LIST = new Set([
+  "1dd8c20a-77e7-4ec8-ae02-3da8891f3d23",
+  "32b8a218-0c4f-404a-980f-7f0dd7af5f28",
+]);
 
 function getDeletedIds(): Set<string> {
   const set = new Set(INITIAL_BLACK_LIST);
@@ -49,9 +52,9 @@ function saveDeletedId(id: string) {
 }
 
 /** Déduplique les séances par ID et élimine les doublons créés à quelques secondes d'intervalle */
-function deduplicateSessions(list: GymSessionRecord[]): GymSessionRecord[] {
+function deduplicateSessions(list: GymSessionRecord[], customDeletedIds?: Set<string>): GymSessionRecord[] {
   if (!Array.isArray(list)) return [];
-  const deletedIds = getDeletedIds();
+  const deletedIds = customDeletedIds ?? getDeletedIds();
   const seenIds = new Set<string>();
   const result: GymSessionRecord[] = [];
 
@@ -81,16 +84,36 @@ export function useGym() {
   const [loading, setLoading] = useState(true);
   const [highFiveToast, setHighFiveToast] = useState<string | null>(null);
 
-  // Charger les séances depuis Supabase ou LocalStorage avec déduplication
+  // Charger les séances depuis Supabase ou LocalStorage avec déduplication et vérification des tombstones
   const fetchSessions = useCallback(async () => {
     try {
-      const { data, error } = await supabase
-        .from("gym_sessions")
-        .select("*")
-        .order("created_at", { ascending: false });
+      const [sessionsRes, deletedRes] = await Promise.all([
+        supabase
+          .from("gym_sessions")
+          .select("*")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("journal_entries")
+          .select("body")
+          .eq("kind", "text")
+          .like("body", "GYM_DELETED:%"),
+      ]);
 
-      if (!error && data) {
-        const clean = deduplicateSessions(data as GymSessionRecord[]);
+      const deletedIds = getDeletedIds();
+      if (deletedRes.data) {
+        deletedRes.data.forEach((r) => {
+          if (r.body) {
+            const id = r.body.replace("GYM_DELETED:", "").trim();
+            if (id) {
+              deletedIds.add(id);
+              saveDeletedId(id);
+            }
+          }
+        });
+      }
+
+      if (!sessionsRes.error && sessionsRes.data) {
+        const clean = deduplicateSessions(sessionsRes.data as GymSessionRecord[], deletedIds);
         setSessions(clean);
         try {
           window.localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
@@ -98,7 +121,7 @@ export function useGym() {
       } else {
         const local = window.localStorage.getItem(STORAGE_KEY);
         if (local) {
-          const parsed = deduplicateSessions(JSON.parse(local));
+          const parsed = deduplicateSessions(JSON.parse(local), deletedIds);
           setSessions(parsed);
         }
       }
@@ -118,16 +141,19 @@ export function useGym() {
 
     // Écoute Realtime des séances & des suppressions
     const channel = supabase
-      .channel("realtime:gym_sessions_v2")
+      .channel("realtime:gym_sessions_v3")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "gym_sessions" },
         (payload) => {
           const record = payload.new as GymSessionRecord;
           if (!record?.id) return;
+          const deletedIds = getDeletedIds();
+          if (deletedIds.has(record.id)) return;
+
           setSessions((prev) => {
             if (prev.some((s) => s.id === record.id)) return prev;
-            const next = deduplicateSessions([record, ...prev]);
+            const next = deduplicateSessions([record, ...prev], deletedIds);
             try {
               window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
             } catch {}
@@ -146,6 +172,7 @@ export function useGym() {
         (payload) => {
           const oldRecord = payload.old as { id?: string };
           if (!oldRecord?.id) return;
+          saveDeletedId(oldRecord.id);
           setSessions((prev) => {
             const next = prev.filter((s) => s.id !== oldRecord.id);
             try {
@@ -157,8 +184,34 @@ export function useGym() {
       )
       .subscribe();
 
+    // Écoute Realtime des tombstones de suppression GYM_DELETED
+    const tombstoneChannel = supabase
+      .channel("realtime:gym_tombstones")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "journal_entries" },
+        (payload) => {
+          const entry = payload.new as { body?: string };
+          if (entry?.body && entry.body.startsWith("GYM_DELETED:")) {
+            const id = entry.body.replace("GYM_DELETED:", "").trim();
+            if (id) {
+              saveDeletedId(id);
+              setSessions((prev) => {
+                const next = prev.filter((s) => s.id !== id);
+                try {
+                  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+                } catch {}
+                return next;
+              });
+            }
+          }
+        }
+      )
+      .subscribe();
+
     return () => {
       void supabase.removeChannel(channel);
+      void supabase.removeChannel(tombstoneChannel);
     };
   }, [fetchSessions]);
 
@@ -243,10 +296,20 @@ export function useGym() {
       return next;
     });
 
+    // 1. Tenter la suppression directe SQL
     try {
-      await supabase.from("gym_sessions").delete().eq("id", id);
+      void supabase.from("gym_sessions").delete().eq("id", id);
+    } catch {}
+
+    // 2. Diffuser et enregistrer le tombstone pour garantir la suppression permanente partout
+    try {
+      await supabase.from("journal_entries").insert({
+        author: "paris",
+        kind: "text",
+        body: `GYM_DELETED:${id}`,
+      });
     } catch (err) {
-      console.error("Erreur lors de la suppression de la séance :", err);
+      console.error("Erreur lors de l'enregistrement de la suppression :", err);
     }
   }, []);
 

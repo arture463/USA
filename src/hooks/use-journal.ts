@@ -38,7 +38,8 @@ const isUserJournalPost = (e: JournalEntry) => {
   return (
     !e.body.startsWith("LIST:") &&
     !e.body.startsWith("BUCKET_") &&
-    !e.body.startsWith("GACHA:")
+    !e.body.startsWith("GACHA:") &&
+    !e.body.startsWith("GYM_")
   );
 };
 
