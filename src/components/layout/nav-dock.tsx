@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHandshake, Camera } from "lucide-react";
+import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHandshake, Camera, MoonStar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useIdentity } from "@/hooks/use-identity";
@@ -21,6 +21,7 @@ import { usePresence } from "@/hooks/use-presence";
 const ITEMS = [
   { id: "time", label: "Heure", Icon: Clock },
   { id: "globe", label: "Globe", Icon: Globe2 },
+  { id: "sky", label: "Ciel", Icon: MoonStar },
   { id: "signal", label: "Signal", Icon: Radio },
   { id: "us-real", label: "US Real", Icon: Camera },
   { id: "letters", label: "Lettres", Icon: Mail },

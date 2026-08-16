@@ -11,6 +11,7 @@ import { ServiceWorkerRegister } from "@/components/layout/service-worker-regist
 import { Hero } from "@/components/layout/hero";
 import { NavDock } from "@/components/layout/nav-dock";
 import { Globe } from "@/components/modules/globe/globe";
+import { SkySync } from "@/components/modules/sky-sync/sky-sync";
 import { TimeSync } from "@/components/modules/time-sync/time-sync";
 import { OpenWhen } from "@/components/modules/open-when/open-when";
 import { BucketList } from "@/components/modules/bucket-list/bucket-list";
@@ -80,6 +81,13 @@ export default function Home() {
         <section id="globe" className="w-full scroll-mt-24">
           <ModuleErrorBoundary fallbackTitle="Module Globe 3D indisponible">
             <Globe />
+          </ModuleErrorBoundary>
+        </section>
+
+        {/* ── MODULE CIEL & MÉTÉO PARTAGÉE : SKY SYNC ── */}
+        <section id="sky" className="w-full scroll-mt-24">
+          <ModuleErrorBoundary fallbackTitle="Module Ciel & Météo indisponible">
+            <SkySync />
           </ModuleErrorBoundary>
         </section>
 
