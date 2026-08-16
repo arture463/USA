@@ -45,7 +45,7 @@ export const WORKOUT_INFO: Record<
     color: "hsl(190 95% 55%)",
     muscles: "Pectoraux · Épaules · Triceps",
     description: "Développé couché, militaire, dips",
-    xp: 120,
+    xp: 100,
   },
   pull: {
     label: "Pull Day",
@@ -53,7 +53,7 @@ export const WORKOUT_INFO: Record<
     color: "hsl(265 90% 65%)",
     muscles: "Dos · Biceps · Trapèzes",
     description: "Tractions, tirage vert, curl biceps",
-    xp: 120,
+    xp: 100,
   },
   legs: {
     label: "Legs Day",
@@ -61,7 +61,7 @@ export const WORKOUT_INFO: Record<
     color: "hsl(152 76% 60%)",
     muscles: "Quadriceps · Ischios · Fessiers · Mollets",
     description: "Squats, presse à cuisses, fentes",
-    xp: 150,
+    xp: 100,
   },
   cardio: {
     label: "Cardio & Abs",

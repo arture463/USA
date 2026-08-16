@@ -32,11 +32,15 @@ export function GymLoggerModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (submitting) return;
     setSubmitting(true);
-    await onLog(currentIdentity, selectedType, notes.trim() || undefined);
-    setNotes("");
-    setSubmitting(false);
-    onClose();
+    try {
+      await onLog(currentIdentity, selectedType, notes.trim() || undefined);
+      setNotes("");
+      onClose();
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

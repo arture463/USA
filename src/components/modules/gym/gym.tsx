@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Dumbbell, Plus, Trophy, Flame, Zap, Award, Sparkles, Send, Heart } from "lucide-react";
+import { Dumbbell, Plus, Trophy, Flame, Zap, Award, Sparkles, Send, Heart, Trash2 } from "lucide-react";
 import { useGym } from "@/hooks/use-gym";
 import { useIdentity } from "@/hooks/use-identity";
 import { revealOnScroll } from "@/lib/motion";
@@ -20,6 +20,7 @@ export function Gym() {
   const {
     sessions,
     logWorkout,
+    deleteWorkout,
     sendHighFive,
     highFiveToast,
     arthurStats,
@@ -158,7 +159,7 @@ export function Gym() {
                 return (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between rounded-lg border border-white/5 bg-white/5 px-3 py-2 text-xs hover:border-white/15 transition-all"
+                    className="group flex items-center justify-between rounded-lg border border-white/5 bg-white/5 px-3 py-2 text-xs hover:border-white/15 transition-all"
                   >
                     <div className="flex items-center gap-2.5">
                       <span className="text-base">{info.emoji}</span>
@@ -179,14 +180,24 @@ export function Gym() {
                         )}
                       </div>
                     </div>
-                    <span className="font-mono text-[10px] text-foreground/40 shrink-0">
-                      {new Date(s.created_at).toLocaleDateString("fr-FR", {
-                        day: "numeric",
-                        month: "short",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="font-mono text-[10px] text-foreground/40">
+                        {new Date(s.created_at).toLocaleDateString("fr-FR", {
+                          day: "numeric",
+                          month: "short",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => void deleteWorkout(s.id)}
+                        className="opacity-0 group-hover:opacity-100 p-1 text-foreground/30 hover:text-rose-400 hover:bg-rose-500/10 rounded transition-all"
+                        title="Supprimer cette séance"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
                 );
               })}
