@@ -1,8 +1,10 @@
 {
+  "id": "/",
   "name": "US Together — Paris ↔ Raleigh",
   "short_name": "US Together",
-  "description": "Notre espace partagé pendant les 4 mois. Distants mais synchronisés.",
+  "description": "Notre espace privé partagé pendant les 4 mois. Distants mais synchronisés.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#0d0814",
   "theme_color": "#0d0814",
@@ -12,13 +14,25 @@
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
