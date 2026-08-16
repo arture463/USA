@@ -28,6 +28,8 @@ export function UsReal() {
   const {
     loading,
     uploading,
+    schedule,
+    alertTestSent,
     todayPair,
     myTodayPhoto,
     partnerTodayPhoto,
@@ -36,6 +38,7 @@ export function UsReal() {
     historyDays,
     streak,
     postDailyPhoto,
+    triggerTestAlert,
   } = useUsReal(identity);
 
   const [modalOpen, setModalOpen] = useState(false);
@@ -93,6 +96,16 @@ export function UsReal() {
         />
 
         <div className="flex items-center gap-2">
+          {/* Bouton de test d'alerte */}
+          <button
+            type="button"
+            onClick={triggerTestAlert}
+            disabled={alertTestSent}
+            className="btn-ghost btn-xs text-[11px] gap-1 text-foreground/70 border-white/10 hover:text-amber-300"
+          >
+            {alertTestSent ? "Alerte envoyée ⚡" : "Tester l'alarme 🔔"}
+          </button>
+
           {/* Badge Streak BeReal */}
           <div className="flex items-center gap-1.5 rounded-full border border-amber-500/40 bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.2)]">
             <Flame className="h-4 w-4 fill-amber-400 text-amber-400 animate-pulse" />
@@ -101,8 +114,40 @@ export function UsReal() {
         </div>
       </div>
 
+      {/* ── BANNIÈRE D'URGENCE QUOTIDIENNE (À PARTIR DE 20H00 PARIS / 14H00 RALEIGH) ── */}
+      {schedule.isAlertActive && !hasPostedToday && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98, y: -10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="mb-4 rounded-2xl border-2 border-amber-400 bg-amber-500/15 p-4 shadow-[0_0_30px_rgba(245,158,11,0.3)] backdrop-blur-xl flex flex-col sm:flex-row items-center justify-between gap-3 animate-pulse"
+        >
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-amber-400 text-black font-black text-lg shadow-lg">
+              ⚠️
+            </div>
+            <div>
+              <p className="text-sm font-black uppercase tracking-wider text-amber-300">
+                C&apos;est l&apos;heure du US Real !
+              </p>
+              <p className="text-xs text-amber-100/90 font-medium">
+                L&apos;alarme quotidienne a sonné ({schedule.triggerLabel}) — Vous devez capturer votre moment du jour !
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="btn-neon btn-sm btn-pill gap-1.5 px-4 py-2 text-xs font-bold bg-amber-400 text-black border-amber-300 hover:bg-amber-300 shrink-0 shadow-[0_0_20px_rgba(245,158,11,0.5)]"
+          >
+            <Camera className="h-4 w-4" />
+            Prendre ma photo maintenant 📸
+          </button>
+        </motion.div>
+      )}
+
       <div className="panel-roomy relative overflow-hidden space-y-6">
-        {/* ── BANDEAU DU JOUR ── */}
+        {/* ── BANDEAU DU JOUR & COMPTE À REBOURS ── */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-4">
           <div className="flex items-center gap-2">
             <span className="flex h-2.5 w-2.5 rounded-full bg-amber-400 animate-ping" />
@@ -111,13 +156,22 @@ export function UsReal() {
             </p>
           </div>
 
-          <p className="text-[11px] text-foreground/50 font-mono">
-            {todayPair.bothPosted
-              ? "✨ Double photo complétée aujourd'hui !"
-              : hasPostedToday
-                ? `En attente du moment de ${partnerName}...`
-                : `À toi de capturer ton moment du jour !`}
-          </p>
+          <div className="flex items-center gap-2">
+            {!schedule.isAlertActive && !hasPostedToday && (
+              <span className="flex items-center gap-1 text-[11px] font-mono text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/25 px-2.5 py-0.5 rounded-full">
+                <Clock className="h-3 w-3" />
+                Alarme dans {schedule.formattedCountdown} (20h Paris / 14h Raleigh)
+              </span>
+            )}
+
+            <p className="text-[11px] text-foreground/50 font-mono">
+              {todayPair.bothPosted
+                ? "✨ Double photo complétée aujourd'hui !"
+                : hasPostedToday
+                  ? `En attente du moment de ${partnerName}...`
+                  : `À toi de capturer ton moment du jour !`}
+            </p>
+          </div>
         </div>
 
         {/* ── DOUBLE VUE DU JOUR (PARIS 🇫🇷 ↔ RALEIGH 🇺🇸) ── */}

@@ -30,6 +30,8 @@ const BUCKET = "journal";
 const TABLE = "journal_entries";
 const PREFIX = "USREAL:";
 const STORAGE_KEY = "us-together:us-real-cache";
+const TRIGGER_HOUR_PARIS = 20; // 20h00 à Paris 🇫🇷 = 14h00 à Raleigh 🇺🇸
+const NOTIF_STORAGE_PREFIX = "us-together:usreal-notif-sent:";
 
 /** Récupère la date locale au format YYYY-MM-DD */
 export function getTodayDateString(): string {
@@ -61,13 +63,68 @@ export function usRealMediaUrl(path: string | null): string | null {
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
+/** Calcule l'heure actuelle à Paris et le temps restant avant le déclenchement de 20h00 */
+export function getParisAlertSchedule() {
+  try {
+    const now = new Date();
+    // Convertir l'heure actuelle en heure de Paris
+    const parisTimeStr = now.toLocaleTimeString("en-GB", {
+      timeZone: "Europe/Paris",
+      hour12: false,
+    });
+    const [h, m, s] = parisTimeStr.split(":").map(Number);
+    const currentParisMinutes = h * 60 + m;
+    const targetParisMinutes = TRIGGER_HOUR_PARIS * 60; // 20 * 60 = 1200
+
+    const isAlertActive = currentParisMinutes >= targetParisMinutes;
+
+    let diffMinutes = targetParisMinutes - currentParisMinutes;
+    if (diffMinutes < 0) {
+      // Temps avant le déclenchement de demain
+      diffMinutes += 24 * 60;
+    }
+
+    const hoursLeft = Math.floor(diffMinutes / 60);
+    const minutesLeft = diffMinutes % 60;
+
+    const formattedCountdown = `${hoursLeft}h ${String(minutesLeft).padStart(2, "0")}m`;
+
+    return {
+      currentParisHour: h,
+      currentParisMinutes: m,
+      isAlertActive,
+      formattedCountdown,
+      triggerLabel: `${TRIGGER_HOUR_PARIS}:00 (Paris) / ${TRIGGER_HOUR_PARIS - 6}:00 (Raleigh)`,
+    };
+  } catch {
+    return {
+      currentParisHour: 20,
+      currentParisMinutes: 0,
+      isAlertActive: true,
+      formattedCountdown: "0h 00m",
+      triggerLabel: "20:00 (Paris) / 14:00 (Raleigh)",
+    };
+  }
+}
+
 export function useUsReal(identity: Identity | null) {
   const [items, setItems] = useState<UsRealItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [schedule, setSchedule] = useState(getParisAlertSchedule());
+  const [alertTestSent, setAlertTestSent] = useState(false);
 
   const feedPet = usePetFeeder(identity);
   const todayStr = getTodayDateString();
+
+  // Mettre à jour le compte à rebours chaque minute
+  useEffect(() => {
+    setSchedule(getParisAlertSchedule());
+    const interval = setInterval(() => {
+      setSchedule(getParisAlertSchedule());
+    }, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Parser les entrées journal_entries formatées en USREAL
   const parseEntry = (row: {
@@ -132,7 +189,7 @@ export function useUsReal(identity: Identity | null) {
 
     // Écoute Realtime des nouveaux US Real
     const channel = supabase
-      .channel("realtime:us_real_feed")
+      .channel("realtime:us_real_feed_v2")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: TABLE },
@@ -289,6 +346,32 @@ export function useUsReal(identity: Identity | null) {
   const hasPostedToday = Boolean(myTodayPhoto);
   const partnerHasPostedToday = Boolean(partnerTodayPhoto);
 
+  // Alerte automatique à l'heure fixe si pas encore posté
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (schedule.isAlertActive && !hasPostedToday) {
+      const notifKey = `${NOTIF_STORAGE_PREFIX}${todayStr}`;
+      const alreadySent = window.localStorage.getItem(notifKey);
+      if (!alreadySent) {
+        window.localStorage.setItem(notifKey, "true");
+        playBeRealRevealSound();
+        void sendAppNotification("⚠️ 📸 C'est l'heure du US Real !", {
+          body: "L'alarme quotidienne a sonné (20h Paris / 14h Raleigh) ! Capture ton moment sans filtre !",
+        });
+      }
+    }
+  }, [schedule.isAlertActive, hasPostedToday, todayStr]);
+
+  // Déclencher manuellement une alerte de test
+  const triggerTestAlert = useCallback(async () => {
+    setAlertTestSent(true);
+    playBeRealRevealSound();
+    await sendAppNotification("⚠️ 📸 C'est l'heure du US Real !", {
+      body: "L'alarme quotidienne a sonné (20h Paris / 14h Raleigh) ! Capture ton instant du jour !",
+    });
+    setTimeout(() => setAlertTestSent(false), 3000);
+  }, []);
+
   // Historique des jours précédents (trié du plus récent au plus ancien, sans aujourd'hui)
   const historyDays = Object.values(groupedByDate)
     .filter((d) => d.date !== todayStr && (d.paris || d.raleigh))
@@ -319,6 +402,8 @@ export function useUsReal(identity: Identity | null) {
     items,
     loading,
     uploading,
+    schedule,
+    alertTestSent,
     todayPair,
     myTodayPhoto,
     partnerTodayPhoto,
@@ -327,5 +412,6 @@ export function useUsReal(identity: Identity | null) {
     historyDays,
     streak,
     postDailyPhoto,
+    triggerTestAlert,
   };
 }
