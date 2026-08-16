@@ -114,7 +114,7 @@ export function UsReal() {
         </div>
       </div>
 
-      {/* ── BANNIÈRE D'URGENCE QUOTIDIENNE (À PARTIR DE 20H00 PARIS / 14H00 RALEIGH) ── */}
+      {/* ── BANNIÈRE D'URGENCE QUOTIDIENNE (DÉCLENCHÉE À L'HEURE ALÉATOIRE SYNCHRONISÉE) ── */}
       {schedule.isAlertActive && !hasPostedToday && (
         <motion.div
           initial={{ opacity: 0, scale: 0.98, y: -10 }}
@@ -130,7 +130,7 @@ export function UsReal() {
                 C&apos;est l&apos;heure du US Real !
               </p>
               <p className="text-xs text-amber-100/90 font-medium">
-                L&apos;alarme quotidienne a sonné ({schedule.triggerLabel}) — Vous devez capturer votre moment du jour !
+                L&apos;alerte surprise a sonné ({schedule.triggerLabel}) — Vous devez capturer votre moment du jour !
               </p>
             </div>
           </div>
@@ -158,9 +158,10 @@ export function UsReal() {
 
           <div className="flex items-center gap-2">
             {!schedule.isAlertActive && !hasPostedToday && (
-              <span className="flex items-center gap-1 text-[11px] font-mono text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/25 px-2.5 py-0.5 rounded-full">
+              <span className="flex items-center gap-1.5 text-[11px] font-mono text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/25 px-2.5 py-0.5 rounded-full">
                 <Clock className="h-3 w-3" />
-                Alarme dans {schedule.formattedCountdown} (20h Paris / 14h Raleigh)
+                <span>Alerte surprise dans {schedule.formattedCountdown}</span>
+                <span className="text-foreground/40 font-sans text-[10px]">(plage 14h-21h45 Paris · 8h-15h45 Raleigh)</span>
               </span>
             )}
 
