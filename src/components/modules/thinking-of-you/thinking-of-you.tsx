@@ -13,6 +13,12 @@ import { playChime } from "@/lib/chime";
 import { vibrateHeartbeat, vibrateTick } from "@/lib/haptics";
 import { LOCATIONS } from "@/lib/constants";
 import { revealOnScroll } from "@/lib/motion";
+import {
+  getNotificationPermission,
+  requestNotificationPermission,
+  sendAppNotification,
+  isNotificationSupported,
+} from "@/lib/notifications";
 import { Shockwave } from "./shockwave";
 import type { Thought } from "@/types";
 
@@ -25,28 +31,32 @@ export function ThinkingOfYou() {
   const { identity, setIdentity, ready } = useIdentity();
   const [burst, setBurst] = useState(0);
   const [justSent, setJustSent] = useState(false);
-
-  const [notifPermission, setNotifPermission] = useState<string>("granted");
+  const [notifPermission, setNotifPermission] = useState<NotificationPermission>("default");
+  const [testSent, setTestSent] = useState(false);
 
   useEffect(() => {
-    try {
-      if (typeof window !== "undefined" && "Notification" in window) {
-        setNotifPermission(Notification.permission);
-      }
-    } catch {
-      setNotifPermission("granted");
-    }
+    setNotifPermission(getNotificationPermission());
   }, []);
 
-  const requestNotifPermission = async () => {
-    try {
-      if (typeof window !== "undefined" && "Notification" in window && typeof Notification.requestPermission === "function") {
-        const res = await Notification.requestPermission();
-        setNotifPermission(res);
-      }
-    } catch {
-      setNotifPermission("granted");
+  const handleRequestNotifPermission = async () => {
+    const res = await requestNotificationPermission();
+    setNotifPermission(res);
+    if (res === "granted") {
+      void sendAppNotification("💖 Notifications d'amour activées !", {
+        body: "Tu recevras un signal chaque fois qu'une pensée t'est envoyée.",
+      });
     }
+  };
+
+  const handleTestNotification = async () => {
+    setTestSent(true);
+    await sendAppNotification(
+      identity === "paris" ? "💙 Clara pense à toi !" : "💜 Arthur pense à toi !",
+      {
+        body: identity === "paris" ? "Test de notification réussi depuis Raleigh 🇺🇸 💖" : "Test de notification réussi depuis Paris 🇫🇷 💖",
+      }
+    );
+    setTimeout(() => setTestSent(false), 3000);
   };
 
   // Réception d'une pensée de l'autre → onde de choc + carillon + vibration + notification OS
@@ -55,20 +65,13 @@ export function ThinkingOfYou() {
     playChime();
     vibrateHeartbeat();
 
-    // Trigger Notification Système OS ultra-sécurisé par try-catch
-    try {
-      if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
-        new Notification(
-          identity === "paris" ? "💙 Clara pense à toi !" : "💜 Arthur pense à toi !",
-          {
-            body: identity === "paris" ? "Une pensée vient d'arriver depuis Raleigh 🇺🇸 💖" : "Une pensée vient d'arriver depuis Paris 🇫🇷 💖",
-            icon: "/icons/icon-192.png",
-          }
-        );
+    // Notification système OS (Desktop & Mobile via Service Worker)
+    void sendAppNotification(
+      identity === "paris" ? "💙 Clara pense à toi !" : "💜 Arthur pense à toi !",
+      {
+        body: identity === "paris" ? "Une pensée vient d'arriver depuis Raleigh 🇺🇸 💖" : "Une pensée vient d'arriver depuis Paris 🇫🇷 💖",
       }
-    } catch {
-      // Ignorer silencieusement si l'appareil ne supporte pas l'instanciation directe de Notification
-    }
+    );
   }, [identity]);
 
   const { received, connected, sending, send } = useThinkingOfYou(
@@ -218,18 +221,41 @@ export function ThinkingOfYou() {
             : "Aucune pensée reçue aujourd'hui… pour l'instant"}
         </p>
 
-        {/* Bouton d'activation des notifications OS */}
-        {notifPermission !== "granted" && (
-          <div className="mt-4 flex justify-center">
+        {/* Gestion des notifications OS */}
+        <div className="mt-4 flex flex-col items-center gap-2">
+          {notifPermission === "default" && (
             <button
               type="button"
-              onClick={requestNotifPermission}
-              className="btn-ghost btn-xs gap-1.5 border-rose-500/30 text-rose-300 hover:bg-rose-500/10"
+              onClick={handleRequestNotifPermission}
+              className="btn-neon btn-xs gap-1.5 border-rose-400/50 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 shadow-[0_0_12px_rgba(244,63,94,0.2)]"
             >
-              🔔 Activer les notifications PUSH d'amour sur cet appareil
+              🔔 Activer les notifications d&apos;amour sur cet appareil
             </button>
-          </div>
-        )}
+          )}
+
+          {notifPermission === "granted" && (
+            <div className="flex items-center gap-2">
+              <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Notifications d&apos;amour actives
+              </span>
+              <button
+                type="button"
+                onClick={handleTestNotification}
+                disabled={testSent}
+                className="btn-ghost btn-xs text-[11px] text-foreground/70 hover:text-foreground border-white/10"
+              >
+                {testSent ? "Notification envoyée ✨" : "Tester 🔔"}
+              </button>
+            </div>
+          )}
+
+          {notifPermission === "denied" && (
+            <p className="text-[11px] text-amber-400/80">
+              ⚠️ Notifications bloquées par le navigateur (autorisez-les dans les paramètres de votre navigateur).
+            </p>
+          )}
+        </div>
       </motion.section>
     </>
   );

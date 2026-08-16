@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
+import { sendAppNotification } from "@/lib/notifications";
 import type { Identity } from "@/types";
 
 /**
@@ -78,9 +79,16 @@ export function useJournal(identity: Identity | null) {
         (payload) => {
           const entry = payload.new as JournalEntry;
           if (!isUserJournalPost(entry)) return;
-          setEntries((prev) =>
-            prev.some((e) => e.id === entry.id) ? prev : [entry, ...prev]
-          );
+          setEntries((prev) => {
+            if (prev.some((e) => e.id === entry.id)) return prev;
+            if (identity && entry.author !== identity) {
+              const authorName = entry.author === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸";
+              void sendAppNotification(`💌 Nouveau mot de ${authorName} dans le Journal`, {
+                body: entry.body ?? "Un nouveau souvenir a été partagé.",
+              });
+            }
+            return [entry, ...prev];
+          });
         }
       )
       .subscribe();
@@ -88,7 +96,7 @@ export function useJournal(identity: Identity | null) {
     return () => {
       void supabase.removeChannel(channel);
     };
-  }, []);
+  }, [identity]);
 
   // Poste un message texte
   const addText = useCallback(
