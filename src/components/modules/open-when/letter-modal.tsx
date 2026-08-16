@@ -10,6 +10,7 @@ import { usePetFeeder } from "@/hooks/use-pet";
 import { FOOD } from "@/lib/pet-data";
 import { SPRING } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { playLetterOpenSound } from "@/lib/sound-fx";
 import type { Envelope } from "@/lib/open-when-data";
 
 /**
@@ -52,9 +53,10 @@ export function LetterModal({
   const { identity } = useIdentity();
   const feedPet = usePetFeeder(identity);
 
-  // Confettis dès que la lettre est visible (pas sur l'écran de code)
+  // Son et confettis dès que la lettre est visible (pas sur l'écran de code)
   useEffect(() => {
     if (!envelope || needsCode) return;
+    playLetterOpenSound();
     fireConfetti();
     void feedPet(FOOD.letter, `letter:${envelope.id}`, "letter");
   }, [envelope, needsCode, feedPet]);

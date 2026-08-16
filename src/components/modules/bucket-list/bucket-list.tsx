@@ -8,6 +8,7 @@ import { revealOnScroll } from "@/lib/motion";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { useIdentity } from "@/hooks/use-identity";
 import { supabase } from "@/lib/supabase/client";
+import { playObjectiveCompleteSound } from "@/lib/sound-fx";
 
 export interface BucketListItem {
   id: string;
@@ -211,6 +212,7 @@ export function BucketList() {
     );
 
     if (nextCompleted) {
+      playObjectiveCompleteSound();
       void confetti({
         particleCount: 70,
         spread: 60,

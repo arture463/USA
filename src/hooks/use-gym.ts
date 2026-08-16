@@ -14,6 +14,7 @@ import {
   type MuscleStats,
   type WorkoutType,
 } from "@/lib/gym-data";
+import { playGymWorkoutLoggedSound, playHighFiveSound } from "@/lib/sound-fx";
 import type { Identity } from "@/types";
 
 const STORAGE_KEY = "us-together:gym-sessions";
@@ -230,7 +231,8 @@ export function useGym() {
         created_at: new Date().toISOString(),
       };
 
-      // Confettis festifs immédiats
+      // Effets sonores & confettis festifs immédiats
+      playGymWorkoutLoggedSound();
       void confetti({
         particleCount: 100,
         spread: 80,
@@ -317,6 +319,7 @@ export function useGym() {
   const sendHighFive = useCallback((who: Identity) => {
     const sender = who === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸";
     const receiver = who === "paris" ? "Clara" : "Arthur";
+    playHighFiveSound();
     setHighFiveToast(`${sender} a envoyé une gourde de motivation & un High-Five à ${receiver} ! 🥤⚡`);
 
     void confetti({

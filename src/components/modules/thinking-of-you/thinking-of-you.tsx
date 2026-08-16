@@ -9,7 +9,7 @@ import { useThinkingOfYou } from "@/hooks/use-thinking-of-you";
 import { usePresence } from "@/hooks/use-presence";
 import { usePetFeeder } from "@/hooks/use-pet";
 import { FOOD } from "@/lib/pet-data";
-import { playChime } from "@/lib/chime";
+import { playThoughtSentSound, playThoughtReceivedSound } from "@/lib/sound-fx";
 import { vibrateHeartbeat, vibrateTick } from "@/lib/haptics";
 import { LOCATIONS } from "@/lib/constants";
 import { revealOnScroll } from "@/lib/motion";
@@ -62,7 +62,7 @@ export function ThinkingOfYou() {
   // Réception d'une pensée de l'autre → onde de choc + carillon + vibration + notification OS
   const handleReceive = useCallback((_thought: Thought) => {
     setBurst((b) => b + 1);
-    playChime();
+    playThoughtReceivedSound();
     vibrateHeartbeat();
 
     // Notification système OS (Desktop & Mobile via Service Worker)
@@ -92,6 +92,7 @@ export function ThinkingOfYou() {
   }, [otherOnline, feedPet]);
 
   const handleSend = async () => {
+    playThoughtSentSound();
     vibrateTick();
     await send();
     setJustSent(true);

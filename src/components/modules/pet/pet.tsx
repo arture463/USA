@@ -28,6 +28,7 @@ import { Creature } from "./creature";
 import { Egg } from "./egg";
 import { HatchOverlay } from "./hatch-overlay";
 import { EvolutionOverlay } from "./evolution-overlay";
+import { playPetFeedSound } from "@/lib/sound-fx";
 import { PetDevPanel, type PetPreview } from "./pet-dev-panel";
 
 /** Le panneau de test est désactivé pour le lancement officiel. */
@@ -374,7 +375,10 @@ export function Pet() {
           <div className="relative mt-6 flex flex-col items-center gap-2">
             <button
               type="button"
-              onClick={treat}
+              onClick={() => {
+                playPetFeedSound();
+                void treat();
+              }}
               disabled={!treatReady || working}
               className="btn-neon btn-md btn-pill"
             >

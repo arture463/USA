@@ -4,6 +4,7 @@ import { useRef, useState, type ChangeEvent } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ImagePlus, Mic, Send, Square, X, Loader2 } from "lucide-react";
 import { useVoiceRecorder } from "@/hooks/use-voice-recorder";
+import { playJournalMessageSentSound } from "@/lib/sound-fx";
 
 /**
  * Barre de composition du journal.
@@ -78,10 +79,12 @@ export function JournalComposer({
   const handleSend = async () => {
     if (sending) return;
     if (photo) {
+      playJournalMessageSentSound();
       await onSendMedia(photo, "photo", text);
       clearPhoto();
       resetText();
     } else if (text.trim()) {
+      playJournalMessageSentSound();
       await onSendText(text);
       resetText();
     }
@@ -89,6 +92,7 @@ export function JournalComposer({
 
   const sendVoice = async () => {
     if (!voice.blob) return;
+    playJournalMessageSentSound();
     await onSendMedia(voice.blob, "voice");
     voice.reset();
   };
