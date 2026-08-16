@@ -27,7 +27,7 @@ export function Gym() {
     claraStats,
     badges,
     streak,
-  } = useGym();
+  } = useGym(identity);
   const [modalOpen, setModalOpen] = useState(false);
 
   return (

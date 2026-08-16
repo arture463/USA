@@ -15,6 +15,7 @@ import {
   type WorkoutType,
 } from "@/lib/gym-data";
 import { playGymWorkoutLoggedSound, playHighFiveSound } from "@/lib/sound-fx";
+import { sendAppNotification } from "@/lib/notifications";
 import type { Identity } from "@/types";
 
 const STORAGE_KEY = "us-together:gym-sessions";
@@ -89,7 +90,7 @@ function deduplicateSessions(list: GymSessionRecord[], customDeletedIds?: Set<st
   return result;
 }
 
-export function useGym() {
+export function useGym(identity?: Identity | null) {
   const [sessions, setSessions] = useState<GymSessionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [highFiveToast, setHighFiveToast] = useState<string | null>(null);
@@ -151,7 +152,7 @@ export function useGym() {
 
     // Écoute Realtime des séances & des suppressions
     const channel = supabase
-      .channel("realtime:gym_sessions_v5")
+      .channel("realtime:gym_sessions_v6")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "gym_sessions" },
@@ -169,11 +170,20 @@ export function useGym() {
             } catch {}
             return next;
           });
-          void confetti({
-            particleCount: 80,
-            spread: 70,
-            origin: { y: 0.6 },
-          });
+
+          // Notification et confettis quand le partenaire termine une séance
+          if (identity && record.who !== identity) {
+            const partner = record.who === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸";
+            const info = WORKOUT_INFO[record.type];
+            void sendAppNotification(`🏋️ ${partner} a terminé sa séance !`, {
+              body: `${info.emoji} ${info.label} validée (+${info.xp} XP)`,
+            });
+            void confetti({
+              particleCount: 80,
+              spread: 70,
+              origin: { y: 0.6 },
+            });
+          }
         }
       )
       .on(
@@ -194,15 +204,18 @@ export function useGym() {
       )
       .subscribe();
 
-    // Écoute Realtime des tombstones de suppression GYM_DELETED
-    const tombstoneChannel = supabase
-      .channel("realtime:gym_tombstones_v5")
+    // Écoute Realtime des tombstones de suppression & des High-Fives transatlantiques
+    const syncChannel = supabase
+      .channel("realtime:gym_sync_v6")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "journal_entries" },
         (payload) => {
-          const entry = payload.new as { body?: string };
-          if (entry?.body && entry.body.startsWith("GYM_DELETED:")) {
+          const entry = payload.new as { body?: string; author?: string };
+          if (!entry?.body) return;
+
+          // 1. Tombstone de suppression
+          if (entry.body.startsWith("GYM_DELETED:")) {
             const id = entry.body.replace("GYM_DELETED:", "").trim();
             if (id && id !== PROTECTED_LEGITIMATE_SESSION) {
               saveDeletedId(id);
@@ -215,15 +228,34 @@ export function useGym() {
               });
             }
           }
+
+          // 2. High-Five reçu en temps réel de l'autre côté de l'océan
+          if (entry.body.startsWith("HIGH_FIVE:")) {
+            const target = entry.body.replace("HIGH_FIVE:", "").trim();
+            if (identity && target === identity) {
+              const sender = identity === "paris" ? "Clara 🇺🇸" : "Arthur 🇫🇷";
+              playHighFiveSound();
+              setHighFiveToast(`${sender} t'a envoyé une gourde de motivation & un High-Five ! 🥤⚡`);
+              void confetti({
+                particleCount: 70,
+                spread: 60,
+                origin: { y: 0.6 },
+              });
+              setTimeout(() => setHighFiveToast(null), 4500);
+              void sendAppNotification("🥤⚡ High-Five & Gourde reçus !", {
+                body: `${sender} t'envoie une grosse dose d'énergie pour la salle !`,
+              });
+            }
+          }
         }
       )
       .subscribe();
 
     return () => {
       void supabase.removeChannel(channel);
-      void supabase.removeChannel(tombstoneChannel);
+      void syncChannel.unsubscribe();
     };
-  }, [fetchSessions]);
+  }, [fetchSessions, identity]);
 
   const feedPetParis = usePetFeeder("paris");
   const feedPetRaleigh = usePetFeeder("raleigh");
@@ -325,11 +357,13 @@ export function useGym() {
   }, []);
 
   // Envoyer un Check / High-Five virtuel à l'autre
-  const sendHighFive = useCallback((who: Identity) => {
+  const sendHighFive = useCallback(async (who: Identity) => {
     const sender = who === "paris" ? "Arthur 🇫🇷" : "Clara 🇺🇸";
     const receiver = who === "paris" ? "Clara" : "Arthur";
+    const target: Identity = who === "paris" ? "raleigh" : "paris";
+
     playHighFiveSound();
-    setHighFiveToast(`${sender} a envoyé une gourde de motivation & un High-Five à ${receiver} ! 🥤⚡`);
+    setHighFiveToast(`Gourde de motivation & High-Five envoyés à ${receiver} ! 🥤⚡`);
 
     void confetti({
       particleCount: 60,
@@ -338,6 +372,16 @@ export function useGym() {
     });
 
     setTimeout(() => setHighFiveToast(null), 4000);
+
+    try {
+      await supabase.from("journal_entries").insert({
+        author: who,
+        kind: "text",
+        body: `HIGH_FIVE:${target}`,
+      });
+    } catch (err) {
+      console.error("Erreur lors de l'envoi du High-Five :", err);
+    }
   }, []);
 
   // Calcul des statistiques de musculation
