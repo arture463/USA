@@ -14,10 +14,10 @@ import { vibrateHeartbeat, vibrateTick } from "@/lib/haptics";
 import { LOCATIONS } from "@/lib/constants";
 import { revealOnScroll } from "@/lib/motion";
 import {
-  getNotificationPermission,
+  getAppNotificationStatus,
   requestNotificationPermission,
   sendAppNotification,
-  isNotificationSupported,
+  type AppNotificationStatus,
 } from "@/lib/notifications";
 import { Shockwave } from "./shockwave";
 import type { Thought } from "@/types";
@@ -31,16 +31,16 @@ export function ThinkingOfYou() {
   const { identity, setIdentity, ready } = useIdentity();
   const [burst, setBurst] = useState(0);
   const [justSent, setJustSent] = useState(false);
-  const [notifPermission, setNotifPermission] = useState<NotificationPermission>("default");
+  const [notifStatus, setNotifStatus] = useState<AppNotificationStatus>("default");
   const [testSent, setTestSent] = useState(false);
 
   useEffect(() => {
-    setNotifPermission(getNotificationPermission());
+    setNotifStatus(getAppNotificationStatus());
   }, []);
 
   const handleRequestNotifPermission = async () => {
     const res = await requestNotificationPermission();
-    setNotifPermission(res);
+    setNotifStatus(res);
     if (res === "granted") {
       void sendAppNotification("💖 Notifications d'amour activées !", {
         body: "Tu recevras un signal chaque fois qu'une pensée t'est envoyée.",
@@ -224,7 +224,7 @@ export function ThinkingOfYou() {
 
         {/* Gestion des notifications OS */}
         <div className="mt-4 flex flex-col items-center gap-2">
-          {notifPermission === "default" && (
+          {notifStatus === "default" && (
             <button
               type="button"
               onClick={handleRequestNotifPermission}
@@ -234,7 +234,7 @@ export function ThinkingOfYou() {
             </button>
           )}
 
-          {notifPermission === "granted" && (
+          {notifStatus === "granted" && (
             <div className="flex items-center gap-2">
               <span className="flex items-center gap-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-1 text-[11px] font-medium text-emerald-300">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -251,9 +251,15 @@ export function ThinkingOfYou() {
             </div>
           )}
 
-          {notifPermission === "denied" && (
-            <p className="text-[11px] text-amber-400/80">
-              ⚠️ Notifications bloquées par le navigateur (autorisez-les dans les paramètres de votre navigateur).
+          {notifStatus === "ios_need_pwa" && (
+            <div className="rounded-xl border border-neon-cyan/20 bg-neon-cyan/5 px-3 py-2 text-center text-[11px] text-neon-cyan/90 max-w-sm">
+              📱 <strong>Sur iPhone</strong> : Touchez <em>Partager</em> ➔ <em>« Sur l&apos;écran d&apos;accueil »</em> pour activer les notifications d&apos;amour.
+            </div>
+          )}
+
+          {notifStatus === "denied" && (
+            <p className="text-[11px] text-amber-400/80 text-center max-w-sm">
+              ⚠️ Notifications bloquées par le navigateur (autorisez-les dans les réglages du site ou de votre navigateur).
             </p>
           )}
         </div>
