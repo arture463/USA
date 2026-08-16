@@ -40,7 +40,9 @@ const isUserJournalPost = (e: JournalEntry) => {
     !e.body.startsWith("LIST:") &&
     !e.body.startsWith("BUCKET_") &&
     !e.body.startsWith("GACHA:") &&
-    !e.body.startsWith("GYM_")
+    !e.body.startsWith("GYM_") &&
+    !e.body.startsWith("HIGH_FIVE:") &&
+    !e.body.startsWith("USREAL:")
   );
 };
 
