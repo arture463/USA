@@ -33,6 +33,15 @@ export function mediaUrl(path: string | null): string | null {
   return supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
 }
 
+const isUserJournalPost = (e: JournalEntry) => {
+  if (!e.body) return true;
+  return (
+    !e.body.startsWith("LIST:") &&
+    !e.body.startsWith("BUCKET_") &&
+    !e.body.startsWith("GACHA:")
+  );
+};
+
 export function useJournal(identity: Identity | null) {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,7 +57,8 @@ export function useJournal(identity: Identity | null) {
         .order("created_at", { ascending: false })
         .limit(100);
       if (!cancelled) {
-        setEntries((data as JournalEntry[]) ?? []);
+        const filtered = ((data as JournalEntry[]) ?? []).filter(isUserJournalPost);
+        setEntries(filtered);
         setLoading(false);
       }
     })();
@@ -66,6 +76,7 @@ export function useJournal(identity: Identity | null) {
         { event: "INSERT", schema: "public", table: TABLE },
         (payload) => {
           const entry = payload.new as JournalEntry;
+          if (!isUserJournalPost(entry)) return;
           setEntries((prev) =>
             prev.some((e) => e.id === entry.id) ? prev : [entry, ...prev]
           );

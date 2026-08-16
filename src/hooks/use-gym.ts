@@ -276,7 +276,13 @@ export function useGym() {
 
   const arthurStats = computeStats("paris");
   const claraStats = computeStats("raleigh");
-  const badges = getBadges(arthurStats.totalSessions, claraStats.totalSessions, sessions.length);
+  const legsSessions = sessions.filter((s) => s.type === "legs").length;
+  const badges = getBadges(
+    arthurStats.totalSessions,
+    claraStats.totalSessions,
+    sessions.length,
+    legsSessions
+  );
 
   const streak = Math.min(
     7,

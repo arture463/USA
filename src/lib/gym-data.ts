@@ -84,7 +84,12 @@ export const GYM_TITLES = [
 ];
 
 /** Badges d'Accomplissement à Débloquer */
-export function getBadges(arthurSessions: number, claraSessions: number, totalSessions: number): GymBadge[] {
+export function getBadges(
+  arthurSessions: number,
+  claraSessions: number,
+  totalSessions: number,
+  legsSessions: number = 0
+): GymBadge[] {
   return [
     {
       id: "first-session",
@@ -105,7 +110,7 @@ export function getBadges(arthurSessions: number, claraSessions: number, totalSe
       title: "N'a Jamais Sauté le Leg Day",
       description: "Atteindre 5 séances Legs cumulées",
       emoji: "🦵",
-      unlocked: totalSessions >= 5,
+      unlocked: legsSessions >= 5,
     },
     {
       id: "century-club",
