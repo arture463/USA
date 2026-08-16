@@ -20,11 +20,13 @@ import type { Identity } from "@/types";
 const STORAGE_KEY = "us-together:gym-sessions";
 const DELETED_STORAGE_KEY = "us-together:gym-deleted-ids";
 
-// Séances fantômes/tests initiales créées pendant le développement à ignorer d'office
+// Seule la séance fantôme initiale créée pendant le développement (15 août) est purgée d'office
 const INITIAL_BLACK_LIST = new Set([
   "1dd8c20a-77e7-4ec8-ae02-3da8891f3d23",
-  "32b8a218-0c4f-404a-980f-7f0dd7af5f28",
 ]);
+
+// ID protégé de la vraie séance de Clara (pour éviter qu'un tombstone de test ne la masque)
+const PROTECTED_LEGITIMATE_SESSION = "32b8a218-0c4f-404a-980f-7f0dd7af5f28";
 
 function getDeletedIds(): Set<string> {
   const set = new Set(INITIAL_BLACK_LIST);
@@ -34,15 +36,22 @@ function getDeletedIds(): Set<string> {
       if (raw) {
         const arr = JSON.parse(raw);
         if (Array.isArray(arr)) {
-          arr.forEach((id) => set.add(id));
+          arr.forEach((id) => {
+            if (id !== PROTECTED_LEGITIMATE_SESSION) {
+              set.add(id);
+            }
+          });
         }
       }
     }
   } catch {}
+  // Garantir que la vraie séance de Clara n'est jamais masquée par erreur
+  set.delete(PROTECTED_LEGITIMATE_SESSION);
   return set;
 }
 
 function saveDeletedId(id: string) {
+  if (id === PROTECTED_LEGITIMATE_SESSION) return;
   try {
     if (typeof window !== "undefined") {
       const set = getDeletedIds();
@@ -105,7 +114,7 @@ export function useGym() {
         deletedRes.data.forEach((r) => {
           if (r.body) {
             const id = r.body.replace("GYM_DELETED:", "").trim();
-            if (id) {
+            if (id && id !== PROTECTED_LEGITIMATE_SESSION) {
               deletedIds.add(id);
               saveDeletedId(id);
             }
@@ -142,7 +151,7 @@ export function useGym() {
 
     // Écoute Realtime des séances & des suppressions
     const channel = supabase
-      .channel("realtime:gym_sessions_v3")
+      .channel("realtime:gym_sessions_v5")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "gym_sessions" },
@@ -187,7 +196,7 @@ export function useGym() {
 
     // Écoute Realtime des tombstones de suppression GYM_DELETED
     const tombstoneChannel = supabase
-      .channel("realtime:gym_tombstones")
+      .channel("realtime:gym_tombstones_v5")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "journal_entries" },
@@ -195,7 +204,7 @@ export function useGym() {
           const entry = payload.new as { body?: string };
           if (entry?.body && entry.body.startsWith("GYM_DELETED:")) {
             const id = entry.body.replace("GYM_DELETED:", "").trim();
-            if (id) {
+            if (id && id !== PROTECTED_LEGITIMATE_SESSION) {
               saveDeletedId(id);
               setSessions((prev) => {
                 const next = prev.filter((s) => s.id !== id);

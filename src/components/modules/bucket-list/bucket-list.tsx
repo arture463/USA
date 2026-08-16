@@ -59,28 +59,18 @@ const DEFAULT_ITEMS: BucketListItem[] = [
 
 const STORAGE_KEY = "us-together:bucket-list";
 
-/** Fusionne les items chargés avec les objectifs par défaut pour ne rien perdre */
-function mergeBucketItems(raw: BucketListItem[]): BucketListItem[] {
-  if (!Array.isArray(raw) || raw.length === 0) return DEFAULT_ITEMS;
-
-  const result: BucketListItem[] = [];
-  const processedDefaultIds = new Set<string>();
-
-  for (const item of raw) {
-    if (!item || !item.id || !item.text) continue;
-    result.push(item);
-    if (item.id.startsWith("item-")) {
-      processedDefaultIds.add(item.id);
-    }
-  }
-
-  for (const def of DEFAULT_ITEMS) {
-    if (!processedDefaultIds.has(def.id)) {
-      result.push(def);
-    }
-  }
-
-  return result;
+/** Valide et nettoie les items chargés pour garantir une structure saine */
+function cleanBucketItems(raw: unknown): BucketListItem[] | null {
+  if (!Array.isArray(raw) || raw.length === 0) return null;
+  const valid = raw.filter((item): item is BucketListItem => {
+    return Boolean(
+      item &&
+        typeof item === "object" &&
+        typeof item.id === "string" &&
+        typeof item.text === "string"
+    );
+  });
+  return valid.length > 0 ? valid : null;
 }
 
 export function BucketList() {
@@ -95,65 +85,53 @@ export function BucketList() {
       // 1. Priorité au snapshot d'état BUCKET_STATE
       const { data } = await supabase
         .from("journal_entries")
-        .select("*")
+        .select("body")
         .eq("kind", "text")
         .like("body", "BUCKET_STATE:%")
         .order("created_at", { ascending: false })
         .limit(1);
 
       if (data && data.length > 0 && data[0].body) {
-        const parsed = JSON.parse(data[0].body.replace("BUCKET_STATE:", ""));
-        const merged = mergeBucketItems(parsed);
-        setItems(merged);
         try {
-          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+          const parsed = JSON.parse(data[0].body.replace("BUCKET_STATE:", ""));
+          const clean = cleanBucketItems(parsed);
+          if (clean) {
+            setItems(clean);
+            try {
+              window.localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+            } catch {}
+            return;
+          }
         } catch {}
-        return;
       }
 
-      // 2. Rétrocompatibilité avec les anciennes entrées LIST:
-      const { data: legacyData } = await supabase
-        .from("journal_entries")
-        .select("*")
-        .eq("kind", "text")
-        .like("body", "LIST:%")
-        .order("created_at", { ascending: true });
-
-      if (legacyData && legacyData.length > 0) {
-        const legacyItems: BucketListItem[] = legacyData.map((r) => {
-          const raw = r.body?.replace("LIST:", "") || "";
-          const isDone = raw.startsWith("DONE:");
-          const text = isDone ? raw.replace("DONE:", "") : raw.replace("TODO:", "");
-          return {
-            id: r.id,
-            text,
-            completed: isDone,
-            addedBy: r.author,
-            created_at: r.created_at,
-          };
-        });
-        const merged = mergeBucketItems(legacyItems);
-        setItems(merged);
-        try {
-          window.localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-        } catch {}
-        return;
-      }
-
-      // 3. Fallback LocalStorage ou Défauts
+      // 2. Fallback LocalStorage
       const local = window.localStorage.getItem(STORAGE_KEY);
       if (local) {
-        setItems(mergeBucketItems(JSON.parse(local)));
-      } else {
-        setItems(DEFAULT_ITEMS);
+        try {
+          const parsed = JSON.parse(local);
+          const clean = cleanBucketItems(parsed);
+          if (clean) {
+            setItems(clean);
+            return;
+          }
+        } catch {}
       }
+
+      // 3. Fallback initial aux valeurs par défaut
+      setItems(DEFAULT_ITEMS);
     } catch {
       const local = window.localStorage.getItem(STORAGE_KEY);
       if (local) {
-        setItems(mergeBucketItems(JSON.parse(local)));
-      } else {
-        setItems(DEFAULT_ITEMS);
+        try {
+          const clean = cleanBucketItems(JSON.parse(local));
+          if (clean) {
+            setItems(clean);
+            return;
+          }
+        } catch {}
       }
+      setItems(DEFAULT_ITEMS);
     }
   }, []);
 
@@ -162,20 +140,22 @@ export function BucketList() {
 
     // Écoute Realtime de la Bucket List partagée
     const channel = supabase
-      .channel("realtime:bucket_list_v2")
+      .channel("realtime:bucket_list_v4")
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "journal_entries" },
         (payload) => {
-          const entry = payload.new as { body?: string; author?: string };
+          const entry = payload.new as { body?: string };
           if (entry?.body && entry.body.startsWith("BUCKET_STATE:")) {
             try {
               const parsed = JSON.parse(entry.body.replace("BUCKET_STATE:", ""));
-              const merged = mergeBucketItems(parsed);
-              setItems(merged);
-              try {
-                window.localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
-              } catch {}
+              const clean = cleanBucketItems(parsed);
+              if (clean) {
+                setItems(clean);
+                try {
+                  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(clean));
+                } catch {}
+              }
             } catch {}
           }
         }
