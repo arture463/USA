@@ -159,8 +159,20 @@ export function calculateMoonPhase(date: Date = new Date()): MoonPhaseData {
   };
 }
 
-/** Conseils romantiques selon la météo */
-function getCoupleTip(temp: number, code: number, city: "Paris" | "Raleigh"): string {
+/** Conseils romantiques selon la météo et le jour/nuit */
+function getCoupleTip(temp: number, code: number, city: "Paris" | "Raleigh", isDay: boolean, hour: number): string {
+  if (!isDay) {
+    if (city === "Paris") {
+      return hour >= 23 || hour < 6
+        ? "Douce nuit étoilée à Paris ✨ Repose-toi bien Arthur !"
+        : "Soirée paisible sur Paris 🌙 Pense bien à Clara !";
+    } else {
+      return hour >= 23 || hour < 6
+        ? "Douce nuit étoilée à Raleigh ✨ Fais de beaux rêves Clara !"
+        : "Soirée paisible sur Raleigh 🌙 Pense bien à Arthur !";
+    }
+  }
+
   if (code >= 95) return `Orages sur ${city} ⚡ Restez bien au chaud et appelez-vous !`;
   if (code >= 51 && code <= 65) return `Temps pluvieux sur ${city} 🌧️ Idéal pour écouter votre playlist partagée.`;
   if (temp >= 28) return `Belle chaleur à ${city} ☀️ N'oublie pas de bien t'hydrater !`;
@@ -271,9 +283,12 @@ export async function fetchLiveSkyData(): Promise<SkySyncState> {
       const goldenHourM = (sunsetM + 15) % 60;
       const goldenHour = `${String(goldenHourH).padStart(2, "0")}:${String(goldenHourM).padStart(2, "0")}`;
 
-      const currentHour = new Date().getHours();
-      const skyTheme = getSkyTheme(isDay, currentHour, sunsetH);
-      const coupleTip = getCoupleTip(temp, code, cityName);
+      const tz = cityName === "Paris" ? "Europe/Paris" : "America/New_York";
+      const cityHour = Number(
+        new Date().toLocaleTimeString("en-GB", { timeZone: tz, hour: "numeric", hour12: false })
+      );
+      const skyTheme = getSkyTheme(isDay, cityHour, sunsetH);
+      const coupleTip = getCoupleTip(temp, code, cityName, isDay, cityHour);
 
       return {
         city: cityName,
