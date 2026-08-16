@@ -66,8 +66,8 @@ export function NavDock() {
     // Wrapper = positionnement/centrage. Le conteneur est visible d'emblée
     // (pas d'animation d'entrée sur la visibilité) ; l'effet fluide vit dans
     // la pastille active qui glisse (layoutId) ci-dessous.
-    <div className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 duration-500 animate-in fade-in slide-in-from-bottom-4">
-      <nav className="glass-floating flex items-center gap-1 rounded-full px-2 py-2">
+    <div className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 duration-500 animate-in fade-in slide-in-from-bottom-4 max-w-[98vw] px-1">
+      <nav className="glass-floating flex items-center gap-1 rounded-full px-2 py-1.5 max-w-[96vw] overflow-x-auto no-scrollbar scroll-smooth">
         {ITEMS.map(({ id, label, Icon }) => {
         const isActive = active === id;
         return (
@@ -78,7 +78,7 @@ export function NavDock() {
             aria-label={label}
             aria-current={isActive}
             className={cn(
-              "focus-ring relative flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-medium transition-colors sm:px-4",
+              "focus-ring relative flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-medium transition-colors sm:px-3.5 sm:py-2",
               isActive
                 ? "text-white"
                 : "text-foreground/50 hover:text-foreground/80"
@@ -92,9 +92,9 @@ export function NavDock() {
                 transition={{ type: "spring", stiffness: 380, damping: 30 }}
               />
             )}
-              <Icon className="relative h-4 w-4" />
+              <Icon className="relative h-4 w-4 shrink-0" />
               {/* Libellé masqué sur mobile pour rester compact */}
-              <span className="relative hidden sm:inline">{label}</span>
+              <span className="relative hidden md:inline">{label}</span>
             </button>
           );
         })}
