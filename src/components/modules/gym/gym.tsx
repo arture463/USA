@@ -192,8 +192,9 @@ export function Gym() {
                       <button
                         type="button"
                         onClick={() => void deleteWorkout(s.id)}
-                        className="opacity-0 group-hover:opacity-100 p-1 text-foreground/30 hover:text-rose-400 hover:bg-rose-500/10 rounded transition-all"
+                        className="p-1.5 text-foreground/40 hover:text-rose-400 hover:bg-rose-500/15 bg-white/5 sm:bg-transparent sm:opacity-70 sm:hover:opacity-100 rounded-md transition-all flex items-center justify-center"
                         title="Supprimer cette séance"
+                        aria-label="Supprimer cette séance"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
