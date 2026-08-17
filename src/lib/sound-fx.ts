@@ -10,8 +10,29 @@
  */
 
 let audioCtx: AudioContext | null = null;
+let soundMuted = false;
+
+if (typeof window !== "undefined") {
+  try {
+    soundMuted = window.localStorage.getItem("us-together:sound-muted") === "true";
+  } catch {}
+}
+
+export function isSoundMuted(): boolean {
+  return soundMuted;
+}
+
+export function setSoundMuted(muted: boolean): void {
+  soundMuted = muted;
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem("us-together:sound-muted", muted ? "true" : "false");
+    } catch {}
+  }
+}
 
 function getAudioContext(): AudioContext | null {
+  if (soundMuted) return null;
   try {
     if (typeof window === "undefined") return null;
     const AudioContextClass =

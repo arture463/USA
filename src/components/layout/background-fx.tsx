@@ -97,7 +97,7 @@ export function BackgroundFX() {
       }
 
       // ── Étoiles filantes (rare : ~1 toutes les 4-8 s) ──
-      if (now - last > 4000 + Math.random() * 4000) {
+      if (now - last > 3500 + Math.random() * 3500) {
         spawnShootingStar();
         last = now;
       }
@@ -106,22 +106,30 @@ export function BackgroundFX() {
         m.x += m.vx;
         m.y += m.vy;
         m.life -= 0.015;
-        const tail = 18;
+        const tail = 22;
         const grad = ctx.createLinearGradient(
           m.x,
           m.y,
           m.x - m.vx * tail,
           m.y - m.vy * tail
         );
-        grad.addColorStop(0, `rgba(190, 240, 255, ${m.life})`);
-        grad.addColorStop(1, "rgba(190, 240, 255, 0)");
+        grad.addColorStop(0, `rgba(255, 255, 255, ${m.life})`);
+        grad.addColorStop(0.3, `rgba(34, 211, 238, ${m.life * 0.8})`);
+        grad.addColorStop(0.7, `rgba(244, 114, 182, ${m.life * 0.5})`);
+        grad.addColorStop(1, "rgba(168, 85, 247, 0)");
         ctx.globalAlpha = 1;
         ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 1.8;
         ctx.beginPath();
         ctx.moveTo(m.x, m.y);
         ctx.lineTo(m.x - m.vx * tail, m.y - m.vy * tail);
         ctx.stroke();
+
+        // Tête de comète brillante
+        ctx.fillStyle = `rgba(255, 255, 255, ${m.life})`;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, 1.4, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       ctx.globalAlpha = 1;

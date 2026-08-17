@@ -23,6 +23,8 @@ import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
 import { Gym } from "@/components/modules/gym/gym";
 import { InstallPwa } from "@/components/ui/install-pwa";
+import { ClickSparkles } from "@/components/ui/click-sparkles";
+import { SoundControl } from "@/components/ui/sound-control";
 import { ModuleErrorBoundary } from "@/components/ui/error-boundary";
 
 export default function Home() {
@@ -55,8 +57,14 @@ export default function Home() {
       {/* Couche d'ambiance : étoiles + aurora + grille sci-fi */}
       <BackgroundFX />
 
+      {/* Particules tactiles d'étincelles au clic / tap */}
+      <ClickSparkles />
+
       {/* Spotlight qui suit le curseur (desktop) */}
       <CursorGlow />
+
+      {/* Bouton de contrôle audio d'ambiance */}
+      <SoundControl />
 
       {/* Navigation flottante */}
       <NavDock />
