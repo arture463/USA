@@ -604,5 +604,61 @@ export function playHugFinishChime(): void {
   } catch {}
 }
 
+/**
+ * 15. DISSIPATION POUSSIÈRE D'ÉTOILES CANVAS
+ */
+export function playCanvasDissolveSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+    const notes = [1318.51, 1567.98, 1760, 2093, 2637]; // E6, G6, A6, C7, E7
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + idx * 0.05);
+
+      const start = now + idx * 0.05;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.1, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.5);
+
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.55);
+    });
+  } catch {}
+}
+
+/**
+ * 16. SAUVEGARDE DU CROQUIS (Harp chord)
+ */
+export function playCanvasSaveSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+    const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, now + idx * 0.06);
+
+      const start = now + idx * 0.06;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.8);
+
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.85);
+    });
+  } catch {}
+}
+
 /** Rétrocompatibilité : playChime pointe sur le carillon enrichi */
 export const playChime = playThoughtReceivedSound;

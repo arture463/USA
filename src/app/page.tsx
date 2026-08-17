@@ -18,6 +18,7 @@ import { BucketList } from "@/components/modules/bucket-list/bucket-list";
 import { MusicPlayer } from "@/components/modules/music/music-player";
 import { ThinkingOfYou } from "@/components/modules/thinking-of-you/thinking-of-you";
 import { Telepathy } from "@/components/modules/telepathy/telepathy";
+import { LiveCanvas } from "@/components/modules/live-canvas/live-canvas";
 import { UsReal } from "@/components/modules/us-real/us-real";
 import { Journal } from "@/components/modules/journal/journal";
 import { Pet } from "@/components/modules/pet/pet";
@@ -111,6 +112,13 @@ export default function Home() {
         <section id="telepathy" className="w-full scroll-mt-24">
           <ModuleErrorBoundary fallbackTitle="Module Télépathie indisponible">
             <Telepathy />
+          </ModuleErrorBoundary>
+        </section>
+
+        {/* ── MODULE TOILE NÉON EN DIRECT : LIVE CANVAS ── */}
+        <section id="canvas" className="w-full scroll-mt-24">
+          <ModuleErrorBoundary fallbackTitle="Module Toile Néon indisponible">
+            <LiveCanvas />
           </ModuleErrorBoundary>
         </section>
 
