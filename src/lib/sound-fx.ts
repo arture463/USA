@@ -455,5 +455,54 @@ export function playBeRealRevealSound(): void {
   } catch {}
 }
 
+/**
+ * 12. RÉVÉLATION TÉLÉPATHIE (Laser Scifi & Synth Chime)
+ */
+export function playTelepathyRevealSound(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+
+    // 1. Onde de balayage laser ascendant
+    const laser = ctx.createOscillator();
+    const laserGain = ctx.createGain();
+    laser.type = "sawtooth";
+    laser.frequency.setValueAtTime(220, now);
+    laser.frequency.exponentialRampToValueAtTime(1760, now + 0.35);
+
+    laserGain.gain.setValueAtTime(0.12, now);
+    laserGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+    const filter = ctx.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(800, now);
+    filter.frequency.exponentialRampToValueAtTime(4000, now + 0.35);
+
+    laser.connect(filter).connect(laserGain).connect(ctx.destination);
+    laser.start(now);
+    laser.stop(now + 0.42);
+
+    // 2. Éclat d'harmonie céleste (Do - Mi - Sol - Si - Do)
+    const chord = [523.25, 659.25, 783.99, 987.77, 1046.5];
+    chord.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(freq, now + 0.25 + idx * 0.06);
+
+      const start = now + 0.25 + idx * 0.06;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.9);
+
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 0.95);
+    });
+  } catch {}
+}
+
 /** Rétrocompatibilité : playChime pointe sur le carillon enrichi */
 export const playChime = playThoughtReceivedSound;

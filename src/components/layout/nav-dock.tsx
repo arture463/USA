@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHandshake, Camera, MoonStar } from "lucide-react";
+import { Clock, Globe2, Radio, Mail, Egg, BookHeart, Music2, Dumbbell, HeartHandshake, Camera, MoonStar, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 import { useIdentity } from "@/hooks/use-identity";
@@ -23,6 +23,7 @@ const ITEMS = [
   { id: "globe", label: "Globe", Icon: Globe2 },
   { id: "sky", label: "Ciel", Icon: MoonStar },
   { id: "signal", label: "Signal", Icon: Radio },
+  { id: "telepathy", label: "Télépathie", Icon: Sparkles },
   { id: "us-real", label: "US Real", Icon: Camera },
   { id: "letters", label: "Lettres", Icon: Mail },
   { id: "bucket", label: "Envies", Icon: HeartHandshake },
