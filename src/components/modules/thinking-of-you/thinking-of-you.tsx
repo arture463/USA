@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, Radio, Wifi, WifiOff } from "lucide-react";
+import { Heart, Radio, Wifi, WifiOff, Fingerprint } from "lucide-react";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { useIdentity } from "@/hooks/use-identity";
 import { useThinkingOfYou } from "@/hooks/use-thinking-of-you";
@@ -20,6 +20,7 @@ import {
   type AppNotificationStatus,
 } from "@/lib/notifications";
 import { Shockwave } from "./shockwave";
+import { TouchSyncModal } from "@/components/modules/touch-sync/touch-sync-modal";
 import type { Thought } from "@/types";
 
 /**
@@ -31,6 +32,7 @@ export function ThinkingOfYou() {
   const { identity, setIdentity, ready } = useIdentity();
   const [burst, setBurst] = useState(0);
   const [justSent, setJustSent] = useState(false);
+  const [touchModalOpen, setTouchModalOpen] = useState(false);
   const [notifStatus, setNotifStatus] = useState<AppNotificationStatus>("default");
   const [testSent, setTestSent] = useState(false);
 
@@ -222,8 +224,28 @@ export function ThinkingOfYou() {
             : "Aucune pensée reçue aujourd'hui… pour l'instant"}
         </p>
 
+        {/* BOUTON CÂLIN TACTILE EN DIRECT (TOUCH SYNC) */}
+        <div className="mt-5 flex justify-center">
+          <button
+            type="button"
+            onClick={() => setTouchModalOpen(true)}
+            className={`btn-pill flex items-center gap-2 px-5 py-2 text-xs font-bold transition-all shadow-lg ${
+              otherOnline
+                ? "border border-emerald-400 bg-emerald-500/20 text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.35)] animate-pulse hover:bg-emerald-500/30"
+                : "border border-neon-rose/40 bg-neon-rose/10 text-neon-rose hover:bg-neon-rose/20 shadow-[0_0_15px_rgba(244,114,182,0.2)]"
+            }`}
+          >
+            <Fingerprint className="h-4 w-4" />
+            <span>
+              {otherOnline
+                ? `Câlin Haptique en direct avec ${other.label} 🫂✨`
+                : "Câlin Tactile Synchrone (Touch Sync) 🫂"}
+            </span>
+          </button>
+        </div>
+
         {/* Gestion des notifications OS */}
-        <div className="mt-4 flex flex-col items-center gap-2">
+        <div className="mt-5 flex flex-col items-center gap-2">
           {notifStatus === "default" && (
             <button
               type="button"
@@ -264,6 +286,13 @@ export function ThinkingOfYou() {
           )}
         </div>
       </motion.section>
+
+      {/* Modale Câlin Haptique & Battement de Cœur Synchrone */}
+      <TouchSyncModal
+        isOpen={touchModalOpen}
+        onClose={() => setTouchModalOpen(false)}
+        identity={identity}
+      />
     </>
   );
 }

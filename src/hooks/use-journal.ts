@@ -43,7 +43,8 @@ const isUserJournalPost = (e: JournalEntry) => {
     !e.body.startsWith("GYM_") &&
     !e.body.startsWith("HIGH_FIVE:") &&
     !e.body.startsWith("USREAL:") &&
-    !e.body.startsWith("TELEPATHY:")
+    !e.body.startsWith("TELEPATHY:") &&
+    !e.body.startsWith("HUG:")
   );
 };
 

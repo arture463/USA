@@ -525,5 +525,84 @@ export function playTelepathyRevealSound(): void {
   } catch {}
 }
 
+/**
+ * 13. BATTEMENT DE CŒUR SYNCHRONE (Acoustic Sub-Bass Heartbeat & Haptics)
+ */
+export function playHeartbeatPulse(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+
+    // Premier coup (Lub) : 55Hz -> 45Hz
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(65, now);
+    osc1.frequency.exponentialRampToValueAtTime(45, now + 0.12);
+
+    gain1.gain.setValueAtTime(0, now);
+    gain1.gain.linearRampToValueAtTime(0.28, now + 0.02);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+    osc1.connect(gain1).connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.15);
+
+    // Deuxième coup (Dub) : 75Hz -> 50Hz à +160ms
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(80, now + 0.16);
+    osc2.frequency.exponentialRampToValueAtTime(50, now + 0.32);
+
+    gain2.gain.setValueAtTime(0, now + 0.16);
+    gain2.gain.linearRampToValueAtTime(0.34, now + 0.18);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc2.connect(gain2).connect(ctx.destination);
+    osc2.start(now + 0.16);
+    osc2.stop(now + 0.36);
+  } catch {}
+}
+
+/** Vibration mobile haptique au rythme 75 BPM */
+export function triggerHapticHeartbeat(): void {
+  if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+    try {
+      navigator.vibrate([60, 90, 80, 570]);
+    } catch {}
+  }
+}
+
+/**
+ * 14. CARILLON DE FIN DE CÂLIN (Ascending Golden Harmony)
+ */
+export function playHugFinishChime(): void {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+
+  try {
+    const now = ctx.currentTime;
+    const notes = [440, 554.37, 659.25, 830.61, 1108.73]; // A4, C#5, E5, G#5, C#6
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+      const start = now + idx * 0.08;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.18, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.2);
+
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + 1.3);
+    });
+  } catch {}
+}
+
 /** Rétrocompatibilité : playChime pointe sur le carillon enrichi */
 export const playChime = playThoughtReceivedSound;
